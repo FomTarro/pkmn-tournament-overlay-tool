@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0;
+            }
+            #mon {
+                margin: auto;
+                width: auto;
+                height: 100%;
+                position: absolute;
+                z-index: 1;
+                filter: drop-shadow(1px 1px 1px black);
+            }
+            #item {
+                bottom: 0;
+                right: 0;
+                margin: auto;
+                width: auto;
+                height: 50%;
+                position: absolute;
+                z-index: 2;
+                filter: drop-shadow(1px 1px 1px black);
+            }
+            #status {
+                top: 0;
+                left: 0;
+                margin: auto;
+                width: auto;
+                height: 35%;
+                position: absolute;
+                z-index: 3;
+            }
+            .fainted {
+                opacity: 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="body">
+            <img id="mon">
+            <img id="item">
+        </div>
+        <img id="status">
+    </body>
+    <footer>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const mon = urlParams.get('img');
+            if(mon){
+                const monIcon = document.getElementById("mon");
+                monIcon.src = `./img/pkmn/${mon}.png`
+                const fainted = urlParams.get('fainted');
+                if(fainted === 'true'){
+                    document.getElementById('body').classList.add('fainted')
+                    // const statusIcon = document.getElementById("status");
+                    // statusIcon.src = `./img/misc/fainted_icon.png`
+                }
+            }
+            const item = urlParams.get('item');
+            if(item){
+                const itemIcon = document.getElementById("item");
+                itemIcon.src = `./img/items/${item}.png`
+                const used = urlParams.get('used');
+                if(used === 'true'){
+                    itemIcon.classList.add('fainted')
+                }
+            }
+        </script>
+    </footer>
+</html>

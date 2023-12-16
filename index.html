@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tournament Dashboard - v1.0.0</title>
+        <meta name="description" content="Enhance your Pokémon Tournament's stream overlays with team displays and real-time standings using this online OBS plugin!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta property="og:title" content="TourKOAL - Tournament Dashboard - v1.0.0!">
+        <meta property="og:image" content="https://www.skeletom.net/pkmn/tournament-overlay/img/pkmn/poke_icon_0.png">
+        <meta property="og:type" content="website">
+        <meta property="og:description" content="Enhance your Pokémon Tournament's stream overlays with team displays and real-time standings using this online OBS plugin!">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lexend"> -->
+        <link rel="stylesheet" href="./css/style.css">
+    </head>
+    <body class="bg">
+        <div class="flex-col container">
+            <div class="nav rounded-corner">
+                <div id="navContent" class="heading rounded-corner-small no-margins font-small bold nav-content">
+                    <span>🔎</span>
+                    <a href=#general>Setup</a> - 
+                    <a href="#battle">Battle</a> - 
+                    <a href="#pairings">Pairings</a> - 
+                    <a href="#standings">Standings</a> - 
+                    <a href="#players">Players and Teams</a> - 
+                    <a href=#about>Contact</a> | 
+                    <span id="obs_status" class="bold obsStatus">...</span>
+                </div>
+            </div>
+            <div>
+            <!-- README and OBS Settings -->
+                <div id="general">
+                    <div class="rounded-corner">
+                        <h1 class="heading rounded-corner-small">TourKOAL - v1.0.0<button class="minimizeButton" title="Expand/Collapse the About Section" target="generalContent" status="on"></button></h1>
+                    </div>
+                    <div id="generalContent">
+                        <div id="readme" class="rounded-corner">
+                            <div>
+                                <p>
+                                    Welcome to <b>TourKOAL</b> (<b>Tour</b>nament <b>K</b>nowledge and <b>O</b>verlay <b>A</b>ssistant for <b>L</b>ivestreams)!
+                                </p>
+                                <p>
+                                    The goal of this tool is to easily compile player and team information such that it can be quickly displayed on the fly during Pokémon tournament matches, 
+                                    helping you build a professional-quality overlay in OBS for your broadcast with as little manual work as possible. 
+                                </p>
+                                <p>
+                                    No longer will you need to scramble through hundreds of image files by hand as players reveal which of their Pokémon they brought to the game, 
+                                    nor will you need to manually adjust OBS sources when items are consumed or Pokémon faint! You can even automatically track and update player pairings and standings to display on stream!
+                                </p>
+                            </div>
+                            <p></p>
+                            <span class="font-medium bold">Getting Started</span>
+                            <ol id="gettingStarted">
+                                <li>Make sure that your OBS WebSocket Server is Enabled (accessed via Tools → WebSocket Server Settings).</li>
+                                <ul>
+                                    <li>For OBS Versions <span class="code notranslate">28.0.0</span> and above, OBS WebSocket Server is built-in.</li>
+                                    <li>For older OBS Versions, you can <a href="https://github.com/obsproject/obs-websocket/releases">download a plugin</a>.</li>
+                                </ul>
+                                <li><a href="#obs_settings">Connect to OBS</a>.
+                                <li>Choose which <a href="#battle">OBS Scene</a> your Tournament Overlay is in.</li>
+                                <li>Pick <a href="#battle">sources in that scene to output to</a> (Pokémon icons are Browser sources, everything else is a Text source).</li>
+                                <li>Enter player data in the <a href="#players">table at the bottom of the page</a>, or import your tournament roster from a TOM file.</li>
+                                <li>You're all set! <a href="#battle">Pick your players from the dropdown</a> and easily display information about their team!</li>
+                                <ul>
+                                    <li>Optional: You can also display <a href="#pairings">pairings</a> and <a href="#standings">standings</a> in real-time, either by entering the data manually, or by tracking TOM files.</li>
+                                </ul>
+                            </ol>
+                            <p id="privacy">
+                                <div class="bold important">IMPORTANT!</div>
+                                Your privacy, and the privacy of your players, is extremely important! As such, this tool runs entirely within the user's browser. No data, be it manually entered or imported from TOM reports, is being collected or sent to a remote server.
+                            </p>
+                            <p>
+                                Please be sure to obtain express permission from your players before featuring them and/or their names on stream!
+                            </p>
+                        </div>
+                        <div id="obs_settings" class="flex flex-col rounded-corner">
+                            <div class="flex flex-col">
+                                <label for="connect" class="bold">OBS Status: <span id="obs_status" class= "bold obsStatus">...</span></label>
+                                <form class="flex">
+                                    <input id="address" placeholder="Address" type="text" minlength="7" maxlength="15" value="localhost" pattern="^(localhost|((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5]))$" required autocomplete="off">
+                                    <input id="port" placeholder="Port" type="number" min="1" max="65535" size=5 value="4455">
+                                    <input id="password" placeholder="Password (optional)" type="password" autocomplete="current-password">
+                                    <button id="connect" type='button'>Connect to OBS</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Battle -->
+                <div id="battle">
+                    <div class="rounded-corner">
+                        <h1 class="heading rounded-corner-small">Battle<button class="minimizeButton" title="Expand/Collapse the Battle Dashboard" target="battleContent" status="on"></button></h1>
+                    </div>
+                    <div id="battleContent">
+                        <div class="flex flex-col rounded-corner">
+                            <p>
+                                You can select which players are currently battling, and then easily select which Pokémon they reveal, as they reveal them. 
+                                You can also display the Pokémon's condition, as well as its held item and the item's condition.
+                                <div class="bold important">IMPORTANT!</div>
+                                The Pokemon icons are Browser sources, while all other pieces of data are Text sources in OBS!
+                            </p>
+                            <div id="obs_scene_selection" class="flex flex-col">
+                                <div>
+                                    <label for="battleSceneSelect" class="bold">Battle Overlay OBS Scene Selection</label>
+                                </div>
+                                <input id="battleSceneSelect" class="sceneSelect sourceSetting" target="battle" placeholder="Select OBS source..." autoComplete="on" list="sceneOptions" type="text"/> 
+                            </div>
+                        </div>
+                        <div class="dashboard" id="dashboard">
+                            <div id="view" class="flex-row">
+                                <div id="player_1_dashboard" class="playerModule flex flex-col rounded-corner">
+                                    <h2 class="heading rounded-corner-small red">Player #1</h2>
+                                    <div class="scoreModule">
+                                        <div class="scoreDisplay">0</div>
+                                        <button class="scoreButton plus square" type='button'>➕</button>
+                                        <button class="scoreButton minus square" type='button'>➖</button>
+                                        → <input id="p1_score_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
+                                    </div>
+                                    <div id="player_1_name">
+                                        <div>
+                                            <label for="player_1_select" class="bold">Player #1</label>
+                                        </div>
+                                        <div class="nameModule">
+                                            <select class="playerSelect" id="player_1_select">
+                                                <optgroup label="Default">
+                                                    <option>None</option>
+                                                </optgroup>
+                                                <optgroup label="Players" class="optionContent">
+
+                                                </optgroup>
+                                            </select> → 
+                                            <input id="p1_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
+                                        </div>
+                                    </div>
+                                    <!-- Mon Modules Go Here  -->
+                                    <button class="resetButton" type='button'>Reset all Mons</button>
+                                </div>
+
+                                <div id="player_2_dashboard" class="playerModule flex flex-col rounded-corner">
+                                    <h2 class="heading rounded-corner-small blue">Player #2</h2>
+                                    <div class="scoreModule">
+                                        <div class="scoreDisplay">0</div>
+                                        <button class="scoreButton plus square" type='button'>➕</button>
+                                        <button class="scoreButton minus square" type='button'>➖</button>
+                                        → <input id="p2_score_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
+                                    </div>
+                                    <div id="player_2_name">
+                                        <div>
+                                            <label for="player_2_select" class="bold">Player #2</label>
+                                        </div>
+                                        <div class="nameModule">
+                                            <select class="playerSelect" id="player_2_select">
+                                                <optgroup label="Default">
+                                                    <option>None</option>
+                                                </optgroup>
+                                                <optgroup label="Players" class="optionContent">
+
+                                                </optgroup>
+                                            </select> → 
+                                            <input id="p2_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
+                                        </div>
+                                    </div>
+                                    <!-- Mon Modules Go Here -->
+                                    <button class="resetButton" type='button'>Reset all Mons</button>
+                                </div>
+                            </div>
+                            <div class="flex flex-col reset-col rounded-corner">
+                                <button class="resetGameButton" type='button'>Reset Game
+                                    <ul class="resetDescription font-small">
+                                        <li>Keep both players</li>
+                                        <li>Keep both scores</li>
+                                        <li>Reset all mons to 'None'</li>
+                                    </ul>
+                                </button>
+                                <button class="resetRoundButton" type='button'>Reset Round
+                                    <ul class="resetDescription font-small">
+                                        <li>Reset both players to 'None'</li>
+                                        <li>Reset both scores to 0</li>
+                                        <li>Reset all mons to 'None'</li>
+                                    </ul>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Pairings -->
+                <div id="pairings">
+                    <div class="rounded-corner">
+                        <h1 class="heading rounded-corner-small">Pairings<button class="minimizeButton" title="Expand/Collapse the Pairings Dashboard" target="pairingsContent" status="on"></button></h1>
+                    </div>
+                    <div id="pairingsContent">
+                        <div class="flex flex-col rounded-corner">
+                            <p>
+                                You can either select a TOM <span class="code notranslate">...pairings.html</span> file to display a live set of player pairings that will be automatically updated any time you generate a Pairings Report in TOM, or you can update them by hand here.
+                                <br><br>
+                                <span class="bold important">IMPORTANT!</span><br>
+                                In order for players to be displayed in the pairings, they must already be registered in the <a href='#players'>player table below</a>.
+                            </p>
+                            <div>
+                                <label for="pairingsSceneSelect" class="bold">Pairings Overlay OBS Scene Selection</label>
+                            </div>
+                            <input id="pairingsSceneSelect" class="sceneSelect sourceSetting" target="pairings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
+                        </div>
+                        <div class="flex flex-col rounded-corner">
+                            <label for="pairingsImport" class="bold">Import from TOM</label>
+                            <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
+                            <div>
+                                <button id="pairingsImport" class="notranslate">Choose File</button>
+                                <span id="pairingsImportFile" class="font-small basic-ui notranslate">No file chosen</span>
+                                <span id="pairingsImportStatus" class="font-small bold"></span>
+                            </div>
+                            <div>
+                                <button id="pairingsTrackingStop" disabled>Stop Tracking File</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col rounded-corner">
+                            <div class="flex-center font-small">
+                                <span>
+                                    <label for="pairingsSlider">Number of pairings displayed: </label>
+                                    <span id="pairingsCount">8</span>
+                                </span>
+                            </div>
+                            <div>
+                                <input id="pairingsSlider" class="generalSetting" type="range" step="1" min="1" max="32" value="16">
+                            </div>
+                            <ol id="pairingsList">
+                            </ol>
+                        </div>
+                        <div class="flex flex-col rounded-corner">
+                            <label for="pairingsSceneSelect" class="bold">Pairings as Single Line</label>
+                            <span class="font-small">(Optional, useful for a ticker/marquee element.)</span>
+                            <div class="font-small flex flex-center">
+                                <label for="pairingsSingleSplitter">Dividing Text:</label>
+                                <input id="pairingsSingleSplitter" class="input-small generalSetting" value="/" min="3" max="3" size="3" type="text"/>
+                            </div>
+                            <div>
+                                <input id="pairingsSingle" readonly> → 
+                                <input id="pairingsSingleSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_pairings"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Standings -->
+                <div id="standings">
+                    <div class="rounded-corner">
+                        <h1 class="heading rounded-corner-small">Standings<button class="minimizeButton" title="Expand/Collapse the Standings Dashboard" target="standingsContent" status="on"></button></h1>
+                    </div>
+                    <div id="standingsContent">
+                        <div class="flex flex-col rounded-corner">
+                            <p>
+                                You can either select a TOM <code class="code notranslate">...standings.html</code> file to display a live set of tournament standings that will be automatically updated any time you generate a Standings Report in TOM, or you can update them by hand here.
+                                <br><br>
+                                <span class="bold important">IMPORTANT!</span><br>
+                                In order for players to be displayed in the standings, they must already be registered in the <a href='#players'>player table below</a>.
+                            </p>
+                            <div>
+                                <label for="standingsSceneSelect" class="bold">Standings Overlay OBS Scene Selection</label>
+                            </div>
+                            <input id="standingsSceneSelect" class="sceneSelect sourceSetting" target="standings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
+                        </div>
+                        <div class="flex flex-col rounded-corner">
+                            <label for="standingsImport" class="bold">Import from TOM</label>
+                            <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
+                            <div>
+                                <button id="standingsImport" class="notranslate">Choose File</button>
+                                <span id="standingsImportFile" class="font-small basic-ui notranslate">No file chosen</span>
+                                <span id="standingsImportStatus" class="font-small bold"></span>
+                            </div>
+                            <div>
+                                <button id="standingsTrackingStop" disabled>Stop Tracking File</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col rounded-corner">
+                            <!-- <div class="bold">Show top: <input type="number" min="1" max="32" size="2"></div> -->
+                            <div class="font-small flex flex-center">
+                                <label for="standingsOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
+                                <input id="standingsOrdinalToggle" class="generalSetting ordinalToggle" type="checkbox" checked>
+                            </div>
+                            <div class="flex-center font-small">
+                                <span>
+                                    <label for="standingsSlider">Number of standings displayed: </label>
+                                    <span id="standingsCount">8</span>
+                                </span>
+                            </div>
+                            <div>
+                                <input id="standingsSlider" class="generalSetting" type="range" step="1" min="1" max="32" value="16">
+                            </div>
+                            <ol id="standingsList">
+                            </ol>
+                        </div>
+                        <div class="flex flex-col rounded-corner">
+                            <label for="standingsSceneSelect" class="bold">Standings as Single Line</label>
+                            <span class="font-small">(Optional, useful for a ticker/marquee element.)</span>
+                            <div class="font-small flex flex-center">   
+                                <label for="standingsSingleOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
+                                <input id="standingsSingleOrdinalToggle" class="generalSetting ordinalToggle" type="checkbox" checked>
+                            </div>
+                            <div class="font-small flex flex-center">
+                                <label for="standingsSingleSplitter">Dividing Text:</label>
+                                <input id="standingsSingleSplitter" class="input-small generalSetting" value="/" min="3" max="3" size="3" type="text"/>
+                            </div>
+                            <div>
+                                <input id="standingsSingle" readonly> → 
+                                <input id="standingsSingleSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_standings"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Table -->
+                <div id="players">
+                    <div class="rounded-corner">
+                        <h1 class="heading rounded-corner-small">Players and Teams<button class="minimizeButton" title="Expand/Collapse the Players Dashboard" target="playersContent" status="on"></button></h1>
+                    </div>
+                    <div id="playersContent">
+                        <div class="flex flex-col rounded-corner">
+                            <p>
+                                You can either import a complete player list from a TOM <code class="code notranslate">...roster.html</code> file, or you can add player records by hand in the table below.
+                            </p>
+                            <label for="playerImport" class="bold">Import from TOM</label>
+                            <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
+                            <div class="font-small flex flex-center">
+                                <span>Abbreviate names (ex. 'Ash Ketchum' → 'Ash K.') for... </span> 
+                                <label for="abbreviateJuniorsToggle">Juniors?</label>
+                                <input id="abbreviateJuniorsToggle" class="generalSetting" type="checkbox">
+                                <label for="abbreviateSeniorsToggle">Seniors?</label>
+                                <input id="abbreviateSeniorsToggle" class="generalSetting" type="checkbox">
+                                <label for="abbreviateMastersToggle">Masters?</label>
+                                <input id="abbreviateMastersToggle" class="generalSetting" type="checkbox">
+                            </div>
+                            <div>
+                                <input id='playerImport' class="playerImport" placeholder="Import Player Roster from TOM..." type="file" accept=".html" pattern=".*(roster\.html)">
+                                <span id="playerImportStatus" class="font-small bold"></span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col rounded-corner">
+                            <label class="bold" for="playerFilter">Filter Player List</label>
+                            <div>
+                                <input id='playerFilter' class="playerFilter" placeholder="Filter by Player Name..." type="text">
+                                <span class="font-small">Total players: <span id="playerTotal">0</span> (Filter matches: <span id="playerFilterTotal">0</span>)</span>
+                            </div>
+                        </div>
+                        <div id="players_dashboard">
+                            <table>
+                                <tbody id="players_table">
+                                    <tr id="players_table_header" class="table-header">
+                                        <th class="center square">
+                                            <div class="red rounded-corner-small">
+                                                <button id="player_add" class="square" type='button'>➕</button>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="red rounded-corner-small">
+                                                <div>Player Name</div>
+                                            </div>
+                                        </th>
+                                        <th>                       
+                                            <div class="red rounded-corner-small">
+                                                <div>Mon #1</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="red rounded-corner-small">
+                                                <div>Mon #2</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="red rounded-corner-small">
+                                                <div>Mon #3</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="red rounded-corner-small">
+                                                <div>Mon #4</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="red rounded-corner-small">
+                                                <div>Mon #5</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="red rounded-corner-small">
+                                                <div>Mon #6</div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                <!-- Want to add new rows starting here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- Footer -->
+            <footer id="about" class="flex flex-col center">
+                <span class="font-small">Developed by Professor <a href="https://www.skeletom.net" target="_blank">Tom "Skeletom" Farro</a> - Open Source: <a href="https://github.com/FomTarro/pkmn-stream-tools/tree/main/tournament-tracker" target="_blank">GitHub</a> - Contact: <a href="mailto:pokemon@skeletom.net?subject=About the Tournament Tracker">pokemon@skeletom.net</a></span>
+                <span class="font-small">(This tool is not officially affiliated with or endorsed by <a href="https://www.pokemon.com/us/about-pokemon/" target="_blank">The Pokémon Company International (TPCi)</a> or the <a href="https://www.pokemon.com/us/play-pokemon" target="_blank">Play! Pokémon</a> program)</span>
+                <span class="unown font-medium">thank you for your support! we all live in a pokemon world!</span>
+            </footer>
+        <!-- Templates  -->
+            <div hidden id="templates">
+                <template id="mon_template_item">
+                    <div class="monModule">
+                        <div class="flex">
+                            <iframe class="monIcon" scrolling="no"></iframe>
+                            <div class="monInputs">
+                                <div>
+                                    <label for="mon_select_x" class="bold">Mon #x</label>
+                                </div>
+                                <div>
+                                    <select id="mon_select_x" class="monSelect">
+                                        <optgroup label="Default">
+                                            <option class="monOption">None</option>
+                                        </optgroup>
+                                        <optgroup label="Mons" class="optionContent">
+                                            <option class="monOption">Mon1</option>
+                                            <option class="monOption">Mon2</option>
+                                            <option class="monOption">Mon3</option>
+                                            <option class="monOption">Mon4</option>
+                                            <option class="monOption">Mon5</option>
+                                            <option class="monOption">Mon6</option>
+                                        </optgroup>
+                                    </select> → 
+                                    <input id="mon_obs_output_x" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="browserSourceOptions_battle"/>
+                                </div>
+                                <div>
+                                    <input id="mon_held_item_x" class="itemSelect" placeholder="Held Item..." type="text" list="itemOptions">
+                                </div>
+                                <div class="font-small flex flex-center">
+                                    <label for="fainted_toggle_x">Fainted?</label>
+                                    <input id="fainted_toggle_x" class="faintedToggle" type="checkbox">
+                                    <label for="item_toggle_x">Item Used?</label>
+                                    <input id="item_toggle_x" class="itemToggle" type="checkbox">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template id="pairings_template_item">
+                    <li class="pairingsModule">
+                        <div>
+                            <select id="table_x_player1_name" class="playerSelect">
+                                <optgroup label="Default">
+                                    <option >None</option>
+                                </optgroup>
+                                <optgroup label="Players" class="optionContent">
+
+                                </optgroup>
+                            </select> 
+                            <span class="font-small">vs.</span> 
+                            <select id="table_x_player2_name" class="playerSelect">
+                                <optgroup label="Default">
+                                    <option >None</option>
+                                </optgroup>
+                                <optgroup label="Players" class="optionContent">
+
+                                </optgroup>
+                            </select> → 
+                            <input id="table_x_pairing_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_pairings"/>
+                        </div>
+                    </li>
+                </template>
+
+                <template id="standings_template_item">
+                    <li class="standingsModule">
+                        <div class="nameModule">
+                            <select id="pos_x_player_name" class="playerSelect">
+                                <optgroup label="Default">
+                                    <option >None</option>
+                                </optgroup>
+                                <optgroup label="Players" class="optionContent">
+
+                                </optgroup>
+                            </select> → 
+                            <input id="pos_x_player_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_standings"/>
+                        </div>
+                    </li>
+                </template>
+
+                <template id="player_template_row">
+                    <tr id="player_x_row" class="playerRow">
+                        <td>
+                            <div class="flex center rounded-corner-small">
+                                <button id="player_x_delete" class="square" type='button'>❌</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class='flex-col center rounded-corner-small'>
+                                <input id="player_x_name" class="playerName" placeholder="Player Name" type="text" required>
+                            </div>
+                        </td>
+                        <td>
+                            <div class='flex-col center rounded-corner-small'>
+                                <input id="player_x_mon_1" placeholder="Mon #1" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_1_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                            </div>
+                        </td>
+                        <td>
+                            <div class='flex-col center rounded-corner-small'>
+                                <input id="player_x_mon_2" placeholder="Mon #2" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_2_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                            </div>
+                        </td>
+                        <td>
+                            <div class='flex-col center rounded-corner-small'>
+                                <input id="player_x_mon_3" placeholder="Mon #3" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_3_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                            </div>
+                        </td>
+                        <td>
+                            <div class='flex-col center rounded-corner-small'>
+                                <input id="player_x_mon_4" placeholder="Mon #4" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_4_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                            </div>
+                        </td>
+                        <td>
+                            <div class='flex-col center rounded-corner-small'>
+                                <input id="player_x_mon_5" placeholder="Mon #5" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_5_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                            </div>
+                        </td>
+                        <td>
+                            <div class='flex-col center rounded-corner-small'>
+                                <input id="player_x_mon_6" placeholder="Mon #6" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_6_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+            </div>
+        <!-- Data Lists -->
+            <div hidden id="datalists">
+                <datalist id="sceneOptions">
+                    <!-- Scenes in OBS -->
+                </datalist>
+                <datalist id="browserSourceOptions_battle">
+                    <!-- Browser Sources in OBS -->
+                </datalist>
+                <datalist id="textSourceOptions_battle">
+                    <!-- Text Sources in OBS -->
+                </datalist>
+                <datalist id="textSourceOptions_standings">
+                    <!-- Text Sources in OBS for the Standings Scene -->
+                </datalist>
+                <datalist id="textSourceOptions_pairings">
+                    <!-- Text Sources in OBS for the Pairings Scene -->
+                </datalist>
+                <datalist id="pokemonOptions">
+                    <!-- Every single Pokemon -->
+                </datalist>
+                <datalist id="itemOptions">
+                    <!-- Every single Hold Item -->
+                </datalist>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="./js/species.js"></script>
+    <script type="text/javascript" src="./js/utils.js"></script>
+    <script type="text/javascript" src="./js/tom.js"></script>
+    <script type="text/javascript" src="./js/players.js"></script>
+    <script type="text/javascript" src="./js/vendor/obs-ws.min.js"></script>
+    <script type="text/javascript" src="./js/obs.js"></script>
+    <script type="text/javascript" src="./js/script.js"></script>
+</html>
