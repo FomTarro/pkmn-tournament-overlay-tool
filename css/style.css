@@ -15,6 +15,14 @@
     #E4D5D3
  */
 
+ /*
+    #f6ede4
+    #e0ad6e
+    #e94f35
+    #88b4c6
+    #312a21
+ */
+
 
 @font-face {
     font-family: 'unownregular';
@@ -38,6 +46,7 @@
 
 html {
     height: 100%;
+    background-color: #f9f9f9;
 }
 
 body {
@@ -47,6 +56,18 @@ body {
     /* color: #333333; */
     /* font-family: 'Lexend'; */
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+label {
+    width: fit-content;
+}
+
+hr {
+    width: 100%;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    /* border-bottom: 1px solid gainsboro; */
 }
 
 footer {
@@ -149,7 +170,7 @@ input.input-small {
     position: fixed;
 }
 
-#navContent {
+.nav-content:last-child {
     padding-right: 1em;
 }
 
@@ -160,6 +181,10 @@ input.input-small {
 .center {
     align-items: center;
     justify-content: center;
+}
+
+.float-left {
+    float: left;
 }
 
 .flex {
@@ -253,6 +278,7 @@ input.input-small {
     width: 2em;
     height: 2em;
     padding: 0;
+    aspect-ratio: 1/1;
 }
 
 .heading {
@@ -262,6 +288,7 @@ input.input-small {
     padding: 0.2em;
     box-shadow: 1px 1px 10px #AAA;
     position: relative;
+    /* border: 3px solid white; */
 }
 
 .minimizeButton {
@@ -286,6 +313,17 @@ input.input-small {
 .wiggle {
     display: inline-block;
     animation: wiggle 1.5s infinite;
+}
+
+.logo {
+    height: 5em;
+    margin: 0.75em 0.5em 0 0.5em;
+    aspect-ratio: 1/1;
+}
+
+.logo img {
+    height: 100%;
+    filter: drop-shadow(1px 1px 5px #AAA);
 }
 
 .dashboard {

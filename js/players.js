@@ -29,15 +29,6 @@ document.getElementById("player_add").addEventListener('click', e => {
     addPlayer();
 });
 
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-        .replace(/[xy]/g, function (c) {
-            const r = Math.random() * 16 | 0,
-                v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-}
-
 function loadPlayerList() {
     let loaded = JSON.parse(localStorage.getItem(PLAYER_LIST_KEY));
     loaded = loaded ? loaded : [];
@@ -281,7 +272,7 @@ async function importStandingsFromTOM(file){
 }
 
 /**
- * 
+ * Imports player pairings from a TOM ...pairings.html file.
  * @param {File} file 
  */
 async function importPairingsFromTOM(file){

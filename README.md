@@ -1,5 +1,7 @@
 # TourKOAL (Tournament Knowledge and Overlay Assistant for Livestreams) 
-v1.0.0
+[v1.0.0 - Check it out!](https://www.skeletom.net/pkmn/tournament-overlay/)
+
+![TouKOAL Icon illustrated by bonbombs](./img/site/logo_notext1x.png)
 ## The Why
 Are you a Pokémon Professor? Have you organized a local tournament? Have you tried streaming those locals like they do for Regionals? It's not easy, right? 
 
@@ -16,7 +18,7 @@ helping you build a professional-quality overlay for your broadcast with as litt
 No longer will you need to scramble through hundreds of image files by hand as players reveal which of their Pokémon they brought to the game, 
 nor will you need to manually adjust OBS sources when items are consumed or Pokémon faint! You can even automatically track and update player pairings and standings to display on stream!
 
-The tool runs entirely in browser, as well, making it very portable and easy to run on venue PCs without needing to download or install any additional software.
+The tool runs entirely in browser as well, making it very portable and easy to run on venue stream setups without needing to download or install any additional software.
 
 ### Features include the ability to:
 * Quickly and easily display battle information, such as:
@@ -54,15 +56,16 @@ Under the hood, the Pokémon/Item displays are simple HTML pages with the requir
 1) It allows for a rich density of information (both species and item, as well as their conditions) in just a single source.
 2) It allows the user to further style the display using custom CSS in their OBS Browser source, if they desire.
 
-With regards to custom CSS, some class names to be aware of are:
-* `body`: The entire container.
-* `mon`: The image tag representing the Pokémon species.
-* `item`: The image tag representing the held item.
-* `fainted`: The class applied to `mon` when the Pokémon faints and to `item` when the item is consumed.
+With regards to custom CSS, some selectorsto be aware of are:
+* `#content`: The entire container.
+* `#mon`: The image tag representing the Pokémon species.
+* `#item`: The image tag representing the held item.
+* `.fainted`: The class applied to `mon` when the Pokémon faints and to `item` when the item is consumed.
 
 
 ## Credits and Acknowledgements
 * Pokémon renders and item icons downloaded from [Serebii.net](https://www.serebii.net). 
     * These images are artwork from Pokémon games. These images are believed to be [fair use](https://en.wikipedia.org/wiki/Fair_use) on the grounds that they are not being used to claim ownership or official affiliation with the source material, nor are they being used to gain profit.
 * OBS WebSocket JavaScript Client Library from [obs-websocket](https://github.com/obsproject/obs-websocket).
+* Logo design by [bonbombs](https://twitter.com/chiffles_).
 * UNOWN font created by [Arien Epic](https://www.dafont.com/unown.font).

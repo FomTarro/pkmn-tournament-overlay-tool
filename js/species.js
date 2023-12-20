@@ -4124,7 +4124,9 @@ const SPECIES = [
     }
 ]
 
-for(let i = 0; i < SPECIES.length; i++){
+function loadPokedex(){
+    console.log("Loading Pokedex...");
+    document.getElementById("pokemonOptions").innerHTML = '';
     /**
      * @param {Pokemon} species 
      */
@@ -4136,12 +4138,14 @@ for(let i = 0; i < SPECIES.length; i++){
         opt.setAttribute('number', species.number);
         document.getElementById("pokemonOptions").appendChild(opt);
     }
-    const species = SPECIES[i];
-    makeSpeciesOption({name: species.name, number: `${String(i+1).padStart(4, '0')}_${String(0).padStart(3, '0')}`});
-    if(species.formes){
-        for(let j = 0; j < species.formes.length; j++){
-            const forme = species.formes[j];
-            makeSpeciesOption({name: forme.name, number: `${String(i+1).padStart(4, '0')}_${String(j+1).padStart(3, '0')}`})
+    for(let i = 0; i < SPECIES.length; i++){
+        const species = SPECIES[i];
+        makeSpeciesOption({name: species.name, number: `${String(i+1).padStart(4, '0')}_${String(0).padStart(3, '0')}`});
+        if(species.formes){
+            for(let j = 0; j < species.formes.length; j++){
+                const forme = species.formes[j];
+                makeSpeciesOption({name: forme.name, number: `${String(i+1).padStart(4, '0')}_${String(j+1).padStart(3, '0')}`})
+            }
         }
     }
 }
@@ -4757,10 +4761,12 @@ const ITEMS = [
     },
 ]
 
-for(let i = 0; i < ITEMS.length; i++){
+function loadItemdex(){
+    console.log("Loading Itemdex...");
+    document.getElementById("itemOptions").innerHTML = '';
     /**
-     * @param {Item} item
-     */
+    * @param {Item} item
+    */
     const makeItemOption = (item) => {
         const opt = document.createElement("option");
         opt.classList.add('itemOption');
@@ -4770,6 +4776,8 @@ for(let i = 0; i < ITEMS.length; i++){
         opt.type = item.type
         document.getElementById("itemOptions").appendChild(opt);
     }
-    const item = ITEMS[i];
-    makeItemOption(item);
+    for(let i = 0; i < ITEMS.length; i++){
+        const item = ITEMS[i];
+        makeItemOption(item);
+    }
 }

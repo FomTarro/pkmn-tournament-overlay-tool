@@ -1,7 +1,20 @@
 /**
- * Converts a relative file path to an absolute file path
- * @param {string} relative - The relative file path
- * @returns {URL} - The absolute file path
+ * Generates a uuidv4 string.
+ * @returns {string} - A uuidv4 string
+ */
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+        .replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+}
+
+/**
+ * Converts a relative file path to an absolute file path.
+ * @param {string} relative - The relative file path.
+ * @returns {URL} - The absolute file path.
  */
 function relativeToAbsolutePath(relative) {
     return new URL(relative, window.location.href).href;

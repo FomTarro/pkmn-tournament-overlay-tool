@@ -231,6 +231,36 @@ function attachEventListeners(){
         }
     });
 
+    const resetPairingsButton = document.querySelector('.resetPairingsButton');
+    resetPairingsButton.addEventListener('click', e => {
+        const description = [...resetPairingsButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        if(window.confirm(`Do you really want to reset the pairings display?\nThis action will do the following:\n${description}`)){
+            // Effectively 'click' both reset buttons
+            const pairingModules = pairingsList.querySelectorAll('.pairingsModule');
+            for(let pairingModule of [...pairingModules]){
+                for(let playerSelect of [...pairingModule.querySelectorAll('.playerSelect')]){
+                    playerSelect.value = PLAYER_NONE_VALUE;
+                    const event = new Event('change');
+                    playerSelect.dispatchEvent(event);
+                }
+            }
+        }
+    });
+
+    const resetStandingsButton = document.querySelector('.resetStandingsButton');
+    resetStandingsButton.addEventListener('click', e => {
+        const description = [...resetStandingsButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        if(window.confirm(`Do you really want to reset the standings display?\nThis action will do the following:\n${description}`)){
+            const standingsList = document.getElementById('standingsList');
+            for(let playerSelect of [...standingsList.querySelectorAll('.playerSelect')]){
+                playerSelect.value = PLAYER_NONE_VALUE;
+                const event = new Event('change');
+                playerSelect.dispatchEvent(event);
+            }
+        }
+    });
+
+
     // Hook up Player Filter
     const playerFilter = document.getElementById('playerFilter');
     const filterPlayerTable = () => {
@@ -325,20 +355,22 @@ function attachEventListeners(){
         const splitter = document.getElementById('pairingsSingleSplitter')?.value ?? "";
         const pairingsModules = [...document.getElementById('pairingsList').querySelectorAll('.pairingsModule')];
         const pairings = [];
+        const UNKNOWN_PLAYER = "???"
         for(let i = 0; i < pairingsModules.length; i++){
             if(!pairingsModules[i].hidden){
                 const playerSelectors = [...pairingsModules[i].querySelectorAll('.playerSelect')];
                 const selectedOption1 = playerSelectors[0].options[playerSelectors[0].options.selectedIndex];
-                const player1Name = (selectedOption1 && (selectedOption1.value !== selectedOption1.innerText)) ? selectedOption1.innerText : "???";
+                const player1Name = (selectedOption1 && (selectedOption1.value !== selectedOption1.innerText)) ? selectedOption1.innerText : UNKNOWN_PLAYER;
                 
                 const selectedOption2 = playerSelectors[1].options[playerSelectors[1].options.selectedIndex];
-                const player2Name = (selectedOption2 && (selectedOption2.value !== selectedOption2.innerText)) ? selectedOption2.innerText : "???";
-                if(player1Name !== "???" && player2Name !== "???"){
+                const player2Name = (selectedOption2 && (selectedOption2.value !== selectedOption2.innerText)) ? selectedOption2.innerText : UNKNOWN_PLAYER;
+                if(player1Name !== UNKNOWN_PLAYER && player2Name !== UNKNOWN_PLAYER){
                     pairings.push(`Table ${i+1}: ${player1Name} vs. ${player2Name} ${splitter} `);
                 }
             }
         }
-        singleLine.value = pairings.join('');
+        const joined = pairings.join('');
+        singleLine.value = joined.length > 0 ? joined : " ";
         OBS.setTextSourceText(sourceSelector.value, singleLine.value);
     }
 
@@ -453,7 +485,8 @@ function attachEventListeners(){
                 }
             }
         }
-        singleLine.value = placements.join('');
+        const joined = placements.join('');
+        singleLine.value = joined.length > 0 ? joined : " ";
         OBS.setTextSourceText(sourceSelector.value, singleLine.value);
     }
 
@@ -684,6 +717,8 @@ let standingsInterval = undefined;
 let pairingsInterval = undefined;
 let connectionInterval = window.setInterval(OBS.checkConnectionStatus, 1000);
 window.onload = async() => {
+    loadPokedex();
+    loadItemdex();
     createFromTemplates();
     attachEventListeners();
     loadGeneralSettings();
