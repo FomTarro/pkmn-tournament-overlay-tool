@@ -782,6 +782,11 @@ const SPECIES = [
     {
         name: 'Gyarados',
         natdex: 130,
+        formes: [
+            {
+                name: 'Mega-Gyarados',
+            },
+        ]
     },
     {
         name: 'Lapras',
@@ -1067,7 +1072,7 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Misreavus'
+        name: 'Misdreavus'
     },
     {
         name: 'Unown'
@@ -4135,7 +4140,7 @@ function loadPokedex(){
         opt.classList.add('monOption');
         opt.id = species.name;
         opt.innerHTML = species.name;
-        opt.setAttribute('number', species.number);
+        opt.setAttribute('dexNumber', species.number);
         document.getElementById("pokemonOptions").appendChild(opt);
     }
     for(let i = 0; i < SPECIES.length; i++){

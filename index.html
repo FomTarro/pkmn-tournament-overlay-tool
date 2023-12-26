@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TourKOAL - Tournament Overlay - v1.0.0</title>
+        <title>TourKOAL - Tournament Overlay - v1.0.1</title>
         <meta name="description" content="Enhance your Pokémon Tournament's stream overlays with team displays and real-time standings using this online OBS plugin!">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta property="og:title" content="TourKOAL - Tournament Overlay - v1.0.0!">
+        <meta property="og:title" content="TourKOAL - Tournament Overlay - v1.0.1!">
         <meta property="og:image" content="https://www.skeletom.net/pkmn/tournament-overlay/img/site/logo_notext1x.png">
         <meta property="og:type" content="website">
         <meta property="og:description" content="Enhance your Pokémon Tournament's stream overlays with team displays and real-time standings using this online OBS plugin!">
@@ -30,7 +30,7 @@
             <!-- README and OBS Settings -->
                 <div id="general">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small">TourKOAL - v1.0.0<button class="minimizeButton" title="Expand/Collapse the About Section" target="generalContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizeGeneral">TourKOAL - v1.0.1</label><button id="minimizeGeneral" class="minimizeButton" title="Expand/Collapse the About Section" target="generalContent" status="on"></button></h1>
                     </div>
                     <div id="generalContent">
                         <div id="readme">
@@ -87,7 +87,7 @@
                         <div id="obs_settings" class="flex flex-col rounded-corner">
                             <div class="flex flex-col">
                                 <label for="connect" class="bold">OBS Status: <span class= "bold obsStatus">...</span></label>
-                                <form class="flex">
+                                <form class="flex flex-wrap">
                                     <input id="address" placeholder="Address" type="text" minlength="7" maxlength="15" value="localhost" pattern="^(localhost|((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5]))$" required autocomplete="off">
                                     <input id="port" placeholder="Port" type="number" min="1" max="65535" size=5 value="4455">
                                     <input id="password" placeholder="Password (optional)" type="password" autocomplete="current-password">
@@ -100,7 +100,7 @@
             <!-- Battle -->
                 <div id="battle">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small">Battle<button class="minimizeButton" title="Expand/Collapse the Battle Dashboard" target="battleContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizeBattle">Battle</label><button id="minimizeBattle" class="minimizeButton" title="Expand/Collapse the Battle Dashboard" target="battleContent" status="on"></button></h1>
                     </div>
                     <div id="battleContent">
                         <div class="flex flex-col rounded-corner">
@@ -125,8 +125,8 @@
                                     <h2 class="heading rounded-corner-small red">Player #1</h2>
                                     <div class="scoreModule">
                                         <div class="scoreDisplay">0</div>
-                                        <button class="scoreButton plus square" type='button'>➕</button>
-                                        <button class="scoreButton minus square" type='button'>➖</button>
+                                        <button title="Subtract Score from Player #1" class="minus square" type='button'>➖</button>
+                                        <button title="Add Score to Player #1" class="plus square" type='button'>➕</button>
                                         → <input id="p1_score_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
                                     </div>
                                     <div id="player_1_name">
@@ -153,8 +153,8 @@
                                     <h2 class="heading rounded-corner-small blue">Player #2</h2>
                                     <div class="scoreModule">
                                         <div class="scoreDisplay">0</div>
-                                        <button class="scoreButton plus square" type='button'>➕</button>
-                                        <button class="scoreButton minus square" type='button'>➖</button>
+                                        <button title="Subtract Score from Player #2" class="minus square" type='button'>➖</button>
+                                        <button title="Add Score to Player #2" class="plus square" type='button'>➕</button>
                                         → <input id="p2_score_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
                                     </div>
                                     <div id="player_2_name">
@@ -199,7 +199,7 @@
             <!-- Pairings -->
                 <div id="pairings">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small">Pairings<button class="minimizeButton" title="Expand/Collapse the Pairings Dashboard" target="pairingsContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizePairings">Pairings</label><button id="minimizePairings" class="minimizeButton" title="Expand/Collapse the Pairings Dashboard" target="pairingsContent" status="on"></button></h1>
                     </div>
                     <div id="pairingsContent">
                         <div class="flex flex-col rounded-corner">
@@ -238,8 +238,10 @@
                                     <span id="pairingsCount">8</span>
                                 </span>
                             </div>
-                            <div>
+                            <div class="slider flex">
+                                <button class="minus square" type='button'>➖</button>
                                 <input id="pairingsSlider" class="generalSetting" type="range" step="1" min="1" max="32" value="16">
+                                <button class="plus square" type='button'>➕</button>
                             </div>
                             <ol id="pairingsList">
                             </ol>
@@ -269,7 +271,7 @@
             <!-- Standings -->
                 <div id="standings">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small">Standings<button class="minimizeButton" title="Expand/Collapse the Standings Dashboard" target="standingsContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizeStandings">Standings</label><button id="minimizeStandings" class="minimizeButton" title="Expand/Collapse the Standings Dashboard" target="standingsContent" status="on"></button></h1>
                     </div>
                     <div id="standingsContent">
                         <div class="flex flex-col rounded-corner">
@@ -313,8 +315,10 @@
                                     <span id="standingsCount">8</span>
                                 </span>
                             </div>
-                            <div>
+                            <div class="slider flex">
+                                <button class="minus square" type='button'>➖</button>
                                 <input id="standingsSlider" class="generalSetting" type="range" step="1" min="1" max="32" value="16">
+                                <button class="plus square" type='button'>➕</button>
                             </div>
                             <ol id="standingsList">
                             </ol>
@@ -348,7 +352,7 @@
             <!-- Table -->
                 <div id="players">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small">Players and Teams<button class="minimizeButton" title="Expand/Collapse the Players Dashboard" target="playersContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizePlayers">Players and Teams</label><button id="minimizePlayers" class="minimizeButton" title="Expand/Collapse the Players Dashboard" target="playersContent" status="on"></button></h1>
                     </div>
                     <div id="playersContent">
                         <div class="flex flex-col rounded-corner">

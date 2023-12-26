@@ -25,7 +25,7 @@ const OBS = {
                     statusIndicator.innerText = "🔴 Disconnected!"
                     statusIndicator.classList.add("disconnected");
                     statusIndicator.classList.remove("connected");
-                    }
+                }
             }
         });
     },

@@ -70,48 +70,69 @@ function createFromTemplates(){
 }
 
 /**
- * Attaches event listeners to just about every releavnt DOM element.
+ * Attaches event listeners to just about every relevant DOM element.
  */
 function attachEventListeners(){
     // Hook up mon selection dropdowns
-    const monModules = document.querySelectorAll('.monModule');
-    for(let monModule of monModules){
-        const monSelector = monModule.querySelector(".monSelect");
-        const itemSelector = monModule.querySelector(".itemSelect");
-        const faintedToggle = monModule.querySelector(".faintedToggle");
-        const itemToggle = monModule.querySelector(".itemToggle");
-        const setItem = () => {
-            const item = monSelector.options[monSelector.selectedIndex].item;
-            itemSelector.value = item ? item : '';
-        }
-        const updateIcon = () => {
-            const source = monModule.querySelector('.sourceSelect').value;
-            const opt = document.getElementById(monSelector.value);
-            const itemOpt = document.getElementById(itemSelector.value);
-            const url = new URL(relativeToAbsolutePath('./frame.html?'));
-            url.searchParams.set('img', `poke_icon_${opt ? opt.getAttribute('number') : 0}`)
-            url.searchParams.set('fainted', faintedToggle.checked);
-            if(itemOpt){
-                if(itemOpt.type === 'Berry'){
-                    url.searchParams.set('item', `berry_icon_${itemOpt.key}`);
-                }else{
-                    url.searchParams.set('item', `item_icon_${itemOpt.key}`);
-                }
-                url.searchParams.set('used', itemToggle.checked);
+    const playerModules = document.querySelectorAll('.playerModule');
+    for(let playerModule of playerModules){
+        const monModules = playerModule.querySelectorAll('.monModule');
+        for(let monModule of monModules){
+            const monSelector = monModule.querySelector(".monSelect");
+            const itemSelector = monModule.querySelector(".itemSelect");
+            const faintedToggle = monModule.querySelector(".faintedToggle");
+            const itemToggle = monModule.querySelector(".itemToggle");
+            const setItem = () => {
+                const item = monSelector.options[monSelector.selectedIndex].item;
+                itemSelector.value = item ? item : '';
             }
-            OBS.setBrowserSourceURL(source, url.toString())
-            const icon = monModule.querySelector('.monIcon');
-            if(icon){
-                icon.src = url;
-                const description = `An icon of ${monSelector.value && monSelector.value.length > 0 && monSelector.value !== SPECIES_NONE_VALUE ? 'the Pokemon '+ monSelector.value : 'a PokeBall'} holding ${itemSelector.value && itemSelector.value.length > 0 ?  'the ' + itemSelector.value : 'no'} item.`;
-                icon.title = description;
-            } 
+            const updateIcon = () => {
+                const source = monModule.querySelector('.sourceSelect').value;
+                const opt = document.getElementById(monSelector.value);
+                const itemOpt = document.getElementById(itemSelector.value);
+                const url = new URL(relativeToAbsolutePath('./frame.html?'));
+                url.searchParams.set('img', `poke_icon_${opt ? opt.getAttribute('dexNumber') : 0}`)
+                url.searchParams.set('fainted', faintedToggle.checked);
+                if(itemOpt){
+                    if(itemOpt.type === 'Berry'){
+                        url.searchParams.set('item', `berry_icon_${itemOpt.key}`);
+                    }else{
+                        url.searchParams.set('item', `item_icon_${itemOpt.key}`);
+                    }
+                    url.searchParams.set('used', itemToggle.checked);
+                }
+                OBS.setBrowserSourceURL(source, url.toString())
+                const icon = monModule.querySelector('.monIcon');
+                if(icon){
+                    icon.src = url;
+                    const description = `An icon of ${monSelector.value && monSelector.value.length > 0 && monSelector.value !== SPECIES_NONE_VALUE ? 'the Pokemon '+ monSelector.value : 'a PokeBall'} holding ${itemSelector.value && itemSelector.value.length > 0 ?  'the ' + itemSelector.value : 'no'} item.`;
+                    icon.title = description;
+                } 
+            }
+            const removeSelectedOptions = () => {
+                const selected = [];
+                for(let m1 of monModules){
+                    const m1selector = m1.querySelector(".monSelect");
+                    selected.push(m1selector.value)
+                }
+                for(let m1 of monModules){
+                    const m1selector = m1.querySelector(".monSelect");
+                    for(let option of m1selector.options){
+                        if(option.value !== SPECIES_NONE_VALUE && selected.includes(option.value)){
+                            option.classList.add("alreadySelected")
+                        }else{
+                            option.classList.remove("alreadySelected")
+                        }
+                    }
+                }
+            }
+            monSelector.addEventListener('change', setItem);
+            monSelector.addEventListener('change', updateIcon);
+            monSelector.addEventListener('change', removeSelectedOptions);
+            faintedToggle.addEventListener('change', updateIcon);
+            itemSelector.addEventListener('change', updateIcon);
+            itemToggle.addEventListener('change', updateIcon);
         }
-        monSelector.addEventListener('change', setItem);
-        monSelector.addEventListener('change', updateIcon);
-        faintedToggle.addEventListener('change', updateIcon);
-        itemSelector.addEventListener('change', updateIcon);
-        itemToggle.addEventListener('change', updateIcon);
     }
 
     // Hook up scores
@@ -138,11 +159,11 @@ function attachEventListeners(){
     for(let nameModule of nameModules){
         const playerSelector = nameModule.querySelector('.playerSelect');
         const sourceSelector = nameModule.querySelector('.sourceSelect');
+        const playerModule = nameModule.closest('.playerModule');
         const updatePlayer = () => {
             let prefix = '';
             let suffix = '';
             // If there's an associated Battle Module, update it
-            const playerModule = nameModule.closest('.playerModule');
             if(playerModule){
                 populatePlayerModule(playerModule, playerSelector.value);
             }
@@ -151,6 +172,7 @@ function attachEventListeners(){
             if(ordinalToggle && document.getElementById(ordinalToggle).checked){
                 prefix = `${applyOrdinalSuffix(playerSelector.getAttribute('standing'))} `;
             }
+            // If there's an associated Score Module, check it
             const scoreField = playerSelector.getAttribute('scoreField');
             if(scoreField){
                 suffix = `0/0/0`
@@ -162,7 +184,7 @@ function attachEventListeners(){
         }
         // changed via dropdown
         playerSelector.addEventListener('change', e => {
-            for(monSelect of nameModule.querySelectorAll('.monSelect')){
+            for(monSelect of playerModule.querySelectorAll('.monSelect')){
                 monSelect.value = SPECIES_NONE_VALUE;
             }
             updatePlayer(e);
@@ -260,6 +282,22 @@ function attachEventListeners(){
         }
     });
 
+    // Hook up slider buttons
+    const sliders = document.querySelectorAll('.slider');
+    for(let slider of sliders){
+        const incrementSlider = (num) => {
+            const input = slider.querySelector('input');
+            input.value = (Number(input.value) + num)
+            const event = new Event('input');
+            input.dispatchEvent(event);
+        }
+        slider.querySelector('.plus').addEventListener('click', e => {
+            incrementSlider(1);
+        })
+        slider.querySelector('.minus').addEventListener('click', e => {
+            incrementSlider(-1);
+        })
+    }
 
     // Hook up Player Filter
     const playerFilter = document.getElementById('playerFilter');
@@ -346,6 +384,8 @@ function attachEventListeners(){
             console.warn(e);
         }
     });
+
+    // TODO: No pairings tracking stop?
 
     // TODO: I think a lot of refactoring can happen 
     // around how names are displayed for all three module types (battle, standings, pairings)

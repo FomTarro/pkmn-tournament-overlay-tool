@@ -199,9 +199,9 @@ function populatePlayerModule(element, uuid) {
             if (mon) {
                 opts[i].innerText = mon;
                 opts[i].item = entry[`item${i}`];
-                opts[i].hidden = false;
+                opts[i].classList.remove('notRegistered')
             } else {
-                opts[i].hidden = true;
+                opts[i].classList.add('notRegistered')
             }
         }
         const event = new Event('change');

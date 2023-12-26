@@ -168,14 +168,15 @@ input.input-small {
 .nav {
     z-index: 100;
     position: fixed;
-}
-
-.nav-content:last-child {
-    padding-right: 1em;
+    width: calc(100% - 2em);
 }
 
 .no-margins {
     margin: 0 !important;
+}
+
+.hidden {
+    display: none;
 }
 
 .center {
@@ -190,6 +191,10 @@ input.input-small {
 .flex {
     display: flex;
     gap: 0.35em;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
 }
 
 .flex-col {
@@ -337,6 +342,14 @@ input.input-small {
     border-radius: 5px;
 }
 
+.alreadySelected {
+    display: none;
+}
+
+.notRegistered {
+    display: none;
+}
+
 .monIcon {
     height: 5.75em;
     width: 5.75em;
@@ -356,9 +369,8 @@ input.input-small {
     margin: 0 0 0 0.25rem;
 }
 
-.scoreButton {
-    width: 2em;
-    height: 2em;
+.slider input {
+    margin-top: 5px;
 }
 
 .reset-col {

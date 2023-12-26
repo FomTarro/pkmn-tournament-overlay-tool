@@ -21,6 +21,20 @@ function relativeToAbsolutePath(relative) {
 }
 
 /**
+ * Adds or removes a given class from an element based on the value of a boolean expression.
+ * @param {HTMLElement} element - The element to update.
+ * @param {string} className - The class to set or unset.
+ * @param {boolean} state - The boolean expression.
+ */
+function toggleClass(element, className, state){
+    if(state){
+        element.classList.add(className)
+    }else{
+        element.classList.remove(className)
+    }
+}
+
+/**
  * Ash Ketchum -> Ash K.
  * @param {string} name - The name to abbreviate.
  * @returns The abbreviated name.
