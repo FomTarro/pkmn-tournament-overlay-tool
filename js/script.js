@@ -73,6 +73,27 @@ function createFromTemplates(){
  * Attaches event listeners to just about every relevant DOM element.
  */
 function attachEventListeners(){
+
+    /**
+     * Removes a selected option from related dropdowns once it is selected.
+     * @param {NodeListOf<Element>} elementList - List of dropdowns to filter.
+     */
+    const removeSelectedOptions = (elementList) => {
+        const selected = [];
+        for(let item of elementList){
+            selected.push(item.selectedIndex)
+        }
+        for(let item of elementList){
+            for(let i = 1; i < item.options.length; i++){
+                if(selected.includes(i)){
+                    item.options[i].classList.add("alreadySelected")
+                }else{
+                    item.options[i].classList.remove("alreadySelected")
+                }
+            }
+        }
+    }
+
     // Hook up mon selection dropdowns
     const playerModules = document.querySelectorAll('.playerModule');
     for(let playerModule of playerModules){
@@ -109,26 +130,13 @@ function attachEventListeners(){
                     icon.title = description;
                 } 
             }
-            const removeSelectedOptions = () => {
-                const selected = [];
-                for(let m1 of monModules){
-                    const m1selector = m1.querySelector(".monSelect");
-                    selected.push(m1selector.value)
-                }
-                for(let m1 of monModules){
-                    const m1selector = m1.querySelector(".monSelect");
-                    for(let option of m1selector.options){
-                        if(option.value !== SPECIES_NONE_VALUE && selected.includes(option.value)){
-                            option.classList.add("alreadySelected")
-                        }else{
-                            option.classList.remove("alreadySelected")
-                        }
-                    }
-                }
-            }
             monSelector.addEventListener('change', setItem);
             monSelector.addEventListener('change', updateIcon);
-            monSelector.addEventListener('change', removeSelectedOptions);
+            monSelector.addEventListener('change', () => 
+            {
+                const elementList = [...monModules].map(item => item.querySelector('.monSelect'));
+                removeSelectedOptions(elementList);
+            });
             faintedToggle.addEventListener('change', updateIcon);
             itemSelector.addEventListener('change', updateIcon);
             itemToggle.addEventListener('change', updateIcon);
@@ -145,11 +153,11 @@ function attachEventListeners(){
             OBS.setTextSourceText(sourceSelector.value, score.innerText);
         }
         const plus = scoreModule.querySelector('.plus');
-        plus.addEventListener('click', e => {
+        plus.addEventListener('click', () => {
             incrementScore(1);
         });
         const minus = scoreModule.querySelector('.minus');
-        minus.addEventListener('click', e => {
+        minus.addEventListener('click', () => {
             incrementScore(-1);
         })
     }
@@ -161,44 +169,52 @@ function attachEventListeners(){
         const sourceSelector = nameModule.querySelector('.sourceSelect');
         const playerModule = nameModule.closest('.playerModule');
         const updatePlayer = () => {
-            let prefix = '';
-            let suffix = '';
             // If there's an associated Battle Module, update it
             if(playerModule){
                 populatePlayerModule(playerModule, playerSelector.value);
             }
-            // If there's an associated Ordinal Toggle, check it
-            const ordinalToggle = playerSelector.getAttribute('ordinalToggle');
-            if(ordinalToggle && document.getElementById(ordinalToggle).checked){
-                prefix = `${applyOrdinalSuffix(playerSelector.getAttribute('standing'))} `;
+            // If there's an associated OBS output, update it
+            if(sourceSelector){
+                let prefix = '';
+                let suffix = '';
+                // If there's an associated Ordinal Toggle, check it
+                const ordinalToggle = playerSelector.getAttribute('ordinalToggle');
+                if(ordinalToggle && document.getElementById(ordinalToggle).checked){
+                    prefix = `${applyOrdinalSuffix(playerSelector.getAttribute('standing'))} `;
+                }
+                // If there's an associated Score Module, check it
+                const scoreField = playerSelector.getAttribute('scoreField');
+                if(scoreField){
+                    suffix = `0/0/0`
+                }
+                const selectedOption = playerSelector.options[playerSelector.options.selectedIndex];
+                const playerName = (selectedOption && (selectedOption.value !== selectedOption.innerText)) ? selectedOption.innerText : "???";
+                OBS.setTextSourceText(sourceSelector.value, `${prefix}${playerName}${suffix}`);
             }
-            // If there's an associated Score Module, check it
-            const scoreField = playerSelector.getAttribute('scoreField');
-            if(scoreField){
-                suffix = `0/0/0`
-            }
-            const selectedOption = playerSelector.options[playerSelector.options.selectedIndex];
-            const playerName = (selectedOption && (selectedOption.value !== selectedOption.innerText)) ? selectedOption.innerText : "???";
-            // console.log(`Updating OBS for ${playerName}`);
-            OBS.setTextSourceText(sourceSelector.value, `${prefix}${playerName}${suffix}`);
         }
+
         // changed via dropdown
-        playerSelector.addEventListener('change', e => {
-            for(monSelect of playerModule.querySelectorAll('.monSelect')){
-                monSelect.value = SPECIES_NONE_VALUE;
+        playerSelector.addEventListener('change', () => {
+            // Get root of this player selector's group, then find sibling selectors
+            const elementList = [...playerSelector.closest('.section')?.querySelectorAll('.nameModule')].map(i => i.querySelector('.playerSelect'));
+            removeSelectedOptions(elementList);
+            if(playerModule){
+                for(monSelect of playerModule.querySelectorAll('.monSelect')){
+                    monSelect.value = SPECIES_NONE_VALUE;
+                }
             }
-            updatePlayer(e);
+            updatePlayer();
         });
         // refreshed current player via save data changing
-        playerSelector.addEventListener('refresh', e => {
-            updatePlayer(e)
+        playerSelector.addEventListener('refresh', () => {
+            updatePlayer()
         });
     }
 
     // Hook up reset buttons
     const resetButtons = document.querySelectorAll('.resetButton');
     for(let resetButton of resetButtons){
-        resetButton.addEventListener('click', e => {
+        resetButton.addEventListener('click', () => {
             const parent = resetButton.closest('.playerModule');
             const childModules = parent.querySelectorAll('.monModule');
             for(let monModule of childModules){
@@ -215,7 +231,7 @@ function attachEventListeners(){
     }
 
     const resetRoundButton = document.querySelector('.resetRoundButton');
-    resetRoundButton.addEventListener('click', e => {
+    resetRoundButton.addEventListener('click', () => {
         const description = [...resetRoundButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the round?\nThis action will do the following:\n${description}`)){
             const playerSelectors = document.getElementById('battle').querySelectorAll('.playerSelect');
@@ -241,20 +257,20 @@ function attachEventListeners(){
         }
     });
 
-    const resetGameButton = document.querySelector('.resetGameButton');
-    resetGameButton.addEventListener('click', e => {
-        const description = [...resetGameButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
-        if(window.confirm(`Do you really want to reset the game?\nThis action will do the following:\n${description}`)){
+    const resetMatchButton = document.querySelector('.resetMatchButton');
+    resetMatchButton.addEventListener('click', () => {
+        const description = [...resetMatchButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        if(window.confirm(`Do you really want to reset the match?\nThis action will do the following:\n${description}`)){
             // Effectively 'click' both reset buttons
+            const event = new Event('click');
             for(let resetButton of resetButtons){
-                const event = new Event('click');
                 resetButton.dispatchEvent(event);
             }
         }
     });
 
     const resetPairingsButton = document.querySelector('.resetPairingsButton');
-    resetPairingsButton.addEventListener('click', e => {
+    resetPairingsButton.addEventListener('click', () => {
         const description = [...resetPairingsButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the pairings display?\nThis action will do the following:\n${description}`)){
             // Effectively 'click' both reset buttons
@@ -270,7 +286,7 @@ function attachEventListeners(){
     });
 
     const resetStandingsButton = document.querySelector('.resetStandingsButton');
-    resetStandingsButton.addEventListener('click', e => {
+    resetStandingsButton.addEventListener('click', () => {
         const description = [...resetStandingsButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the standings display?\nThis action will do the following:\n${description}`)){
             const standingsList = document.getElementById('standingsList');
@@ -291,10 +307,10 @@ function attachEventListeners(){
             const event = new Event('input');
             input.dispatchEvent(event);
         }
-        slider.querySelector('.plus').addEventListener('click', e => {
+        slider.querySelector('.plus').addEventListener('click', () => {
             incrementSlider(1);
         })
-        slider.querySelector('.minus').addEventListener('click', e => {
+        slider.querySelector('.minus').addEventListener('click', () => {
             incrementSlider(-1);
         })
     }
@@ -315,10 +331,10 @@ function attachEventListeners(){
         }
         document.getElementById('playerFilterTotal').innerText = i;
     }
-    playerFilter.addEventListener('input', e => {
+    playerFilter.addEventListener('input', () => {
         filterPlayerTable()
     });
-    playerFilter.addEventListener('change', e => {
+    playerFilter.addEventListener('change', () => {
         if(playerFilter.value){
             playerFilter.value = playerFilter.value.trim();
         }
@@ -326,10 +342,9 @@ function attachEventListeners(){
     });
 
     // Hook up Player Import
-    const playerImport = document.getElementById('playerImport');
-    const playerImportStatus = document.getElementById('playerImportStatus');
-    playerImport.addEventListener('input', async e => {
+    document.getElementById('playerImport').addEventListener('input', async e => {
         try{
+            const playerImportStatus = document.getElementById('playerImportStatus');
             const newPlayers = await importPlayersFromTOM(e.target.files[0], 
                 {
                     abbreviateJuniors: document.getElementById('abbreviateJuniorsToggle').checked,
@@ -340,7 +355,7 @@ function attachEventListeners(){
             playerImportStatus.classList.add('connected');
             playerImportStatus.classList.remove('disconnected');
             playerImportStatus.innerText = `Successfully imported ${newPlayers.length} new players!`;
-        }catch(e){
+        }catch(ex){
             playerImportStatus.classList.remove('connected');
             playerImportStatus.classList.add('disconnected');
             playerImportStatus.innerText = 'Selected file is either malformed or not the ...roster.html file!';
@@ -348,21 +363,10 @@ function attachEventListeners(){
     });
 
     // Hook up Pairings/Pairings Import
-    document.getElementById('pairingsImport').addEventListener('click', async e => {
+    document.getElementById('pairingsImport').addEventListener('click', async () => {
         try{
-            [fileHandle] = await window.showOpenFilePicker({
-                id: 'tomPairings',
-                types: [
-                    {
-                        accept: {
-                            'text/plain': ".html"
-                        }
-                    }
-                ],
-                excludeAcceptAllOption: true,
-            });
+            const file = await selectFile('tomDirectory');
             window.clearInterval(pairingsInterval);
-            const file = await fileHandle.getFile();
             document.getElementById('pairingsImportFile').innerText = abridgeWord(file.name);
             const status = document.getElementById('pairingsImportStatus');
             try{
@@ -372,7 +376,7 @@ function attachEventListeners(){
                 status.innerText = 'Successfully tracking live pairings!';
                 document.getElementById('pairingsTrackingStop').disabled = false
 
-            }catch(e){
+            }catch(ex){
                 status.classList.remove('connected');
                 status.classList.add('disconnected');
                 status.innerText = 'Selected file is either malformed or not the ...pairings.html file!';
@@ -380,12 +384,23 @@ function attachEventListeners(){
             pairingsInterval = watchFile(fileHandle, async (content) => {
                 await importPairingsFromTOM(content)
             });
-        }catch(e){
-            console.warn(e);
+        }catch(ex){
+            console.warn(ex);
         }
     });
 
-    // TODO: No pairings tracking stop?
+    document.getElementById('pairingsTrackingStop').addEventListener('click', () => {
+        if(pairingsInterval){
+            window.clearInterval(pairingsInterval);
+            standingsInterval = undefined;
+            const status = document.getElementById('pairingsImportStatus');
+            status.classList.remove('connected');
+            status.classList.add('disconnected');
+            status.innerText = 'Stopped tracking pairings.';
+            document.getElementById('pairingsImportFile').innerText = '';
+            document.getElementById('pairingsTrackingStop').disabled = true;
+        }
+    });
 
     // TODO: I think a lot of refactoring can happen 
     // around how names are displayed for all three module types (battle, standings, pairings)
@@ -399,9 +414,10 @@ function attachEventListeners(){
         for(let i = 0; i < pairingsModules.length; i++){
             if(!pairingsModules[i].hidden){
                 const playerSelectors = [...pairingsModules[i].querySelectorAll('.playerSelect')];
+                // P1
                 const selectedOption1 = playerSelectors[0].options[playerSelectors[0].options.selectedIndex];
                 const player1Name = (selectedOption1 && (selectedOption1.value !== selectedOption1.innerText)) ? selectedOption1.innerText : UNKNOWN_PLAYER;
-                
+                // P2
                 const selectedOption2 = playerSelectors[1].options[playerSelectors[1].options.selectedIndex];
                 const player2Name = (selectedOption2 && (selectedOption2.value !== selectedOption2.innerText)) ? selectedOption2.innerText : UNKNOWN_PLAYER;
                 if(player1Name !== UNKNOWN_PLAYER && player2Name !== UNKNOWN_PLAYER){
@@ -431,22 +447,22 @@ function attachEventListeners(){
         }
         const playerSelectors = pairingsModule.querySelectorAll('.playerSelect')
         for(let playerSelector of playerSelectors){
-            playerSelector.addEventListener('change', e => { 
+            playerSelector.addEventListener('change', () => { 
                 updatePairingsPlayers();
                 updatePairingsSingle();
             });
-            playerSelector.addEventListener('refresh', e => { 
+            playerSelector.addEventListener('refresh', () => { 
                 updatePairingsPlayers();
                 updatePairingsSingle();
             });
         }
     }
 
-    document.getElementById('pairingsSingleSplitter').addEventListener('change', e => {
+    document.getElementById('pairingsSingleSplitter').addEventListener('change', () => {
         updatePairingsSingle();
     });
 
-    document.getElementById('pairingsSlider').addEventListener('input', e => {
+    document.getElementById('pairingsSlider').addEventListener('input', () => {
         const pairingsModules = document.getElementById('pairingsList').querySelectorAll('.pairingsModule');
         const val = document.getElementById('pairingsSlider').value
         for(let i = 0; i < pairingsModules.length; i++){
@@ -457,51 +473,40 @@ function attachEventListeners(){
     });
 
     // Hook up Standings/Standings Import
-    document.getElementById('standingsImport').addEventListener('click', async e => {
+    document.getElementById('standingsImport').addEventListener('click', async () => {
         try{
-            [fileHandle] = await window.showOpenFilePicker({
-                id: 'tomStandings',
-                types: [
-                    {
-                        accept: {
-                            'text/plain': ".html"
-                        }
-                    }
-                ],
-                excludeAcceptAllOption: true,
-            });
+            const file = await selectFile('tomDirectory');
             window.clearInterval(standingsInterval);
-            const file = await fileHandle.getFile();
             document.getElementById('standingsImportFile').innerText = abridgeWord(file.name);
-            const standingsImportStatus = document.getElementById('standingsImportStatus');
+            const status = document.getElementById('standingsImportStatus');
             try{
                 await importStandingsFromTOM(file);
-                standingsImportStatus.classList.add('connected');
-                standingsImportStatus.classList.remove('disconnected');
-                standingsImportStatus.innerText = 'Successfully tracking live standings!';
+                status.classList.add('connected');
+                status.classList.remove('disconnected');
+                status.innerText = 'Successfully tracking live standings!';
                 document.getElementById('standingsTrackingStop').disabled = false
 
-            }catch(e){
-                standingsImportStatus.classList.remove('connected');
-                standingsImportStatus.classList.add('disconnected');
-                standingsImportStatus.innerText = 'Selected file is either malformed or not the ...standings.html file!';
+            }catch(ex){
+                status.classList.remove('connected');
+                status.classList.add('disconnected');
+                status.innerText = 'Selected file is either malformed or not the ...standings.html file!';
             }
             standingsInterval = watchFile(fileHandle, async (content) => {
                 await importStandingsFromTOM(content)
             });
-        }catch(e){
-            console.warn(e);
+        }catch(ex){
+            console.warn(ex);
         }
     });
 
-    document.getElementById('standingsTrackingStop').addEventListener('click', e => {
+    document.getElementById('standingsTrackingStop').addEventListener('click', () => {
         if(standingsInterval){
             window.clearInterval(standingsInterval);
             standingsInterval = undefined;
-            const standingsImportStatus = document.getElementById('standingsImportStatus');
-            standingsImportStatus.classList.remove('connected');
-            standingsImportStatus.classList.add('disconnected');
-            standingsImportStatus.innerText = 'Stopped tracking standings.';
+            const status = document.getElementById('standingsImportStatus');
+            status.classList.remove('connected');
+            status.classList.add('disconnected');
+            status.innerText = 'Stopped tracking standings.';
             document.getElementById('standingsImportFile').innerText = '';
             document.getElementById('standingsTrackingStop').disabled = true;
         }
@@ -532,30 +537,30 @@ function attachEventListeners(){
 
     const standingsPlayerSelectors = document.getElementById('standingsList').querySelectorAll('.playerSelect');
     for(let playerSelector of standingsPlayerSelectors){
-        playerSelector.addEventListener('change', e => { 
+        playerSelector.addEventListener('change', () => { 
             updateStandingsSingle(); 
         });
-        playerSelector.addEventListener('refresh', e => { 
+        playerSelector.addEventListener('refresh', () => { 
             updateStandingsSingle(); 
         });
     }
 
-    document.getElementById('standingsSingleSplitter').addEventListener('change', e => {
+    document.getElementById('standingsSingleSplitter').addEventListener('change', () => {
         updateStandingsSingle();
     });
 
-    document.getElementById('standingsSingleOrdinalToggle').addEventListener('change', e => {
+    document.getElementById('standingsSingleOrdinalToggle').addEventListener('change', () => {
         updateStandingsSingle();
     });
 
-    document.getElementById('standingsOrdinalToggle').addEventListener('change', e => {
+    document.getElementById('standingsOrdinalToggle').addEventListener('change', () => {
         for(let playerSelector of standingsPlayerSelectors){
             const event = new Event('change');
             playerSelector.dispatchEvent(event);
         }
     });
 
-    document.getElementById('standingsSlider').addEventListener('input', e => {
+    document.getElementById('standingsSlider').addEventListener('input', () => {
         const standingsModules = document.getElementById('standingsList').querySelectorAll('.standingsModule');
         const val = document.getElementById('standingsSlider').value
         for(let i = 0; i < standingsModules.length; i++){
@@ -568,8 +573,8 @@ function attachEventListeners(){
     // Hook up Minimize Buttons
     const minimize = document.getElementsByClassName('minimizeButton');
     for(let button of minimize){
-        button.addEventListener('click', e => {
-            const target = button.getAttribute('target');
+        button.addEventListener('click', () => {
+            const target = button.getAttribute('minimize');
             const element = document.getElementById(target);
             element.hidden = !element.hidden;
             button.setAttribute('status', element.hidden ? 'off' : 'on');
@@ -579,7 +584,7 @@ function attachEventListeners(){
     // Save settings every time we change a source setting
     const sourceSettings = document.getElementsByClassName('sourceSetting');
     for(let setting of sourceSettings){
-        setting.addEventListener('change', e => {
+        setting.addEventListener('change', () => {
             saveSourceSettings();
         });
     }
@@ -587,7 +592,7 @@ function attachEventListeners(){
     // Save every time we change a general setting
     const generalSettings = document.getElementsByClassName('generalSetting');
     for(let setting of generalSettings){
-        setting.addEventListener('change', e => {
+        setting.addEventListener('change', () => {
             saveGeneralSettings();
         });
     }
@@ -595,7 +600,7 @@ function attachEventListeners(){
     document.getElementById('connect').addEventListener('click', connectToOBS);
     const sceneSelectors = document.getElementsByClassName('sceneSelect');
     for(let sceneSelector of sceneSelectors){
-        sceneSelector.addEventListener('change', e => {
+        sceneSelector.addEventListener('change', () => {
             OBS.populateSourceOptionsFromScene(sceneSelector.value, sceneSelector.getAttribute('target'));
         });
     };

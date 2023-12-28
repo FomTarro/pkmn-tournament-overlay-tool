@@ -128,6 +128,20 @@ li::marker {
     margin: 0;
 }
 
+ol .rounded-corner-small {
+    margin: 0.5em 0;
+    padding: 0 0.5em;
+}
+
+ol :nth-child(odd of .rounded-corner-small:not([hidden])) {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+ol :nth-child(even of .rounded-corner-small:not([hidden])) {
+    background-color: rgba(0, 0, 0, .05);
+}
+
+
 select,
 input[type="text"],
 input[type="range"],
@@ -188,6 +202,10 @@ input.input-small {
     float: left;
 }
 
+.text-align-left {
+    text-align: left;
+}
+
 .flex {
     display: flex;
     gap: 0.35em;
@@ -195,6 +213,10 @@ input.input-small {
 
 .flex-wrap {
     flex-wrap: wrap;
+}
+
+.flex-space-between {
+    justify-content: space-between;
 }
 
 .flex-col {
@@ -440,15 +462,18 @@ input.input-small {
 }
 
 #standingsList li:nth-child(1)::marker {
-    content: '🥇'
+    content: '🥇';
+    line-height: 1em;
 }
 
 #standingsList li:nth-child(2)::marker {
-    content: '🥈'
+    content: '🥈';
+    line-height: 1em;
 }
 
 #standingsList li:nth-child(3)::marker {
-    content: '🥉'
+    content: '🥉';
+    line-height: 1em;
 }
 
 /* Colors */

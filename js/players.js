@@ -1,5 +1,5 @@
 /**
- * A player data structure
+ * A player data structure.
  * @typedef {Object} Player
  * @property {string} uuid - UUID for the player row
  * @property {string} name - Name of the player.
@@ -24,10 +24,6 @@
 let PLAYER_LIST = [];
 const PLAYER_LIST_KEY = "tournament_overlay_players";
 const PLAYER_NONE_VALUE = 'None';
-
-document.getElementById("player_add").addEventListener('click', e => {
-    addPlayer();
-});
 
 function loadPlayerList() {
     let loaded = JSON.parse(localStorage.getItem(PLAYER_LIST_KEY));
@@ -60,6 +56,20 @@ function savePlayerList() {
         }
     }
     document.getElementById('playerTotal').innerText = PLAYER_LIST.length;
+}
+
+/**
+ * Searches the player list for a player with a name or abbreviated name
+ * that matches the provided string.
+ * @param {string} name - The name to match.
+ * @returns {Player | undefined} - the Player object if a match exists.
+ */
+function findPlayerByName(name) {
+    return PLAYER_LIST.find(player => {
+        return player.name &&
+        (player.name.includes(name) 
+        || abbreviateName(player.name).includes(abbreviateName(name)))
+    })
 }
 
 /**
@@ -104,8 +114,8 @@ function addPlayer(existingData) {
     if (playerData.name) {
         nameInput.value = playerData.name;
     }
-    nameInput.addEventListener('change', e => {
-        playerData.name = e.target.value;
+    nameInput.addEventListener('change', () => {
+        playerData.name = nameInput.value;
         for (let opt of opts) {
             opt.innerText = playerData.name;
         }
@@ -126,10 +136,10 @@ function addPlayer(existingData) {
             monInput.value = playerData[`mon${monIndex}`];
             validateMon();
         }
-        monInput.addEventListener('change', e => {
+        monInput.addEventListener('change', () => {
             const entry = PLAYER_LIST.find(player => player.uuid === playerData.uuid)
             if (entry) {
-                entry[`mon${monIndex}`] = e.target.value;
+                entry[`mon${monIndex}`] = monInput.value;
             }
             validateMon();
         });
@@ -147,10 +157,10 @@ function addPlayer(existingData) {
             validateItem();
         }
         if(itemInput){
-            itemInput.addEventListener('change', e => {
+            itemInput.addEventListener('change', () => {
                 const entry = PLAYER_LIST.find(player => player.uuid === playerData.uuid)
                 if (entry) {
-                    entry[`item${monIndex}`] = e.target.value;
+                    entry[`item${monIndex}`] = itemInput.value;
                 }
                 validateItem();
             });
@@ -159,7 +169,7 @@ function addPlayer(existingData) {
 
     // Hook up delete button
     const deleteButton = row.querySelector(`#player_${playerData.uuid}_delete`);
-    deleteButton.addEventListener('click', e => {
+    deleteButton.addEventListener('click', () => {
         for (let opt of opts) {
             opt.remove();
         }
@@ -172,12 +182,14 @@ function addPlayer(existingData) {
     });
     const inputs = [...row.querySelectorAll('select'), ...row.querySelectorAll('input')];
     for(let element of inputs){
-        element.addEventListener('change', e => {
+        element.addEventListener('change', () => {
             savePlayerList();
         });
     }
     savePlayerList();
 }
+
+document.getElementById("player_add").addEventListener('click', addPlayer);
 
 /**
  * Populates a given player module with details from the player table (name, team, etc).
@@ -257,12 +269,7 @@ async function importStandingsFromTOM(file){
     const standingModules = standingsList.querySelectorAll('.playerSelect');
     for(let i = 0; i < standingModules.length; i++){
         if(standings.allStandings.length > i){
-            // TODO: this is kind of a kludge; necessary because we can abbreviate names even when TOM doesn't...
-            const uuid = PLAYER_LIST.find(player => {
-                return player.name &&
-                (player.name.includes(standings.allStandings[i].name) 
-                || abbreviateName(player.name).includes(abbreviateName(standings.allStandings[i].name)))
-            })?.uuid;
+            const uuid = findPlayerByName(standings.allStandings[i].name)?.uuid;
             standingModules[i].value = uuid ? uuid : PLAYER_NONE_VALUE;
             const event = new Event('change');
             standingModules[i].dispatchEvent(event);
@@ -281,25 +288,16 @@ async function importPairingsFromTOM(file){
         throw 'Not a Pairings File!'
     }
     const pairings = TOM.parsePairingsFile(content);
-    console.log(pairings);
     const pairingsList = document.getElementById('pairingsList')
     const pairingModules = pairingsList.querySelectorAll('.pairingsModule');
     for(let i = 0; i < pairingModules.length; i++){
         if(pairings.pairings.length > i){
             const playerSelectors = pairingModules[i].querySelectorAll('.playerSelect');
-            // TODO: this is kind of a kludge; necessary because we can abbreviate names even when TOM doesn't...
-            const uuid1 = PLAYER_LIST.find(player => {
-                return player.name &&
-                (player.name.includes(pairings.pairings[i].player1) 
-                || abbreviateName(player.name).includes(abbreviateName(pairings.pairings[i].player1)))
-            })?.uuid;
-            const uuid2 = PLAYER_LIST.find(player => {
-                return player.name &&
-                (player.name.includes(pairings.pairings[i].player2) 
-                || abbreviateName(player.name).includes(abbreviateName(pairings.pairings[i].player2)))
-            })?.uuid;
+            const uuid1 = findPlayerByName(pairings.pairings[i].player1)?.uuid;
+            const uuid2 = findPlayerByName(pairings.pairings[i].player2)?.uuid;
             playerSelectors[0].value = uuid1 ? uuid1 : PLAYER_NONE_VALUE;
             playerSelectors[1].value = uuid2 ? uuid2 : PLAYER_NONE_VALUE;
+            // Only need to dispatch an event to one of the two selectors to trigger a change.
             const event = new Event('change');
             playerSelectors[0].dispatchEvent(event);
         }

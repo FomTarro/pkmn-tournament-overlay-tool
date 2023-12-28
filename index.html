@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TourKOAL - Tournament Overlay - v1.0.1</title>
+        <title>TourKOAL - Tournament Overlay - v1.1.0</title>
         <meta name="description" content="Enhance your Pokémon Tournament's stream overlays with team displays and real-time standings using this online OBS plugin!">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta property="og:title" content="TourKOAL - Tournament Overlay - v1.0.1!">
+        <meta property="og:title" content="TourKOAL - Tournament Overlay - v1.1.0!">
         <meta property="og:image" content="https://www.skeletom.net/pkmn/tournament-overlay/img/site/logo_notext1x.png">
         <meta property="og:type" content="website">
         <meta property="og:description" content="Enhance your Pokémon Tournament's stream overlays with team displays and real-time standings using this online OBS plugin!">
         <link rel="icon" type="image/x-icon" href="favicon.ico">
-        <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lexend"> -->
         <link rel="stylesheet" href="./css/style.css">
     </head>
     <body class="bg">
         <div class="flex-col container">
             <div class="nav rounded-corner">
                 <div id="navContent" class="heading rounded-corner-small no-margins font-small bold nav-content">
-                    <span>🔎</span>
-                    <a href=#general>Setup</a> - 
-                    <a href="#battle">Battle</a> - 
-                    <a href="#pairings">Pairings</a> - 
-                    <a href="#standings">Standings</a> - 
-                    <a href="#players">Players and Teams</a> - 
-                    <a href=#about>Contact</a> | 
-                    <span class="bold obsStatus">...</span>
+                    <div class="text-align-left">
+                        <span>🔎</span>
+                        <a href="#general">Setup</a> - 
+                        <a href="#battle">Battle</a> - 
+                        <a href="#pairings">Pairings</a> - 
+                        <a href="#standings">Standings</a> - 
+                        <a href="#players">Players and Teams</a> - 
+                        <a href="#about">Contact</a> | 
+                        <span class="bold obsStatus">...</span>
+                    </div>
                 </div>
             </div>
             <div>
             <!-- README and OBS Settings -->
-                <div id="general">
+                <div id="general" class="section">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small"><label for="minimizeGeneral">TourKOAL - v1.0.1</label><button id="minimizeGeneral" class="minimizeButton" title="Expand/Collapse the About Section" target="generalContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizeGeneral">TourKOAL - v1.1.0</label><button id="minimizeGeneral" class="minimizeButton" title="Expand/Collapse the About Section" minimize="generalContent" status="on"></button></h1>
                     </div>
                     <div id="generalContent">
                         <div id="readme">
@@ -51,7 +52,7 @@
                                         nor will you need to manually adjust OBS sources when items are consumed or Pokémon faint! You can even automatically track and update player pairings and standings to display on stream!
                                     </p>
                                     <p>
-                                        The tool runs entirely in browser as well, making it very portable and easy to run on venue stream setups without needing to download or install any additional software.
+                                        The tool runs entirely in the browser as well, making it very portable and easy to run on venue stream setups without needing to download or install any additional software.
                                     </p>
                                 </div>
                             </div>
@@ -98,9 +99,9 @@
                     </div>
                 </div>
             <!-- Battle -->
-                <div id="battle">
+                <div id="battle" class="section">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small"><label for="minimizeBattle">Battle</label><button id="minimizeBattle" class="minimizeButton" title="Expand/Collapse the Battle Dashboard" target="battleContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizeBattle">Battle</label><button id="minimizeBattle" class="minimizeButton" title="Expand/Collapse the Battle Dashboard" minimize="battleContent" status="on"></button></h1>
                     </div>
                     <div id="battleContent">
                         <div class="flex flex-col rounded-corner">
@@ -178,7 +179,7 @@
                                 </div>
                             </div>
                             <div class="flex flex-col reset-col rounded-corner">
-                                <button class="resetGameButton" type='button'>Reset Game
+                                <button class="resetMatchButton" type='button'>Reset Match
                                     <ul class="resetDescription font-small">
                                         <li>Keep both players</li>
                                         <li>Keep both scores</li>
@@ -197,9 +198,9 @@
                     </div>
                 </div>
             <!-- Pairings -->
-                <div id="pairings">
+                <div id="pairings" class="section">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small"><label for="minimizePairings">Pairings</label><button id="minimizePairings" class="minimizeButton" title="Expand/Collapse the Pairings Dashboard" target="pairingsContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizePairings">Pairings</label><button id="minimizePairings" class="minimizeButton" title="Expand/Collapse the Pairings Dashboard" minimize="pairingsContent" status="on"></button></h1>
                     </div>
                     <div id="pairingsContent">
                         <div class="flex flex-col rounded-corner">
@@ -224,7 +225,7 @@
                             <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
                             <div>
                                 <button id="pairingsImport" class="notranslate">Choose File</button>
-                                <span id="pairingsImportFile" class="font-small basic-ui notranslate">No file chosen</span>
+                                <label for="pairingsImport" id="pairingsImportFile" class="font-small basic-ui notranslate">No file chosen</label>
                                 <span id="pairingsImportStatus" class="font-small bold"></span>
                             </div>
                             <div>
@@ -269,9 +270,9 @@
                     </div>
                 </div>
             <!-- Standings -->
-                <div id="standings">
+                <div id="standings" class="section">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small"><label for="minimizeStandings">Standings</label><button id="minimizeStandings" class="minimizeButton" title="Expand/Collapse the Standings Dashboard" target="standingsContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizeStandings">Standings</label><button id="minimizeStandings" class="minimizeButton" title="Expand/Collapse the Standings Dashboard" minimize="standingsContent" status="on"></button></h1>
                     </div>
                     <div id="standingsContent">
                         <div class="flex flex-col rounded-corner">
@@ -296,7 +297,7 @@
                             <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
                             <div>
                                 <button id="standingsImport" class="notranslate">Choose File</button>
-                                <span id="standingsImportFile" class="font-small basic-ui notranslate">No file chosen</span>
+                                <label for="standingsImport" id="standingsImportFile" class="font-small basic-ui notranslate">No file chosen</label>
                                 <span id="standingsImportStatus" class="font-small bold"></span>
                             </div>
                             <div>
@@ -304,7 +305,6 @@
                             </div>
                         </div>
                         <div class="flex flex-col rounded-corner">
-                            <!-- <div class="bold">Show top: <input type="number" min="1" max="32" size="2"></div> -->
                             <div class="font-small flex flex-center">
                                 <label for="standingsOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
                                 <input id="standingsOrdinalToggle" class="generalSetting ordinalToggle" type="checkbox" checked>
@@ -350,9 +350,9 @@
                     </div>
                 </div>
             <!-- Table -->
-                <div id="players">
+                <div id="players" class="section">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small"><label for="minimizePlayers">Players and Teams</label><button id="minimizePlayers" class="minimizeButton" title="Expand/Collapse the Players Dashboard" target="playersContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizePlayers">Players and Teams</label><button id="minimizePlayers" class="minimizeButton" title="Expand/Collapse the Players Dashboard" minimize="playersContent" status="on"></button></h1>
                     </div>
                     <div id="playersContent">
                         <div class="flex flex-col rounded-corner">
@@ -436,7 +436,7 @@
             </div>
         <!-- Footer -->
         <hr>
-            <footer id="about" class="flex flex-col center">
+            <footer id="about" class="section flex flex-col center">
                 <span class="font-small">
                     Developed by Professor <a href="https://www.skeletom.net" target="_blank">Tom "Skeletom" Farro</a> - 
                     Open Source: <a href="https://github.com/FomTarro/pkmn-tournament-overlay-tool" target="_blank">GitHub</a> - 
@@ -445,7 +445,7 @@
                 <span class="font-small">(This tool is not officially affiliated with or endorsed by <a href="https://www.pokemon.com/us/about-pokemon/" target="_blank">The Pokémon Company International (TPCi)</a> or the <a href="https://www.pokemon.com/us/play-pokemon" target="_blank">Play! Pokémon</a> program)</span>
                 <span class="unown font-medium">thank you for your support! we all live in a pokemon world!</span>
             </footer>
-        <!-- Templates  -->
+        <!-- Templates -->
             <div hidden id="templates">
                 <template id="mon_template_item">
                     <div class="monModule">
@@ -486,33 +486,37 @@
                 </template>
 
                 <template id="pairings_template_item">
-                    <li class="pairingsModule">
-                        <div>
-                            <select id="table_x_player1_name" class="playerSelect">
-                                <optgroup label="Default">
-                                    <option >None</option>
-                                </optgroup>
-                                <optgroup label="Players" class="optionContent">
+                    <li class="pairingsModule rounded-corner-small">
+                        <div class="flex center flex-wrap flex-space-between">
+                            <div class="nameModule">
+                                <select id="table_x_player1_name" class="playerSelect">
+                                    <optgroup label="Default">
+                                        <option >None</option>
+                                    </optgroup>
+                                    <optgroup label="Players" class="optionContent">
 
-                                </optgroup>
-                            </select> 
+                                    </optgroup>
+                                </select> 
+                            </div>
                             <span class="font-small">vs.</span> 
-                            <select id="table_x_player2_name" class="playerSelect">
-                                <optgroup label="Default">
-                                    <option >None</option>
-                                </optgroup>
-                                <optgroup label="Players" class="optionContent">
+                            <div class="nameModule">
+                                <select id="table_x_player2_name" class="playerSelect">
+                                    <optgroup label="Default">
+                                        <option >None</option>
+                                    </optgroup>
+                                    <optgroup label="Players" class="optionContent">
 
-                                </optgroup>
-                            </select> → 
+                                    </optgroup>
+                                </select> 
+                            </div> → 
                             <input id="table_x_pairing_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_pairings"/>
                         </div>
                     </li>
                 </template>
 
                 <template id="standings_template_item">
-                    <li class="standingsModule">
-                        <div class="nameModule">
+                    <li class="standingsModule rounded-corner-small">
+                        <div class="nameModule flex flex-wrap flex-space-between center">
                             <select id="pos_x_player_name" class="playerSelect">
                                 <optgroup label="Default">
                                     <option >None</option>

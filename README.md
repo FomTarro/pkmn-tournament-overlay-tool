@@ -1,5 +1,5 @@
 # TourKOAL (Tournament Knowledge and Overlay Assistant for Livestreams) 
-[v1.0.0 - Check it out!](https://www.skeletom.net/pkmn/tournament-overlay/)
+[v1.1.0 - Check it out!](https://www.skeletom.net/pkmn/tournament-overlay/)
 
 ![TouKOAL Icon illustrated by bonbombs](./img/site/logo_notext1x.png)
 ## The Why
@@ -18,7 +18,7 @@ helping you build a professional-quality overlay for your broadcast with as litt
 No longer will you need to scramble through hundreds of image files by hand as players reveal which of their Pokémon they brought to the game, 
 nor will you need to manually adjust OBS sources when items are consumed or Pokémon faint! You can even automatically track and update player pairings and standings to display on stream!
 
-The tool runs entirely in browser as well, making it very portable and easy to run on venue stream setups without needing to download or install any additional software.
+The tool runs entirely in the browser as well, making it very portable and easy to run on venue stream setups without needing to download or install any additional software.
 
 ### Features include the ability to:
 * Quickly and easily display battle information, such as:
@@ -38,7 +38,7 @@ This tool connects with OBS via WebSocket. If you're running an OBS of version `
 
 Once connected, just point the various outputs to your desired OBS sources. Most of the outputs are Text sources, but the Pokémon/Item displays are Browser sources!
 
-After that, you can begin to fill in your player roster at the bottom of the tool. Then, whe your players come to the stream table, you can easily select them and their team members from drop-downs during the battle as needed.
+After that, you can begin to fill in your player roster at the bottom of the tool. Then, when your players come to the stream table, you can easily select them and their team members from drop-downs during the battle as needed.
 
 ### TOM Integration
 This tool also supports a few integrations with the official Play! Pokémon Tournament Operations Manager software (TOM), to further streamline the workflow.
@@ -50,13 +50,12 @@ This tool also supports a few integrations with the official Play! Pokémon Tour
 The files necessary for the above integrations can be found in your `TOM/data/reports` directory.
 
 ### Customization
-
 Under the hood, the Pokémon/Item displays are simple HTML pages with the required images already loaded. This setup provides a few benefits:
 
 1) It allows for a rich density of information (both species and item, as well as their conditions) in just a single source.
 2) It allows the user to further style the display using custom CSS in their OBS Browser source, if they desire.
 
-With regards to custom CSS, some selectorsto be aware of are:
+With regards to custom CSS, some selectors to be aware of are:
 * `#content`: The entire container.
 * `#mon`: The image tag representing the Pokémon species.
 * `#item`: The image tag representing the held item.
@@ -65,7 +64,7 @@ With regards to custom CSS, some selectorsto be aware of are:
 
 ## Credits and Acknowledgements
 * Pokémon renders and item icons downloaded from [Serebii.net](https://www.serebii.net). 
-    * These images are artwork from Pokémon games. These images are believed to be [fair use](https://en.wikipedia.org/wiki/Fair_use) on the grounds that they are not being used to claim ownership or official affiliation with the source material, nor are they being used to gain profit.
+    * These images are artwork from Pokémon games. These images are believed to be [fair use](https://en.wikipedia.org/wiki/Fair_use) on the grounds that they are not being used to claim ownership or official affiliation with the source material, nor are they being used to gain profit. Furthermore, they do not constitute a "substantial portion" of the copyrighted work.
 * OBS WebSocket JavaScript Client Library from [obs-websocket](https://github.com/obsproject/obs-websocket).
 * Logo design by [bonbombs](https://twitter.com/chiffles_).
 * UNOWN font created by [Arien Epic](https://www.dafont.com/unown.font).

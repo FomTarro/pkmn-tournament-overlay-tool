@@ -37,7 +37,7 @@ function toggleClass(element, className, state){
 /**
  * Ash Ketchum -> Ash K.
  * @param {string} name - The name to abbreviate.
- * @returns The abbreviated name.
+ * @returns {string} The abbreviated name.
  */
 function abbreviateName(name){
     return name.substring(0, name.indexOf(' ')+2)+'.' 
@@ -46,7 +46,7 @@ function abbreviateName(name){
 /**
  * Takes a word over 25 characters and inserts a ... in the center.
  * @param {string} word - The word to abridge.
- * @returns The abridged word.
+ * @returns {string} The abridged word.
  */
 function abridgeWord(word) {
     if (word.length > 25) {
@@ -76,9 +76,36 @@ function applyOrdinalSuffix(i) {
 }
 
 /**
+ * Selects the first file chosen in a file picker dialog.
+ * @param {string} id - The ID to feed the file picker.
+ * @returns {Promise<File>} - A promise which resolves into the file reference.
+ */
+async function selectFile(id) {
+    let startIn;
+    if(FILE_HANDLE_MAP.has(id)){
+        startIn = FILE_HANDLE_MAP.get(id);
+    }
+    [fileHandle] = await window.showOpenFilePicker({
+        id,
+        startIn,
+        types: [
+            {
+                accept: {
+                    'text/plain': ".html"
+                }
+            }
+        ],
+        excludeAcceptAllOption: true,
+    });
+    FILE_HANDLE_MAP.set(id, fileHandle);
+    return await fileHandle.getFile();
+}
+const FILE_HANDLE_MAP = new Map();
+
+/**
  * Loads a File from the File API as text.
  * @param {File} file - The file to load.
- * @returns {Promise<string>}
+ * @returns {Promise<string>} - A promise which resolves with the text content of the loaded file.
  */
 function loadFile(file){
     const reader = new FileReader();
@@ -100,7 +127,8 @@ function loadFile(file){
  * Watches a file from the FileSystemAPI, and executes a callback when that file changes.
  * @param {FileSystemFileHandle} fileHandle - The file to watch.
  * @param {function(File)} onChange - The function to execute on the file when it changes.
- * @param {number} [interval=2000] - The frequency to chekc for updates, in milliseconds. 
+ * @param {number} [interval=2000] - The frequency to check for updates, in milliseconds. 
+ * @returns {number} - The ID of the interval timer.
  */
 function watchFile(fileHandle, onChange, interval = 2000){
     /**
