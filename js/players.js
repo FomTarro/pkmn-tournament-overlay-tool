@@ -189,7 +189,7 @@ function addPlayer(existingData) {
     savePlayerList();
 }
 
-document.getElementById("player_add").addEventListener('click', addPlayer);
+document.getElementById("player_add").addEventListener('click', e => { addPlayer() });
 
 /**
  * Populates a given player module with details from the player table (name, team, etc).
@@ -199,6 +199,7 @@ document.getElementById("player_add").addEventListener('click', addPlayer);
  */
 function populatePlayerModule(element, uuid) {
     const entry = PLAYER_LIST.find((p) => p.uuid === uuid);
+    console.log(entry)
     if (!entry) {
         console.warn(`No player with UUID ${uuid} found...`);
     }
