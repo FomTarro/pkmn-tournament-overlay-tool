@@ -7,7 +7,7 @@ const OBS = {
      * @returns 
      */
     connect(address, password){
-        return OBS.obs.connect(address, password.length > 0 ? password : undefined);
+        return OBS.obs.connect(address, (password && password.length > 0) ? password : undefined);
     },
     checkConnectionStatus(){
         const statusIndicators = document.getElementsByClassName("obsStatus");

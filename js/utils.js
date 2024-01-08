@@ -35,6 +35,19 @@ function toggleClass(element, className, state){
 }
 
 /**
+ * 
+ * @param {HTMLSelectElement} selector 
+ * @param {boolean} sendChangeEvent
+ */
+function resetSelector(selector, sendChangeEvent = false){
+    selector.options[0].selected = true;
+    if(sendChangeEvent == true){
+        const event = new Event('change');
+        selector.dispatchEvent(event);
+    }
+}
+
+/**
  * Ash Ketchum -> Ash K.
  * @param {string} name - The name to abbreviate.
  * @returns {string} The abbreviated name.

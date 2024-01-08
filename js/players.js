@@ -23,7 +23,6 @@
 */
 let PLAYER_LIST = [];
 const PLAYER_LIST_KEY = "tournament_overlay_players";
-const PLAYER_NONE_VALUE = 'None';
 
 function loadPlayerList() {
     let loaded = JSON.parse(localStorage.getItem(PLAYER_LIST_KEY));
@@ -37,7 +36,7 @@ function loadPlayerList() {
     }
     const selectors = document.querySelectorAll('.playerSelect');
     for (let selector of selectors) {
-        selector.value = PLAYER_NONE_VALUE;
+        resetSelector(selector);
         const event = new Event('refresh');
         selector.dispatchEvent(event);
     }
@@ -73,11 +72,24 @@ function findPlayerByName(name) {
 }
 
 /**
+ * Searches the player list for a player with a UUID
+ * that matches the provided string.
+ * @param {string} uuid - The UUID to match.
+ * @returns {Player | undefined} - the Player object if a match exists.
+ */
+function findPlayerByUuid(uuid) {
+    return PLAYER_LIST.find(player => {
+        return player.uuid &&
+        (player.uuid === uuid)
+    })
+}
+
+/**
  * Creates a new player record
  * @param {Player} existingData Optional set of player data to load with
  */
 function addPlayer(existingData) {
-    const playerData = existingData ? existingData : {
+    const playerData = (existingData && existingData.uuid) ? existingData : {
         uuid: uuidv4(),
     };
     PLAYER_LIST.push(playerData);
@@ -104,6 +116,7 @@ function addPlayer(existingData) {
         // opt.id = `player_${playerData.uuid}_option`;
         opt.value = playerData.uuid;
         opt.innerText = playerData.name;
+        opt.classList.add('notranslate');
         const optGroup = selector.querySelector('.optionContent');
         optGroup.insertBefore(opt, optGroup.firstChild);
         opts.push(opt);
@@ -124,13 +137,16 @@ function addPlayer(existingData) {
     // Hook up setting team mons
     for (let monIndex = 1; monIndex <= 6; monIndex++) {
         const monInput = row.querySelector(`#player_${playerData.uuid}_mon_${monIndex}`);
-        const validateMon = () => {
-            const valid = [...document.getElementsByClassName('monOption')].find(opt => opt.id === monInput.value);
-            if(!valid && monInput.value){
-                monInput.classList.add('typo');
+        const validate = (className, input) => {
+            const valid = [...document.getElementsByClassName(className)].find(opt => opt.id === input.value);
+            if(!valid && input.value){
+                input.classList.add('typo');
             }else{
-                monInput.classList.remove('typo');
+                input.classList.remove('typo');
             }
+        }
+        const validateMon = () => {
+            validate('monOption', monInput)
         }
         if (playerData && playerData[`mon${monIndex}`]) {
             monInput.value = playerData[`mon${monIndex}`];
@@ -145,12 +161,7 @@ function addPlayer(existingData) {
         });
         const itemInput = row.querySelector(`#player_${playerData.uuid}_mon_${monIndex}_item`);
         const validateItem = () => {
-            const valid = [...document.getElementsByClassName('itemOption')].find(opt => opt.id === itemInput.value);
-            if(!valid && itemInput.value){
-                itemInput.classList.add('typo');
-            }else{
-                itemInput.classList.remove('typo');
-            }
+            validate('itemOption', itemInput)
         }
         if (playerData && playerData[`item${monIndex}`]) {
             itemInput.value = playerData[`item${monIndex}`];
@@ -158,7 +169,7 @@ function addPlayer(existingData) {
         }
         if(itemInput){
             itemInput.addEventListener('change', () => {
-                const entry = PLAYER_LIST.find(player => player.uuid === playerData.uuid)
+                const entry = findPlayerByUuid(playerData.uuid)
                 if (entry) {
                     entry[`item${monIndex}`] = itemInput.value;
                 }
@@ -189,7 +200,7 @@ function addPlayer(existingData) {
     savePlayerList();
 }
 
-document.getElementById("player_add").addEventListener('click', e => { addPlayer() });
+document.getElementById("player_add").addEventListener('click', () => { addPlayer() });
 
 /**
  * Populates a given player module with details from the player table (name, team, etc).
@@ -198,20 +209,23 @@ document.getElementById("player_add").addEventListener('click', e => { addPlayer
  * @returns 
  */
 function populatePlayerModule(element, uuid) {
-    const entry = PLAYER_LIST.find((p) => p.uuid === uuid);
-    console.log(entry)
+    const entry = findPlayerByUuid(uuid);
     if (!entry) {
         console.warn(`No player with UUID ${uuid} found...`);
     }
     const modules = element.querySelectorAll('.monModule');
     for (let item of modules) {
-        const monSelector = item.querySelector(".monSelect");
-        const opts = monSelector.querySelectorAll(".monOption")
+        const monSelector = item.querySelector('.monSelect');
+        const opts = monSelector.querySelectorAll('.monOption')
         for (let i = 1; i <= 6; i++) {
             const mon = entry ? entry[`mon${i}`] : undefined;
             if (mon) {
                 opts[i].innerText = mon;
-                opts[i].item = entry[`item${i}`];
+                opts[i].setAttribute('species', mon);
+                item = entry[`item${i}`];
+                if(item){
+                    opts[i].setAttribute('item', item);
+                }
                 opts[i].classList.remove('notRegistered')
             } else {
                 opts[i].classList.add('notRegistered')
@@ -271,7 +285,8 @@ async function importStandingsFromTOM(file){
     for(let i = 0; i < standingModules.length; i++){
         if(standings.allStandings.length > i){
             const uuid = findPlayerByName(standings.allStandings[i].name)?.uuid;
-            standingModules[i].value = uuid ? uuid : PLAYER_NONE_VALUE;
+            const selectedIndex = [...standingModules[i].options].findIndex(opt => opt.value === uuid);
+            standingModules[i].options[selectedIndex > 0 ? selectedIndex : 0].selected = true;
             const event = new Event('change');
             standingModules[i].dispatchEvent(event);
         }
@@ -294,10 +309,13 @@ async function importPairingsFromTOM(file){
     for(let i = 0; i < pairingModules.length; i++){
         if(pairings.pairings.length > i){
             const playerSelectors = pairingModules[i].querySelectorAll('.playerSelect');
-            const uuid1 = findPlayerByName(pairings.pairings[i].player1)?.uuid;
-            const uuid2 = findPlayerByName(pairings.pairings[i].player2)?.uuid;
-            playerSelectors[0].value = uuid1 ? uuid1 : PLAYER_NONE_VALUE;
-            playerSelectors[1].value = uuid2 ? uuid2 : PLAYER_NONE_VALUE;
+            const setPlayer = (playerName, selectorIndex) => {
+                const uuid = findPlayerByName(playerName)?.uuid;
+                const selectedIndex = [...playerSelectors[selectorIndex].options].findIndex(opt => opt.value === uuid);
+                playerSelectors[selectorIndex].options[selectedIndex > 0 ? selectedIndex : 0].selected = true;
+            }
+            setPlayer(pairings.pairings[i].player1, 0);
+            setPlayer(pairings.pairings[i].player2, 1);
             // Only need to dispatch an event to one of the two selectors to trigger a change.
             const event = new Event('change');
             playerSelectors[0].dispatchEvent(event);

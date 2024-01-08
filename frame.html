@@ -24,13 +24,14 @@
                 filter: drop-shadow(1px 1px 1px black);
             }
             #status {
-                top: 0;
-                left: 0;
+                top: 2%;
+                left: 2%;
                 margin: auto;
                 width: auto;
                 height: 35%;
                 position: absolute;
                 z-index: 3;
+                filter: drop-shadow(1px 1px 1px black);
             }
             .fainted {
                 opacity: 50%;
@@ -41,8 +42,8 @@
         <div id="content">
             <img id="mon">
             <img id="item">
+            <img id="status">
         </div>
-        <img id="status">
     </body>
     <footer>
         <script>
@@ -54,8 +55,8 @@
                 const fainted = urlParams.get('fainted');
                 if(fainted === 'true'){
                     document.getElementById('content').classList.add('fainted')
-                    // const statusIcon = document.getElementById("status");
-                    // statusIcon.src = `./img/misc/fainted_icon.png`
+                    const statusIcon = document.getElementById("status");
+                    statusIcon.src = `./img/misc/tera/stellar.png`
                 }
             }
             const item = urlParams.get('item');

@@ -104,15 +104,30 @@ function attachEventListeners(){
             const faintedToggle = monModule.querySelector(".faintedToggle");
             const itemToggle = monModule.querySelector(".itemToggle");
             const setItem = () => {
-                const item = monSelector.options[monSelector.selectedIndex].item;
-                itemSelector.value = item ? item : '';
+                const item = monSelector.options[monSelector.selectedIndex].getAttribute('item');
+                console.log(item);
+                itemSelector.value = item != undefined && item != null ? item : '';
             }
             const updateIcon = () => {
                 const source = monModule.querySelector('.sourceSelect').value;
+                // TODO: we can probably just slap the number on the option elements 
+                // and not need to do this lookup-by-name
                 const opt = document.getElementById(monSelector.value);
                 const itemOpt = document.getElementById(itemSelector.value);
                 const url = new URL(relativeToAbsolutePath('./frame.html?'));
-                url.searchParams.set('img', `poke_icon_${opt ? opt.getAttribute('dexNumber') : 0}`)
+                const dexNumber = opt ? opt.getAttribute('dexNumber') : 0;
+                if(dexNumber <= 0) {
+                    faintedToggle.checked = false;
+                    faintedToggle.disabled = true;
+                    itemSelector.disabled = true;
+                    itemToggle.checked = false;
+                    itemToggle.disabled = true;
+                } else {
+                    faintedToggle.disabled = false;
+                    itemSelector.disabled = false;
+                    itemToggle.disabled = false;
+                }
+                url.searchParams.set('img', `poke_icon_${dexNumber}`)
                 url.searchParams.set('fainted', faintedToggle.checked);
                 if(itemOpt){
                     if(itemOpt.type === 'Berry'){
@@ -125,8 +140,8 @@ function attachEventListeners(){
                 OBS.setBrowserSourceURL(source, url.toString())
                 const icon = monModule.querySelector('.monIcon');
                 if(icon){
-                    icon.src = url;
-                    const description = `An icon of ${monSelector.value && monSelector.value.length > 0 && monSelector.value !== SPECIES_NONE_VALUE ? 'the Pokemon '+ monSelector.value : 'a PokeBall'} holding ${itemSelector.value && itemSelector.value.length > 0 ?  'the ' + itemSelector.value : 'no'} item.`;
+                    icon.src = url.toString();
+                    const description = `An icon of ${monSelector.value && monSelector.value.length > 0 && monSelector.selectedIndex > 0 ? 'the Pokemon '+ monSelector.value : 'a PokeBall'} holding ${itemSelector.value && itemSelector.value.length > 0 ?  'the ' + itemSelector.value : 'no'} item.`;
                     icon.title = description;
                 } 
             }
@@ -200,7 +215,7 @@ function attachEventListeners(){
             removeSelectedOptions(elementList);
             if(playerModule){
                 for(monSelect of playerModule.querySelectorAll('.monSelect')){
-                    monSelect.value = SPECIES_NONE_VALUE;
+                    resetSelector(monSelect, true);
                 }
             }
             updatePlayer();
@@ -219,13 +234,11 @@ function attachEventListeners(){
             const childModules = parent.querySelectorAll('.monModule');
             for(let monModule of childModules){
                 const monSelector = monModule.querySelector(".monSelect");
-                monSelector.value = SPECIES_NONE_VALUE;
                 const faintedToggle = monModule.querySelector('.faintedToggle');
                 faintedToggle.checked = false;
                 const itemUsedToggle = monModule.querySelector('.itemToggle');
                 itemUsedToggle.checked = false;
-                const event = new Event('change');
-                monSelector.dispatchEvent(event);
+                resetSelector(monSelector, true);
             }
         })
     }
@@ -237,9 +250,7 @@ function attachEventListeners(){
             const playerSelectors = document.getElementById('battle').querySelectorAll('.playerSelect');
             // Set both players to 'None'
             for(let playerSelector of playerSelectors){
-                playerSelector.value = PLAYER_NONE_VALUE;
-                const event = new Event('change');
-                playerSelector.dispatchEvent(event);
+                resetSelector(playerSelector, true);
             }
             const scoreModules = document.getElementById('battle').querySelectorAll('.scoreModule');
             for(let scoreModule of scoreModules){
@@ -257,10 +268,11 @@ function attachEventListeners(){
         }
     });
 
+    // TODO: this should be "game", not "match"
     const resetMatchButton = document.querySelector('.resetMatchButton');
     resetMatchButton.addEventListener('click', () => {
         const description = [...resetMatchButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
-        if(window.confirm(`Do you really want to reset the match?\nThis action will do the following:\n${description}`)){
+        if(window.confirm(`Do you really want to reset the game?\nThis action will do the following:\n${description}`)){
             // Effectively 'click' both reset buttons
             const event = new Event('click');
             for(let resetButton of resetButtons){
@@ -277,9 +289,7 @@ function attachEventListeners(){
             const pairingModules = pairingsList.querySelectorAll('.pairingsModule');
             for(let pairingModule of [...pairingModules]){
                 for(let playerSelect of [...pairingModule.querySelectorAll('.playerSelect')]){
-                    playerSelect.value = PLAYER_NONE_VALUE;
-                    const event = new Event('change');
-                    playerSelect.dispatchEvent(event);
+                    resetSelector(playerSelect, true);
                 }
             }
         }
@@ -291,9 +301,7 @@ function attachEventListeners(){
         if(window.confirm(`Do you really want to reset the standings display?\nThis action will do the following:\n${description}`)){
             const standingsList = document.getElementById('standingsList');
             for(let playerSelect of [...standingsList.querySelectorAll('.playerSelect')]){
-                playerSelect.value = PLAYER_NONE_VALUE;
-                const event = new Event('change');
-                playerSelect.dispatchEvent(event);
+                resetSelector(playerSelect, true);
             }
         }
     });
@@ -307,10 +315,10 @@ function attachEventListeners(){
             const event = new Event('input');
             input.dispatchEvent(event);
         }
-        slider.querySelector('.plus').addEventListener('click', () => {
+        slider.querySelector('.plus')?.addEventListener('click', () => {
             incrementSlider(1);
         })
-        slider.querySelector('.minus').addEventListener('click', () => {
+        slider.querySelector('.minus')?.addEventListener('click', () => {
             incrementSlider(-1);
         })
     }
