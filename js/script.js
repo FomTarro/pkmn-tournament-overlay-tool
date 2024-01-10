@@ -48,7 +48,7 @@ function createFromTemplates(){
 
     const monModuleTemplate = document.getElementById("mon_template_item");
     for(let j = 1; j <= 2; j++){
-        for(let i = 4; i > 0; i--){
+        for(let i = 6; i > 0; i--){
             const item = monModuleTemplate.content.cloneNode(true).querySelector(".monModule");
             const node = document.getElementById(`player_${j}_name`);
             const elements = item.querySelectorAll('*');
@@ -94,18 +94,40 @@ function attachEventListeners(){
         }
     }
 
+    document.getElementById('monCountSlider').addEventListener('input', () => {
+        const val = document.getElementById('monCountSlider').value
+        const playerModules = document.querySelectorAll('.playerModule')
+        for(let playerModule of playerModules){
+           const monModules = playerModule.querySelectorAll('.monModule');
+           for(let i = 0; i < monModules.length; i++){
+               monModules[i].hidden = i >= val;
+           }
+        }
+        document.getElementById('monCount').innerText = val;
+    });
+
     // Hook up mon selection dropdowns
     const playerModules = document.querySelectorAll('.playerModule');
     for(let playerModule of playerModules){
+        const jump = playerModule.querySelector('.player_link');
+        jump?.addEventListener('click', () => {
+            const playerFilter = document.getElementById('playerFilter');
+            const playerSelector = playerModule.querySelector('.playerSelect');
+            const selectedOption = playerSelector.options[playerSelector.options.selectedIndex];
+            if(selectedOption && (selectedOption.value !== selectedOption.innerText)){
+                playerFilter.value = selectedOption.innerText;
+                filterPlayerTable()
+            }
+        })
         const monModules = playerModule.querySelectorAll('.monModule');
         for(let monModule of monModules){
             const monSelector = monModule.querySelector(".monSelect");
             const itemSelector = monModule.querySelector(".itemSelect");
             const faintedToggle = monModule.querySelector(".faintedToggle");
             const itemToggle = monModule.querySelector(".itemToggle");
+            const teraToggle = monModule.querySelector(".teraToggle");
             const setItem = () => {
                 const item = monSelector.options[monSelector.selectedIndex].getAttribute('item');
-                console.log(item);
                 itemSelector.value = item != undefined && item != null ? item : '';
             }
             const updateIcon = () => {
@@ -114,19 +136,26 @@ function attachEventListeners(){
                 // and not need to do this lookup-by-name
                 const opt = document.getElementById(monSelector.value);
                 const itemOpt = document.getElementById(itemSelector.value);
-                const url = new URL(relativeToAbsolutePath('./frame.html?'));
+                const teraType = monSelector.options[monSelector.selectedIndex].getAttribute('tera') ?? undefined;
+                const subOptions = monModule.querySelector('.monSubOptions');
                 const dexNumber = opt ? opt.getAttribute('dexNumber') : 0;
-                if(dexNumber <= 0) {
-                    faintedToggle.checked = false;
-                    faintedToggle.disabled = true;
-                    itemSelector.disabled = true;
-                    itemToggle.checked = false;
-                    itemToggle.disabled = true;
-                } else {
-                    faintedToggle.disabled = false;
-                    itemSelector.disabled = false;
-                    itemToggle.disabled = false;
+                for(let subOption of subOptions.querySelectorAll('.monSubOption')){
+                    if(dexNumber <= 0) {
+                        subOption.checked = false;
+                        subOption.disabled = true;
+                        subOption.locked = true;
+                    } else {
+                        subOption.disabled = false;
+                        subOption.locked = false;
+                    }
                 }
+                // Disable all non-checked Tera toggles if any of them are checked
+                const anyTeraToggled =  [...playerModule.querySelectorAll('.teraToggle')].find(t => t.checked)
+                for(let otherToggle of playerModule.querySelectorAll('.teraToggle')){
+                    otherToggle.disabled = otherToggle.locked || (anyTeraToggled && !otherToggle.checked);
+                }
+
+                const url = new URL(relativeToAbsolutePath('./frame.html'));
                 url.searchParams.set('img', `poke_icon_${dexNumber}`)
                 url.searchParams.set('fainted', faintedToggle.checked);
                 if(itemOpt){
@@ -136,6 +165,9 @@ function attachEventListeners(){
                         url.searchParams.set('item', `item_icon_${itemOpt.key}`);
                     }
                     url.searchParams.set('used', itemToggle.checked);
+                }
+                if(teraType && teraToggle.checked){
+                    url.searchParams.set('tera', teraType);
                 }
                 OBS.setBrowserSourceURL(source, url.toString())
                 const icon = monModule.querySelector('.monIcon');
@@ -155,7 +187,20 @@ function attachEventListeners(){
             faintedToggle.addEventListener('change', updateIcon);
             itemSelector.addEventListener('change', updateIcon);
             itemToggle.addEventListener('change', updateIcon);
+            teraToggle.addEventListener('change', updateIcon);
         }
+        const fillButton = playerModule.querySelector('.fillButton');
+        fillButton?.addEventListener('click', () => {
+            console.log('click!')
+            for(let i = 0; i < monModules.length; i++){
+                const monSelector = monModules[i].querySelector(".monSelect");
+                if(monSelector.options.length > i && !monSelector.options[i+1].classList.contains('notRegistered')){
+                    monSelector.options[i+1].selected = true;
+                    const event = new Event('change');
+                    monSelector.dispatchEvent(event);
+                }
+            }
+        })
     }
 
     // Hook up scores
@@ -225,6 +270,7 @@ function attachEventListeners(){
             updatePlayer()
         });
     }
+
 
     // Hook up reset buttons
     const resetButtons = document.querySelectorAll('.resetButton');
@@ -314,6 +360,9 @@ function attachEventListeners(){
             input.value = (Number(input.value) + num)
             const event = new Event('input');
             input.dispatchEvent(event);
+            // 'change' event triggers a data save
+            const change = new Event('change');
+            input.dispatchEvent(change);
         }
         slider.querySelector('.plus')?.addEventListener('click', () => {
             incrementSlider(1);
@@ -734,6 +783,7 @@ function loadGeneralSettings(){
         standingsSingleIncludeOrdinal: true,
         standingsSingleSplitter: '/',
         standingsCount: 8,
+        monsPerTeamCount: 4,
     };
     const event = new Event('input');
     document.getElementById('abbreviateJuniorsToggle').checked = settings.abbreviateJuniors;
@@ -749,9 +799,13 @@ function loadGeneralSettings(){
     document.getElementById('standingsSingleSplitter').value = settings.standingsSingleSplitter ?? '/';
     document.getElementById('standingsSlider').value = settings.standingsCount ?? 8;
     document.getElementById('standingsSlider').dispatchEvent(event);
+
+    document.getElementById('monCountSlider').value = settings.monsPerTeamCount ?? 4;
+    document.getElementById('monCountSlider').dispatchEvent(event);
 }
 
 function saveGeneralSettings(){
+    console.log("Saving...")
     const settings = {
         abbreviateJuniors: document.getElementById('abbreviateJuniorsToggle').checked,
         abbreviateSeniors: document.getElementById('abbreviateSeniorsToggle').checked,
@@ -762,6 +816,7 @@ function saveGeneralSettings(){
         standingsSingleIncludeOrdinal: document.getElementById('standingsSingleOrdinalToggle').checked,
         standingsSingleSplitter: document.getElementById('standingsSingleSplitter').value,
         standingsCount: document.getElementById('standingsSlider').value,
+        monsPerTeamCount: document.getElementById('monCountSlider').value,
     };
     localStorage.setItem(GENERAL_SETTINGS_KEY, JSON.stringify(settings));
 }

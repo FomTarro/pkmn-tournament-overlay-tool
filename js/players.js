@@ -5,16 +5,22 @@
  * @property {string} name - Name of the player.
  * @property {string} mon1
  * @property {string} item1
+ * @property {string} tera1
  * @property {string} mon2
  * @property {string} item2
+ * @property {string} tera2
  * @property {string} mon3
  * @property {string} item3
+ * @property {string} tera3
  * @property {string} mon4
- * @property {string} item3
+ * @property {string} item4
+ * @property {string} tera4
  * @property {string} mon5
  * @property {string} item5
+ * @property {string} tera5
  * @property {string} mon6
  * @property {string} item6
+ * @property {string} tera6
  */
 
 /** 
@@ -137,8 +143,8 @@ function addPlayer(existingData) {
     // Hook up setting team mons
     for (let monIndex = 1; monIndex <= 6; monIndex++) {
         const monInput = row.querySelector(`#player_${playerData.uuid}_mon_${monIndex}`);
-        const validate = (className, input) => {
-            const valid = [...document.getElementsByClassName(className)].find(opt => opt.id === input.value);
+        const validate = (input) => {
+            const valid = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].find(opt => opt.innerText === input.value);
             if(!valid && input.value){
                 input.classList.add('typo');
             }else{
@@ -146,7 +152,7 @@ function addPlayer(existingData) {
             }
         }
         const validateMon = () => {
-            validate('monOption', monInput)
+            validate(monInput)
         }
         if (playerData && playerData[`mon${monIndex}`]) {
             monInput.value = playerData[`mon${monIndex}`];
@@ -161,7 +167,7 @@ function addPlayer(existingData) {
         });
         const itemInput = row.querySelector(`#player_${playerData.uuid}_mon_${monIndex}_item`);
         const validateItem = () => {
-            validate('itemOption', itemInput)
+            validate(itemInput)
         }
         if (playerData && playerData[`item${monIndex}`]) {
             itemInput.value = playerData[`item${monIndex}`];
@@ -174,6 +180,23 @@ function addPlayer(existingData) {
                     entry[`item${monIndex}`] = itemInput.value;
                 }
                 validateItem();
+            });
+        }
+        const teraInput = row.querySelector(`#player_${playerData.uuid}_mon_${monIndex}_tera`);
+        const validateTera = () => {
+            validate(teraInput)
+        }
+        if(playerData && playerData[`tera${monIndex}`]) {
+            teraInput.value = playerData[`tera${monIndex}`];
+            validateTera();
+        }
+        if(teraInput){
+            teraInput.addEventListener('change', () => {
+                const entry = findPlayerByUuid(playerData.uuid)
+                if (entry) {
+                    entry[`tera${monIndex}`] = teraInput.value;
+                }
+                validateTera();
             });
         }
     }
@@ -225,6 +248,10 @@ function populatePlayerModule(element, uuid) {
                 item = entry[`item${i}`];
                 if(item){
                     opts[i].setAttribute('item', item);
+                }
+                tera = entry[`tera${i}`];
+                if(tera){
+                    opts[i].setAttribute('tera', tera);
                 }
                 opts[i].classList.remove('notRegistered')
             } else {

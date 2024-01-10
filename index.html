@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TourKOAL - Tournament Overlay - v1.1.2</title>
+        <title>TourKOAL - Tournament Overlay - v1.2.0</title>
         <meta name="description" content="Enhance your Pokémon Tournament's stream overlays with team displays and real-time standings using this online OBS plugin!">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta property="og:title" content="TourKOAL - Tournament Overlay - v1.1.2!">
+        <meta property="og:title" content="TourKOAL - Tournament Overlay - v1.2.0!">
         <meta property="og:image" content="https://www.skeletom.net/pkmn/tournament-overlay/img/site/logo_notext1x.png">
         <meta name="twitter:image" content="https://www.skeletom.net/pkmn/tournament-overlay/img/site/logo_notext1x.png">
         <meta property="og:type" content="website">
@@ -32,7 +32,7 @@
             <!-- README and OBS Settings -->
                 <div id="general" class="section">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small"><label for="minimizeGeneral">TourKOAL - v1.1.2</label><button id="minimizeGeneral" class="minimizeButton" title="Expand/Collapse the About Section" minimize="generalContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizeGeneral">TourKOAL - v1.2.0</label><button id="minimizeGeneral" class="minimizeButton" title="Expand/Collapse the About Section" minimize="generalContent" status="on"></button></h1>
                     </div>
                     <div id="generalContent">
                         <div id="readme">
@@ -121,6 +121,19 @@
                             </div>
                             <input id="battleSceneSelect" class="sceneSelect sourceSetting" target="battle" placeholder="Select OBS source..." autoComplete="on" list="sceneOptions" type="text"/> 
                         </div>
+                        <div class="flex flex-col rounded-corner">
+                            <div class="flex-center font-small">
+                                <span>
+                                    <label for="monCountSlider">Number of Pokémon per team: </label>
+                                    <span id="monCount">4</span>
+                                </span>
+                            </div>
+                            <div class="slider flex">
+                                <button class="minus square" type='button'>➖</button>
+                                <input id="monCountSlider" class="generalSetting" type="range" step="1" min="1" max="6" value="4">
+                                <button class="plus square" type='button'>➕</button>
+                            </div>
+                        </div>
                         <div class="dashboard" id="dashboard">
                             <div id="view" class="flex-row">
                                 <div id="player_1_dashboard" class="playerModule flex flex-col rounded-corner">
@@ -133,7 +146,7 @@
                                     </div>
                                     <div id="player_1_name">
                                         <div>
-                                            <label for="player_1_select" class="bold">Player #1</label>
+                                            <label for="player_1_select" class="bold">Player #1</label> <a href="#players" class="player_link font-small">(jump to table)</a>
                                         </div>
                                         <div class="nameModule">
                                             <select class="playerSelect" id="player_1_select">
@@ -148,7 +161,10 @@
                                         </div>
                                     </div>
                                     <!-- Mon Modules Go Here  -->
-                                    <button class="resetButton" type='button'>Reset all Mons</button>
+                                    <div class="flex flex-row flex-half-gap">
+                                        <button class="fillButton" type='button'>Display all Mons</button>
+                                        <button class="resetButton" type='button'>Reset all Mons</button>
+                                    </div>
                                 </div>
 
                                 <div id="player_2_dashboard" class="playerModule flex flex-col rounded-corner">
@@ -161,7 +177,7 @@
                                     </div>
                                     <div id="player_2_name">
                                         <div>
-                                            <label for="player_2_select" class="bold">Player #2</label>
+                                            <label for="player_2_select" class="bold">Player #2</label> <a href="#players" class="player_link font-small">(jump to table)</a>
                                         </div>
                                         <div class="nameModule">
                                             <select class="playerSelect" id="player_2_select">
@@ -176,7 +192,10 @@
                                         </div>
                                     </div>
                                     <!-- Mon Modules Go Here -->
-                                    <button class="resetButton" type='button'>Reset all Mons</button>
+                                    <div class="flex flex-row flex-half-gap">
+                                        <button class="fillButton" type='button'>Display all Mons</button>
+                                        <button class="resetButton" type='button'>Reset all Mons</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex flex-col reset-col rounded-corner">
@@ -215,7 +234,7 @@
                                 In order for players to be displayed in the pairings, they must already be registered in the <a href='#players'>player table below</a>.
                             </div>
                         </div>
-                        <div class="rounded-corner">
+                        <div class="flex flex-col rounded-corner">
                             <div>
                                 <label for="pairingsSceneSelect" class="bold">Pairings Overlay OBS Scene Selection</label>
                             </div>
@@ -287,7 +306,7 @@
                                 In order for players to be displayed in the standings, they must already be registered in the <a href='#players'>player table below</a>.
                             </div>
                         </div>
-                        <div class="rounded-corner">
+                        <div class="flex flex-col rounded-corner">
                             <div>
                                 <label for="standingsSceneSelect" class="bold">Standings Overlay OBS Scene Selection</label>
                             </div>
@@ -387,6 +406,8 @@
                             <table>
                                 <tbody id="players_table">
                                     <tr id="players_table_header" class="table-header">
+                                        <!-- <th class="center player_row_anchor_header"> -->
+                                        </th>
                                         <th class="center square">
                                             <div class="red rounded-corner-small">
                                                 <button id="player_add" class="square" type='button'>➕</button>
@@ -475,11 +496,13 @@
                                 <div>
                                     <input id="mon_held_item_x" class="itemSelect" placeholder="Held Item..." type="text" list="itemOptions">
                                 </div>
-                                <div class="font-small flex flex-center">
+                                <div class="monSubOptions font-small flex flex-center">
                                     <label for="fainted_toggle_x">Fainted?</label>
-                                    <input id="fainted_toggle_x" class="faintedToggle" type="checkbox">
+                                    <input id="fainted_toggle_x" class="monSubOption faintedToggle" type="checkbox">
                                     <label for="item_toggle_x">Item Used?</label>
-                                    <input id="item_toggle_x" class="itemToggle" type="checkbox">
+                                    <input id="item_toggle_x" class="monSubOption itemToggle" type="checkbox">
+                                    <label for="tera_toggle_x">Terastallized?</label>
+                                    <input id="tera_toggle_x" class="monSubOption teraToggle" type="checkbox">
                                 </div>
                             </div>
                         </div>
@@ -533,6 +556,7 @@
 
                 <template id="player_template_row">
                     <tr id="player_x_row" class="playerRow">
+                        <!-- <td id="player_x_anchor" class="player_row_anchor"></td> -->
                         <td>
                             <div class="flex center rounded-corner-small">
                                 <button id="player_x_delete" class="square" type='button'>❌</button>
@@ -547,36 +571,42 @@
                             <div class='flex-col center rounded-corner-small'>
                                 <input id="player_x_mon_1" placeholder="Mon #1" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_1_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                                <input id="player_x_mon_1_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
                                 <input id="player_x_mon_2" placeholder="Mon #2" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_2_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                                <input id="player_x_mon_2_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
                                 <input id="player_x_mon_3" placeholder="Mon #3" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_3_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                                <input id="player_x_mon_3_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
                                 <input id="player_x_mon_4" placeholder="Mon #4" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_4_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                                <input id="player_x_mon_4_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
                                 <input id="player_x_mon_5" placeholder="Mon #5" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_5_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                                <input id="player_x_mon_5_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
                                 <input id="player_x_mon_6" placeholder="Mon #6" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_6_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
+                                <input id="player_x_mon_6_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                             </div>
                         </td>
                     </tr>
@@ -604,6 +634,27 @@
                 </datalist>
                 <datalist id="itemOptions">
                     <!-- Every single Hold Item -->
+                </datalist>
+                <datalist id="typeOptions">
+                    <option class="typeOption" id="type-bug">Bug</option>
+                    <option class="typeOption" id="type-dark">Dark</option>
+                    <option class="typeOption" id="type-dragon">Dragon</option>
+                    <option class="typeOption" id="type-electric">Electric</option>
+                    <option class="typeOption" id="type-fairy">Fairy</option>
+                    <option class="typeOption" id="type-fighting">Fighting</option>
+                    <option class="typeOption" id="type-fire">Fire</option>
+                    <option class="typeOption" id="type-flying">Flying</option>
+                    <option class="typeOption" id="type-ghost">Ghost</option>
+                    <option class="typeOption" id="type-grass">Grass</option>
+                    <option class="typeOption" id="type-ground">Ground</option>
+                    <option class="typeOption" id="type-ice">Ice</option>
+                    <option class="typeOption" id="type-normal">Normal</option>
+                    <option class="typeOption" id="type-poison">Poison</option>
+                    <option class="typeOption" id="type-psychic">Psychic</option>
+                    <option class="typeOption" id="type-rock">Rock</option>
+                    <option class="typeOption" id="type-steel">Steel</option>
+                    <option class="typeOption" id="type-water">Water</option>
+                    <option class="typeOption" id="type-stellar">Stellar</option>
                 </datalist>
             </div>
         </div>

@@ -8,26 +8,30 @@
             #mon {
                 margin: auto;
                 width: auto;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
                 height: 100%;
                 position: absolute;
                 z-index: 1;
                 filter: drop-shadow(1px 1px 1px black);
             }
             #item {
-                bottom: 0;
-                right: 0;
                 margin: auto;
                 width: auto;
-                height: 50%;
+                bottom: 0;
+                right: 0;
+                height: 35%;
                 position: absolute;
                 z-index: 2;
                 filter: drop-shadow(1px 1px 1px black);
             }
-            #status {
-                top: 2%;
-                left: 2%;
+            #tera {
                 margin: auto;
                 width: auto;
+                top: 0;
+                left: 0;
                 height: 35%;
                 position: absolute;
                 z-index: 3;
@@ -42,7 +46,7 @@
         <div id="content">
             <img id="mon">
             <img id="item">
-            <img id="status">
+            <img id="tera">
         </div>
     </body>
     <footer>
@@ -55,8 +59,6 @@
                 const fainted = urlParams.get('fainted');
                 if(fainted === 'true'){
                     document.getElementById('content').classList.add('fainted')
-                    const statusIcon = document.getElementById("status");
-                    statusIcon.src = `./img/misc/tera/stellar.png`
                 }
             }
             const item = urlParams.get('item');
@@ -67,6 +69,11 @@
                 if(used === 'true'){
                     itemIcon.classList.add('fainted')
                 }
+            }
+            const tera = urlParams.get('tera');
+            if(tera){
+                const teraIcon = document.getElementById("tera");
+                teraIcon.src = `./img/misc/tera/${tera}.png`
             }
         </script>
     </footer>

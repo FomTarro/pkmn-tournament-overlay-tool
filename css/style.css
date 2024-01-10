@@ -235,6 +235,21 @@ input.input-small {
     align-items: center;
 }
 
+.flex-half-gap button {
+    flex-grow: 1;
+}
+
+.resetButton::before {
+    display: inline-block;
+    content: '❌';
+    padding-right: 0.35em;
+}
+
+.fillButton::before {
+    display: inline-block;
+    content: '⭕';
+    padding-right: 0.35em;
+}
 .container {
     height: 100%;
     flex-direction: column;
@@ -308,6 +323,14 @@ input.input-small {
     aspect-ratio: 1/1;
 }
 
+.plus {
+    content: '➕'
+}
+
+.minus {
+    content: '➖'
+}
+
 .heading {
     margin: 1.2em 0 0 0;
     text-align: center;
@@ -374,7 +397,7 @@ input.input-small {
 
 .monIcon {
     height: 5.75em;
-    width: 5.75em;
+    width: 6.75em;
     background-color: gainsboro;
     border-radius: 5px;
 }
@@ -430,6 +453,11 @@ input.input-small {
     overflow-x: scroll;
 }
 
+/* #players_table{
+    position: relative;
+    left: -0.7em;
+} */
+
 .table-header {
     position: sticky;
     top: 0px;
@@ -444,6 +472,21 @@ input.input-small {
     align-items: center;
     box-shadow: 1px 1px 10px #AAA;
 }
+
+.player_row_anchor_header {
+    width: 0px;
+    margin: -2.3em 0 0 0;
+    padding-top: 2.3em;
+}
+
+.player_row_anchor {
+    margin: -2.3em 0 0 0;
+    padding-top: 2.3em;
+    width: 0px;
+    position: absolute;
+}
+
+
 
 #playerImport {
     margin-right: 1em;
