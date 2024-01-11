@@ -2117,10 +2117,10 @@ const SPECIES = [
         name: 'Mamoswine'
     },
     {
-        name: 'Gallade'
+        name: 'Porygon-Z'
     },
     {
-        name: 'Porygon-Z'
+        name: 'Gallade'
     },
     {
         name: 'Probopass'
