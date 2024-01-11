@@ -167,7 +167,7 @@ function attachEventListeners(){
                     url.searchParams.set('used', itemToggle.checked);
                 }
                 if(teraType && teraToggle.checked){
-                    url.searchParams.set('tera', teraType);
+                    url.searchParams.set('tera', teraType.toLowerCase());
                 }
                 OBS.setBrowserSourceURL(source, url.toString())
                 const icon = monModule.querySelector('.monIcon');
@@ -189,9 +189,9 @@ function attachEventListeners(){
             itemToggle.addEventListener('change', updateIcon);
             teraToggle.addEventListener('change', updateIcon);
         }
+        // Hook up button to fill all icons
         const fillButton = playerModule.querySelector('.fillButton');
         fillButton?.addEventListener('click', () => {
-            console.log('click!')
             for(let i = 0; i < monModules.length; i++){
                 const monSelector = monModules[i].querySelector(".monSelect");
                 if(monSelector.options.length > i && !monSelector.options[i+1].classList.contains('notRegistered')){

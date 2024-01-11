@@ -35,7 +35,7 @@ function toggleClass(element, className, state){
 }
 
 /**
- * 
+ * Resets the given Select element back to its 'None' option.
  * @param {HTMLSelectElement} selector 
  * @param {boolean} sendChangeEvent
  */
@@ -45,6 +45,39 @@ function resetSelector(selector, sendChangeEvent = false){
         const event = new Event('change');
         selector.dispatchEvent(event);
     }
+}
+
+/**
+ * Validates the selection of a text input field against its list of suggested entries.
+ * @param {HTMLInputElement} input 
+ */
+function validate(input){
+    // find the item on the list that matches regardless of case
+    const valid = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].find(
+        opt => opt.innerText.toLowerCase().replaceAll('-', ' ') === input.value.toLowerCase().replaceAll('-', ' '));
+    if(!valid && input.value){
+        input.classList.add('typo');
+    }else{
+        input.classList.remove('typo');
+    }
+    // if we have a match, set it!
+    if(valid){
+        input.value = valid.innerText;
+    }
+}
+
+/**
+ * Formats a given string into title case. For example, "indeedee-f" -> "Indeedee-F".
+ * @param {string} str - The string to reformat.
+ * @returns {string} The reformated string.
+ */
+function toTitleCase(str) {
+    if(!str){
+        return str;
+    }
+    const separators = [' ', '\\-', '\\(', '\\)'];
+    const regex = new RegExp('(^|[' + separators.join('') + '])(\\w)', 'g');
+    return str.toLowerCase().replace(regex, function(x) { return x.toUpperCase(); });
 }
 
 /**

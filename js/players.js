@@ -91,7 +91,7 @@ function findPlayerByUuid(uuid) {
 }
 
 /**
- * Creates a new player record
+ * Creates a new player record, and 
  * @param {Player} existingData Optional set of player data to load with
  */
 function addPlayer(existingData) {
@@ -143,14 +143,6 @@ function addPlayer(existingData) {
     // Hook up setting team mons
     for (let monIndex = 1; monIndex <= 6; monIndex++) {
         const monInput = row.querySelector(`#player_${playerData.uuid}_mon_${monIndex}`);
-        const validate = (input) => {
-            const valid = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].find(opt => opt.innerText === input.value);
-            if(!valid && input.value){
-                input.classList.add('typo');
-            }else{
-                input.classList.remove('typo');
-            }
-        }
         const validateMon = () => {
             validate(monInput)
         }
@@ -158,13 +150,15 @@ function addPlayer(existingData) {
             monInput.value = playerData[`mon${monIndex}`];
             validateMon();
         }
-        monInput.addEventListener('change', () => {
-            const entry = PLAYER_LIST.find(player => player.uuid === playerData.uuid)
-            if (entry) {
-                entry[`mon${monIndex}`] = monInput.value;
-            }
-            validateMon();
-        });
+        if(monInput){
+            monInput.addEventListener('change', () => {
+                const entry = findPlayerByUuid(playerData.uuid)
+                validateMon();
+                if (entry) {
+                    entry[`mon${monIndex}`] = monInput.value;
+                }
+            });
+        }
         const itemInput = row.querySelector(`#player_${playerData.uuid}_mon_${monIndex}_item`);
         const validateItem = () => {
             validate(itemInput)
@@ -175,11 +169,11 @@ function addPlayer(existingData) {
         }
         if(itemInput){
             itemInput.addEventListener('change', () => {
+                validateItem();
                 const entry = findPlayerByUuid(playerData.uuid)
                 if (entry) {
                     entry[`item${monIndex}`] = itemInput.value;
                 }
-                validateItem();
             });
         }
         const teraInput = row.querySelector(`#player_${playerData.uuid}_mon_${monIndex}_tera`);
@@ -192,11 +186,11 @@ function addPlayer(existingData) {
         }
         if(teraInput){
             teraInput.addEventListener('change', () => {
+                validateTera();
                 const entry = findPlayerByUuid(playerData.uuid)
                 if (entry) {
                     entry[`tera${monIndex}`] = teraInput.value;
                 }
-                validateTera();
             });
         }
     }
@@ -204,9 +198,15 @@ function addPlayer(existingData) {
     // Hook up delete button
     const deleteButton = row.querySelector(`#player_${playerData.uuid}_delete`);
     deleteButton.addEventListener('click', () => {
+        // Remove that option from all available selectors
         for (let opt of opts) {
+            // Anywhere that this player is selected, reset that selection to 'None'
+            if(opt.selected){
+                resetSelector(opt.closest('select'), true)
+            }
             opt.remove();
         }
+        // Wipe the tabluar record
         row.remove();
         const entry = PLAYER_LIST.findIndex(player => player.uuid === playerData.uuid);
         if (entry >= 0 && entry < PLAYER_LIST.length) {
@@ -214,6 +214,8 @@ function addPlayer(existingData) {
             savePlayerList();
         }
     });
+    
+    // Save the list when any input is modified
     const inputs = [...row.querySelectorAll('select'), ...row.querySelectorAll('input')];
     for(let element of inputs){
         element.addEventListener('change', () => {

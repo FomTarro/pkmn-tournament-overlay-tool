@@ -117,21 +117,22 @@
                         </div>
                         <div id="obs_scene_selection" class="flex flex-col rounded-corner">
                             <div>
-                                <label for="battleSceneSelect" class="bold">Battle Overlay OBS Scene Selection</label>
+                                <label for="battleSceneSelect" class="bold">Battle Overlay OBS Scene</label>
                             </div>
                             <input id="battleSceneSelect" class="sceneSelect sourceSetting" target="battle" placeholder="Select OBS source..." autoComplete="on" list="sceneOptions" type="text"/> 
                         </div>
                         <div class="flex flex-col rounded-corner">
-                            <div class="flex-center font-small">
-                                <span>
-                                    <label for="monCountSlider">Number of Pokémon per team: </label>
-                                    <span id="monCount">4</span>
-                                </span>
+                            <div class="flex-center">
+                                <label class="bold" for="monCountSlider">Pokémon per Team</label>
                             </div>
-                            <div class="slider flex">
+                            <div class="slider">
                                 <button class="minus square" type='button'>➖</button>
                                 <input id="monCountSlider" class="generalSetting" type="range" step="1" min="1" max="6" value="4">
                                 <button class="plus square" type='button'>➕</button>
+                                <span class="font-small">
+                                    <span>Per team: </span>
+                                    <span id="monCount">4</span>
+                                </span>
                             </div>
                         </div>
                         <div class="dashboard" id="dashboard">
@@ -236,7 +237,7 @@
                         </div>
                         <div class="flex flex-col rounded-corner">
                             <div>
-                                <label for="pairingsSceneSelect" class="bold">Pairings Overlay OBS Scene Selection</label>
+                                <label for="pairingsSceneSelect" class="bold">Pairings Overlay OBS Scene</label>
                             </div>
                             <input id="pairingsSceneSelect" class="sceneSelect sourceSetting" target="pairings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
                         </div>
@@ -253,16 +254,17 @@
                             </div>
                         </div>
                         <div class="flex flex-col rounded-corner">
-                            <div class="flex-center font-small">
-                                <span>
-                                    <label for="pairingsSlider">Number of pairings displayed: </label>
-                                    <span id="pairingsCount">8</span>
-                                </span>
+                            <div class="flex-center">
+                                <label class="bold" for="pairingsSlider">Pairings to Display</label>
                             </div>
-                            <div class="slider flex">
+                            <div class="slider">
                                 <button class="minus square" type='button'>➖</button>
                                 <input id="pairingsSlider" class="generalSetting" type="range" step="1" min="1" max="32" value="16">
                                 <button class="plus square" type='button'>➕</button>
+                                <span class="font-small">
+                                    <span>Total pairings displayed: </span>
+                                    <span id="pairingsCount">8</span>
+                                </span>
                             </div>
                             <ol id="pairingsList">
                             </ol>
@@ -308,13 +310,17 @@
                         </div>
                         <div class="flex flex-col rounded-corner">
                             <div>
-                                <label for="standingsSceneSelect" class="bold">Standings Overlay OBS Scene Selection</label>
+                                <label for="standingsSceneSelect" class="bold">Standings Overlay OBS Scene</label>
                             </div>
                             <input id="standingsSceneSelect" class="sceneSelect sourceSetting" target="standings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
                         </div>
                         <div class="flex flex-col rounded-corner">
                             <label for="standingsImport" class="bold">Import from TOM</label>
                             <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
+                            <div class="font-small flex flex-center">
+                                <label for="standingsOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
+                                <input id="standingsOrdinalToggle" class="generalSetting ordinalToggle" type="checkbox" checked>
+                            </div>
                             <div>
                                 <button id="standingsImport" class="notranslate">Choose File</button>
                                 <label for="standingsImport" id="standingsImportFile" class="font-small basic-ui notranslate">No file chosen</label>
@@ -325,20 +331,17 @@
                             </div>
                         </div>
                         <div class="flex flex-col rounded-corner">
-                            <div class="font-small flex flex-center">
-                                <label for="standingsOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
-                                <input id="standingsOrdinalToggle" class="generalSetting ordinalToggle" type="checkbox" checked>
+                            <div class="flex-center">
+                                <label class="bold" for="standingsSlider">Standings to Display</label>
                             </div>
-                            <div class="flex-center font-small">
-                                <span>
-                                    <label for="standingsSlider">Number of standings displayed: </label>
-                                    <span id="standingsCount">8</span>
-                                </span>
-                            </div>
-                            <div class="slider flex">
+                            <div class="slider">
                                 <button class="minus square" type='button'>➖</button>
                                 <input id="standingsSlider" class="generalSetting" type="range" step="1" min="1" max="32" value="16">
                                 <button class="plus square" type='button'>➕</button>
+                                <span class="font-small">
+                                    <span>Total standings displayed: </span>
+                                    <span id="standingsCount">8</span>
+                                </span>
                             </div>
                             <ol id="standingsList">
                             </ol>

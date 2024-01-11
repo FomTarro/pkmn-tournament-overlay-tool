@@ -133,7 +133,7 @@ const SPECIES = [
             }
         ]
     },
-        {
+    {
         name: 'Raticate',
         natdex: 20,
         formes: [
@@ -2985,7 +2985,7 @@ const SPECIES = [
             }
         ]
     },
-        {
+    {
         name: 'Goodra',
         formes: [
             {
@@ -3270,7 +3270,7 @@ const SPECIES = [
         name: 'Dhelmise'
     },
     {
-        name: 'Jamgmo-o'
+        name: 'Jangmo-o'
     },
     {
         name: 'Hakamo-o'
@@ -4127,7 +4127,7 @@ const SPECIES = [
     }
 ]
 
-function loadPokedex(){
+function loadPokedex() {
     console.log("Loading Pokedex...");
     document.getElementById("pokemonOptions").innerHTML = '';
     /**
@@ -4141,13 +4141,13 @@ function loadPokedex(){
         opt.setAttribute('dexNumber', species.number);
         document.getElementById("pokemonOptions").appendChild(opt);
     }
-    for(let i = 0; i < SPECIES.length; i++){
+    for (let i = 0; i < SPECIES.length; i++) {
         const species = SPECIES[i];
-        makeSpeciesOption({name: species.name, number: `${String(i+1).padStart(4, '0')}_${String(0).padStart(3, '0')}`});
-        if(species.formes){
-            for(let j = 0; j < species.formes.length; j++){
+        makeSpeciesOption({ name: species.name, number: `${String(i + 1).padStart(4, '0')}_${String(0).padStart(3, '0')}` });
+        if (species.formes) {
+            for (let j = 0; j < species.formes.length; j++) {
                 const forme = species.formes[j];
-                makeSpeciesOption({name: forme.name, number: `${String(i+1).padStart(4, '0')}_${String(j+1).padStart(3, '0')}`})
+                makeSpeciesOption({ name: forme.name, number: `${String(i + 1).padStart(4, '0')}_${String(j + 1).padStart(3, '0')}` })
             }
         }
     }
@@ -4764,7 +4764,7 @@ const ITEMS = [
     },
 ]
 
-function loadItemdex(){
+function loadItemdex() {
     console.log("Loading Itemdex...");
     document.getElementById("itemOptions").innerHTML = '';
     /**
@@ -4779,7 +4779,7 @@ function loadItemdex(){
         opt.type = item.type
         document.getElementById("itemOptions").appendChild(opt);
     }
-    for(let i = 0; i < ITEMS.length; i++){
+    for (let i = 0; i < ITEMS.length; i++) {
         const item = ITEMS[i];
         makeItemOption(item);
     }

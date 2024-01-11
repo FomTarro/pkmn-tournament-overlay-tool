@@ -415,7 +415,8 @@ input.input-small {
 }
 
 .slider input {
-    margin-top: 5px;
+    position: relative;
+    top: 0.25em;
 }
 
 .reset-col {
