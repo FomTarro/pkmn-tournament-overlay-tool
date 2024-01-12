@@ -53,8 +53,13 @@ function resetSelector(selector, sendChangeEvent = false){
  */
 function validate(input){
     // find the item on the list that matches regardless of case
+    const formatted = input.value.toLowerCase().replaceAll('-', ' ')
     const valid = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].find(
-        opt => opt.innerText.toLowerCase().replaceAll('-', ' ') === input.value.toLowerCase().replaceAll('-', ' '));
+        opt => {
+            const optFormatted = opt.innerText.toLowerCase().replaceAll('-', ' ');
+            return optFormatted ===  formatted || (formatted.length > 2 && optFormatted.startsWith(formatted))
+        }
+    );
     if(!valid && input.value){
         input.classList.add('typo');
     }else{
