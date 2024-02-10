@@ -250,10 +250,14 @@ function populatePlayerModule(element, uuid) {
                 item = entry[`item${i}`];
                 if(item){
                     opts[i].setAttribute('item', item);
+                }else{
+                    opts[i].removeAttribute('item');
                 }
                 tera = entry[`tera${i}`];
                 if(tera){
                     opts[i].setAttribute('tera', tera);
+                }else{
+                    opts[i].removeAttribute('tera');
                 }
                 opts[i].classList.remove('notRegistered')
             } else {

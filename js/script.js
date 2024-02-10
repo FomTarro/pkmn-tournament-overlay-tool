@@ -7,10 +7,17 @@ function connectToOBS() {
     const port = document.getElementById('port').value;
     const password = document.getElementById('password').value;
     const ws = `ws://${address.length > 0 ? address : 'localhost'}:${port}`;
+    const errorIndicator = document.getElementById('obsError');
     OBS.connect(ws, password).then(o => {
         console.log('Connection to OBS successful!');
+        errorIndicator.classList.add('connected');
+        errorIndicator.classList.remove('disconnected');
+        errorIndicator.innerText = 'No errors detected!';
     }).catch(e => {
-        console.error('Unable to connect to OBS...');
+        console.error('Unable to connect to OBS: ' + e);
+        errorIndicator.classList.remove('connected');
+        errorIndicator.classList.add('disconnected');
+        errorIndicator.innerText = e
     });
 }
 
@@ -590,6 +597,9 @@ function attachEventListeners(){
         const joined = placements.join('');
         singleLine.value = joined.length > 0 ? joined : " ";
         OBS.setTextSourceText(sourceSelector.value, singleLine.value);
+        // const url = new URL(relativeToAbsolutePath('./ticker.html'));
+        // url.searchParams.set('text', singleLine.value)
+        // OBS.setBrowserSourceURL(sourceSelector.value, url.toString())
     }
 
     const standingsPlayerSelectors = document.getElementById('standingsList').querySelectorAll('.playerSelect');
@@ -638,22 +648,6 @@ function attachEventListeners(){
         });
     }
 
-    // Save settings every time we change a source setting
-    const sourceSettings = document.getElementsByClassName('sourceSetting');
-    for(let setting of sourceSettings){
-        setting.addEventListener('change', () => {
-            saveSourceSettings();
-        });
-    }
-
-    // Save every time we change a general setting
-    const generalSettings = document.getElementsByClassName('generalSetting');
-    for(let setting of generalSettings){
-        setting.addEventListener('change', () => {
-            saveGeneralSettings();
-        });
-    }
-
     document.getElementById('connect').addEventListener('click', connectToOBS);
     const sceneSelectors = document.getElementsByClassName('sceneSelect');
     for(let sceneSelector of sceneSelectors){
@@ -667,7 +661,10 @@ const SOURCE_SETTINGS_KEY = "tournament_overlay_settings";
 
 function loadSourceSettings(){
     var settings = JSON.parse(localStorage.getItem(SOURCE_SETTINGS_KEY));
-    settings = settings ?? {
+    const defaultSettings = {
+        obsAddress: 'localhost',
+        obsPort: 4455,
+        obsPassword: '',
         battleScene: '',
         battleSources: [],
         pairingsScene: '',
@@ -677,6 +674,12 @@ function loadSourceSettings(){
         standingsSources: [],
         standingsSingleSource: '',
     };
+    settings = merge(defaultSettings, settings);
+
+    document.getElementById('address').value = settings.obsAddress;
+    document.getElementById('port').value = settings.obsPort;
+    document.getElementById('password').value = settings.obsPassword;
+
     const battleScene = document.getElementById('battleSceneSelect');
     battleScene.value = settings.battleScene ? settings.battleScene : '';
     if(settings.battleSources){
@@ -732,6 +735,9 @@ function loadSourceSettings(){
 
 function saveSourceSettings(){
     const settings = {
+        obsAddress: 'localhost',
+        obsPort: 4455,
+        obsPassword: '',
         battleScene: undefined,
         battleSources: [],
         pairingsScene: undefined,
@@ -741,6 +747,11 @@ function saveSourceSettings(){
         standingsSources: [],
         standingsSingleSource: undefined,
     };
+
+    settings.obsAddress = document.getElementById('address').value;
+    settings.obsPort = document.getElementById('port').value;
+    settings.obsPassword = document.getElementById('password').value;
+
     const scene = document.getElementById('battleSceneSelect').value;
     settings.battleScene = scene;
     const playerModules = document.getElementsByClassName('playerModule');
@@ -773,7 +784,7 @@ const GENERAL_SETTINGS_KEY = "tournament_overlay_general_settings";
 
 function loadGeneralSettings(){
     var settings = JSON.parse(localStorage.getItem(GENERAL_SETTINGS_KEY));
-    settings = settings ?? {
+    const defaultSettings = {
         abbreviateJuniors: false,
         abbreviateSeniors: false,
         abbreviateSeniors: false,
@@ -785,6 +796,8 @@ function loadGeneralSettings(){
         standingsCount: 8,
         monsPerTeamCount: 4,
     };
+    settings = merge(defaultSettings, settings);
+
     const event = new Event('input');
     document.getElementById('abbreviateJuniorsToggle').checked = settings.abbreviateJuniors;
     document.getElementById('abbreviateSeniorsToggle').checked = settings.abbreviateSeniors;
@@ -833,6 +846,25 @@ window.onload = async() => {
     loadSourceSettings();
     loadPlayerList();
     connectToOBS();
+
+    // Attatch the Save triggers AFTER loading so as not to execute a ton of I/O as we load in.
+
+    // Save settings every time we change a source setting
+    const sourceSettings = document.getElementsByClassName('sourceSetting');
+    for(let setting of sourceSettings){
+        setting.addEventListener('change', () => {
+            saveSourceSettings();
+        });
+    }
+
+    // Save every time we change a general setting
+    const generalSettings = document.getElementsByClassName('generalSetting');
+    for(let setting of generalSettings){
+        setting.addEventListener('change', () => {
+            saveGeneralSettings();
+        });
+    }
+
 }
 const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.get('unown')){

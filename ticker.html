@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .marquee {
+                --gap: 1rem;
+                position: relative;
+                display: flex;
+                overflow: hidden;
+                user-select: none;
+                gap: var(--gap);
+            }
+
+            .marquee-content {
+                flex-shrink: 0;
+                display: flex;
+                justify-content: space-around;
+                gap: var(--gap);
+                min-width: 100%;
+            }
+
+            @keyframes scroll {
+                from {
+                    transform: translateX(0);
+                }
+                to {
+                    transform: translateX(calc(-100% - var(--gap)));
+                }
+            }
+            .anim-scroll {
+                animation: scroll 10s linear infinite;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="marquee">
+            <span class="marquee-content anim-scroll"></span>
+            <span aria-hidden="true" class="marquee-content anim-scroll"></span>
+          </div>
+    </body>
+    <footer>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const text = urlParams.get('text');
+            for(var content of document.getElementsByClassName('marquee-content')){
+                content.innerText = text;
+            }
+        </script>
+    </footer>
+</html>

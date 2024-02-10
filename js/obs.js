@@ -111,25 +111,28 @@ const OBS = {
      * @returns {Promise<string[]>} List of source names.
      */
     async getSourcesOfTypeInScene(sourceType, sceneName) {
-        try{
-            const results = await OBS.obs.call('GetSceneItemList', {
-                sceneName: sceneName
-            });
-            // Get any sources that are groups
-            const groups = results.sceneItems.filter(item => item.isGroup);
-            const allItems = [...results.sceneItems];
-            for(let group of groups){
-                allItems.push(...await OBS.getSourcesInGroup(group.sourceName));
+        if(OBS.obs.identified){
+            try{
+                const results = await OBS.obs.call('GetSceneItemList', {
+                    sceneName: sceneName
+                });
+                // Get any sources that are groups
+                const groups = results.sceneItems.filter(item => item.isGroup);
+                const allItems = [...results.sceneItems];
+                for(let group of groups){
+                    allItems.push(...await OBS.getSourcesInGroup(group.sourceName));
+                }
+                // Filter the pool of all sources
+                const filtered = allItems.filter(
+                    (item) => item.inputKind && item.inputKind.includes(sourceType)).map(
+                        (item) => item.sourceName);
+                return filtered;
+            }catch(e){
+                console.warn(`Error fetching sources of type ${sourceType} from scene ${sceneName}: ${e}`);
+                return [];
             }
-            // Filter the pool of all sources
-            const filtered = allItems.filter(
-                (item) => item.inputKind && item.inputKind.includes(sourceType)).map(
-                    (item) => item.sourceName);
-            return filtered;
-        }catch(e){
-            console.warn(`Error fetching sources of type ${sourceType} from scene ${sceneName}: ${e}`);
-            return [];
         }
+        return [];
     },
 
     /**
@@ -174,18 +177,20 @@ const OBS = {
      * @param {string} url Absolute URL to set the source to.
      */
     async setBrowserSourceURL(sourceName, url) {
-        try{
-            if(sourceName && url){
-                await OBS.obs.call('SetInputSettings', {
-                    inputName: sourceName,
-                    inputSettings: {
-                        url: url
-                    }
-                });
+        if(OBS.obs.identified){
+            try{
+                if(sourceName && url){
+                    await OBS.obs.call('SetInputSettings', {
+                        inputName: sourceName,
+                        inputSettings: {
+                            url: url
+                        }
+                    });
+                }
             }
-        }
-        catch(e){
-            console.warn(`Error trying to set browser source: ${e}`);
+            catch(e){
+                console.warn(`Error trying to set browser source: ${e}`);
+            }
         }
     },
 
@@ -204,22 +209,25 @@ const OBS = {
      * @param {string} text The text to set.
      */
     async setTextSourceText(sourceName, text) {
-        try{
-            if(sourceName && text){
-                await OBS.obs.call('SetInputSettings', {
-                    inputName: sourceName,
-                    inputSettings: {
-                        text: text
-                    }
-                });
+        if(OBS.obs.identified){
+            try{
+                if(sourceName && text){
+                    await OBS.obs.call('SetInputSettings', {
+                        inputName: sourceName,
+                        inputSettings: {
+                            text: text
+                        }
+                    });
+                }
+            }catch(e){
+                console.warn(`Error trying to set text source: ${e}`);
             }
-        }catch(e){
-            console.warn(`Error trying to set text source: ${e}`);
         }
     },
 }
 
 OBS.obs.on('Identified', () => {
+    OBS.obs.identified = true;
     OBS.populateScenesOptionsFromOBS();
     const sceneSelectors = document.getElementsByClassName('sceneSelect');
     for(let sceneSelector of sceneSelectors){

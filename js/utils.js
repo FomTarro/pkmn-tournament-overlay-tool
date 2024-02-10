@@ -12,6 +12,25 @@ function uuidv4() {
 }
 
 /**
+ * For each property of object A, if object B has a value for that property, apply it to Object A.
+ * Returns a new instance/clone of A with the new values.
+ * @param {object} a 
+ * @param {object} b 
+ * @returns {object} A new instance of A with all properties merged in.
+ */
+function merge(a, b){
+    var c = {}
+    for(var prop in a){
+        if(b[prop]){
+            c[prop] = b[prop]
+        }else{
+            c[prop] = a[prop]
+        }
+    }
+    return c;
+}
+
+/**
  * Converts a relative file path to an absolute file path.
  * @param {string} relative - The relative file path.
  * @returns {URL} - The absolute file path.
@@ -57,7 +76,7 @@ function validate(input){
     const valid = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].find(
         opt => {
             const optFormatted = opt.innerText.toLowerCase().replaceAll('-', ' ');
-            return optFormatted ===  formatted || (formatted.length > 2 && optFormatted.startsWith(formatted))
+            return optFormatted ===  formatted || (formatted.length >= 2 && optFormatted.startsWith(formatted))
         }
     );
     if(!valid && input.value){
