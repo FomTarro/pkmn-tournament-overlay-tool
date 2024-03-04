@@ -59,7 +59,10 @@ With regards to custom CSS, some selectors to be aware of are:
 * `#content`: The entire container.
 * `#mon`: The image tag representing the Pokémon species.
 * `#item`: The image tag representing the held item.
-* `.fainted`: The class applied to `mon` when the Pokémon faints and to `item` when the item is consumed.
+* `#tera`: The image tag representing the Tera type.
+* `.fainted`: The class applied to `#content` when the Pokémon faints and to `#item` when the item is consumed.
+* `.outline`: The class applied to `#mon`, `#item` and `#tera` when the "Outline" icon effect is selected.
+* `.shadow`: The class applied to `#mon`, `#item` and `#tera` when the "Drop Shadow" icon effect is selected.
 
 
 ## Credits and Acknowledgements

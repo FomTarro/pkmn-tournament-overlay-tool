@@ -190,7 +190,7 @@ input.input-small {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .center {
@@ -207,6 +207,7 @@ input.input-small {
 }
 
 .flex {
+    position: relative;
     display: flex;
     gap: 0.35em;
 }
@@ -314,6 +315,17 @@ input.input-small {
     display: inline-block;
     content: '⚠️';
     animation: pulse 1s linear infinite;
+}
+
+.notAvailable{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    /* background-color: gainsboro; */
+    backdrop-filter: blur(2px);
+    top: 0;
+    bottom: 0;
+    z-index: 10;
 }
 
 .square {
@@ -487,7 +499,10 @@ input.input-small {
     position: absolute;
 }
 
-
+.pokePasteImport {
+    width: 12em;
+    max-width: 100%;
+}
 
 #playerImport {
     margin-right: 1em;

@@ -32,7 +32,7 @@
             <!-- README and OBS Settings -->
                 <div id="general" class="section">
                     <div class="rounded-corner">
-                        <h1 class="heading rounded-corner-small"><label for="minimizeGeneral">TourKOAL - v1.2.0</label><button id="minimizeGeneral" class="minimizeButton" title="Expand/Collapse the About Section" minimize="generalContent" status="on"></button></h1>
+                        <h1 class="heading rounded-corner-small"><label for="minimizeGeneral">TourKOAL - v1.2.1</label><button id="minimizeGeneral" class="minimizeButton" title="Expand/Collapse the About Section" minimize="generalContent" status="on"></button></h1>
                     </div>
                     <div id="generalContent">
                         <div id="readme">
@@ -124,14 +124,22 @@
                         </div>
                         <div class="flex flex-col rounded-corner">
                             <div class="flex-center">
-                                <label class="bold" for="monCountSlider">Pokémon per Team</label>
+                                <label class="bold" for="monCountSlider">Pokémon to Display</label>
+                            </div>
+                            <div class="font-small flex flex-center">
+                                <label for="monIconEffect">Icon effect: </label>
+                                <select id="monIconEffect" class="generalSetting">
+                                    <option value="none">None</option>
+                                    <option value="shadow">Drop Shadow</option>
+                                    <option value="outline">Outline</option>
+                                </select>
                             </div>
                             <div class="slider">
                                 <button class="minus square" type='button'>➖</button>
                                 <input id="monCountSlider" class="generalSetting" type="range" step="1" min="1" max="6" value="4">
                                 <button class="plus square" type='button'>➕</button>
                                 <span class="font-small">
-                                    <span>Per team: </span>
+                                    <span>Total Pokémon per team: </span>
                                     <span id="monCount">4</span>
                                 </span>
                             </div>
@@ -242,7 +250,10 @@
                             </div>
                             <input id="pairingsSceneSelect" class="sceneSelect sourceSetting" target="pairings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
                         </div>
-                        <div class="flex flex-col rounded-corner">
+                        <div id="pairingsImportModule" class="flex flex-col rounded-corner">
+                            <div class="notAvailable rounded-corner rounded-corner-small">
+                                <span class="important">Live file tracking is only availble in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility" target="_blank">some browsers</a>.</span>
+                            </div>
                             <label for="pairingsImport" class="bold">Import from TOM</label>
                             <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
                             <div>
@@ -315,13 +326,12 @@
                             </div>
                             <input id="standingsSceneSelect" class="sceneSelect sourceSetting" target="standings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
                         </div>
-                        <div class="flex flex-col rounded-corner">
+                        <div id="standingsImportModule" class="flex flex-col rounded-corner">
+                            <div class="notAvailable rounded-corner rounded-corner-small">
+                                <span class="important">Live file tracking is only availble in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility" target="_blank">some browsers</a>.</span>
+                            </div>
                             <label for="standingsImport" class="bold">Import from TOM</label>
                             <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
-                            <div class="font-small flex flex-center">
-                                <label for="standingsOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
-                                <input id="standingsOrdinalToggle" class="generalSetting ordinalToggle" type="checkbox" checked>
-                            </div>
                             <div>
                                 <button id="standingsImport" class="notranslate">Choose File</button>
                                 <label for="standingsImport" id="standingsImportFile" class="font-small basic-ui notranslate">No file chosen</label>
@@ -334,6 +344,10 @@
                         <div class="flex flex-col rounded-corner">
                             <div class="flex-center">
                                 <label class="bold" for="standingsSlider">Standings to Display</label>
+                            </div>
+                            <div class="font-small flex flex-center">
+                                <label for="standingsOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
+                                <input id="standingsOrdinalToggle" class="generalSetting ordinalToggle" type="checkbox" checked>
                             </div>
                             <div class="slider">
                                 <button class="minus square" type='button'>➖</button>
@@ -569,6 +583,7 @@
                         <td>
                             <div class='flex-col center rounded-corner-small'>
                                 <input id="player_x_name" class="playerName" placeholder="Player Name" type="text" required>
+                                <button class="pokePasteImport">Import Team from PokePaste</button>
                             </div>
                         </td>
                         <td>
@@ -666,6 +681,7 @@
     <script type="text/javascript" src="./js/species.js"></script>
     <script type="text/javascript" src="./js/utils.js"></script>
     <script type="text/javascript" src="./js/tom.js"></script>
+    <script type="text/javascript" src="./js/pokepaste.js"></script>
     <script type="text/javascript" src="./js/players.js"></script>
     <script type="text/javascript" src="./js/vendor/obs-ws.min.js"></script>
     <script type="text/javascript" src="./js/obs.js"></script>

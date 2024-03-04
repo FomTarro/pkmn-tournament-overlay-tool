@@ -133,6 +133,7 @@ function attachEventListeners(){
             const faintedToggle = monModule.querySelector(".faintedToggle");
             const itemToggle = monModule.querySelector(".itemToggle");
             const teraToggle = monModule.querySelector(".teraToggle");
+            const monIconEffect = document.getElementById('monIconEffect');
             const setItem = () => {
                 const item = monSelector.options[monSelector.selectedIndex].getAttribute('item');
                 itemSelector.value = item != undefined && item != null ? item : '';
@@ -176,6 +177,8 @@ function attachEventListeners(){
                 if(teraType && teraToggle.checked){
                     url.searchParams.set('tera', teraType.toLowerCase());
                 }
+                const effect = monIconEffect.value;
+                url.searchParams.set('effect', effect);
                 OBS.setBrowserSourceURL(source, url.toString())
                 const icon = monModule.querySelector('.monIcon');
                 if(icon){
@@ -195,6 +198,7 @@ function attachEventListeners(){
             itemSelector.addEventListener('change', updateIcon);
             itemToggle.addEventListener('change', updateIcon);
             teraToggle.addEventListener('change', updateIcon);
+            monIconEffect.addEventListener('change', updateIcon)
         }
         // Hook up button to fill all icons
         const fillButton = playerModule.querySelector('.fillButton');
@@ -795,6 +799,7 @@ function loadGeneralSettings(){
         standingsSingleSplitter: '/',
         standingsCount: 8,
         monsPerTeamCount: 4,
+        monIconEffect: 'shadow',
     };
     settings = merge(defaultSettings, settings);
 
@@ -815,6 +820,8 @@ function loadGeneralSettings(){
 
     document.getElementById('monCountSlider').value = settings.monsPerTeamCount ?? 4;
     document.getElementById('monCountSlider').dispatchEvent(event);
+
+    document.getElementById('monIconEffect').value = settings.monIconEffect;
 }
 
 function saveGeneralSettings(){
@@ -830,6 +837,7 @@ function saveGeneralSettings(){
         standingsSingleSplitter: document.getElementById('standingsSingleSplitter').value,
         standingsCount: document.getElementById('standingsSlider').value,
         monsPerTeamCount: document.getElementById('monCountSlider').value,
+        monIconEffect: document.getElementById('monIconEffect').value,
     };
     localStorage.setItem(GENERAL_SETTINGS_KEY, JSON.stringify(settings));
 }
@@ -846,6 +854,14 @@ window.onload = async() => {
     loadSourceSettings();
     loadPlayerList();
     connectToOBS();
+
+    // Enable some sections if the browser supports their function
+
+    if(window.showOpenFilePicker){
+        for(let blocker of document.getElementsByClassName('notAvailable')){
+            blocker.classList.add('hidden');
+        }
+    }
 
     // Attatch the Save triggers AFTER loading so as not to execute a ton of I/O as we load in.
 

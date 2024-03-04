@@ -72,13 +72,19 @@ function resetSelector(selector, sendChangeEvent = false){
  */
 function validate(input){
     // find the item on the list that matches regardless of case
-    const formatted = input.value.toLowerCase().replaceAll('-', ' ')
-    const valid = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].find(
-        opt => {
-            const optFormatted = opt.innerText.toLowerCase().replaceAll('-', ' ');
-            return optFormatted ===  formatted || (formatted.length >= 2 && optFormatted.startsWith(formatted))
-        }
-    );
+    const formatted = input.value.toLowerCase()
+    .replaceAll("-hisui", "-hisuian")
+    .replaceAll("-alola", "-alolan")
+    .replaceAll("-galar", "-galarian")
+    .replaceAll("-paldea", "-paldean");
+    const options = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')];
+    const valid = findWithHighestScore(options, formatted);
+    // const valid = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].find(
+    //     opt => {
+    //         const optFormatted = opt.innerText.toLowerCase().replaceAll('-', ' ');
+    //         const splitOpt = opt.innerText.toLowerCase().split(' ');
+    //         return optFormatted ===  formatted || (formatted.length >= 2 && optFormatted.startsWith(formatted))
+    //     }
     if(!valid && input.value){
         input.classList.add('typo');
     }else{
@@ -88,6 +94,51 @@ function validate(input){
     if(valid){
         input.value = valid.innerText;
     }
+}
+
+/**
+ * 
+ * @param {HTMLOptionElement[]} options 
+ * @param {string} input 
+ * @returns {string}
+ */
+function findWithHighestScore(options, input){
+    const splitInput = sanitizeString(input).split(' ');
+    const matches = []
+    // console.log(options);
+    for(const option of options){
+        const splitOpt = sanitizeString(option.innerText).split(' ');
+        const score = splitInput.filter(inputWord => 
+            splitOpt.filter(optionWord => {
+                return optionWord.startsWith(inputWord)
+            }).length > 0).length;
+        if(score > 0){
+            matches.push({
+                opt: option,
+                score: score
+            })
+        }
+    }
+    const max = matches.reduce((prev, current) => (prev.score >= current.score) ? prev : current, {opt: undefined, score: -1});
+    // no clearcut matches (input string is perhaps only a fragment of a single word)
+    // try our best to guess the word!
+    if(!max.opt){
+        const bestGuess = options.find(opt => {
+            const optFormatted = sanitizeString(opt.innerText)
+            return input.length >= 2 && optFormatted.startsWith(sanitizeString(input))
+        });
+        return bestGuess;
+    }
+    return max && max.opt ? max.opt : undefined;
+}
+
+/**
+ * 
+ * @param {string} str 
+ * @returns {string}
+ */
+function sanitizeString(str){
+    return str.toLowerCase().replaceAll('(', '').replaceAll(')', '').replaceAll('-', ' ')
 }
 
 /**
@@ -214,3 +265,38 @@ function watchFile(fileHandle, onChange, interval = 2000){
     }, interval);
     return timer;
 }
+
+function getEditDistance(a, b){
+    if(a.length == 0) return b.length; 
+    if(b.length == 0) return a.length; 
+  
+    var matrix = [];
+  
+    // increment along the first column of each row
+    var i;
+    for(i = 0; i <= b.length; i++){
+      matrix[i] = [i];
+    }
+  
+    // increment each column in the first row
+    var j;
+    for(j = 0; j <= a.length; j++){
+      matrix[0][j] = j;
+    }
+  
+    // Fill in the rest of the matrix
+    for(i = 1; i <= b.length; i++){
+      for(j = 1; j <= a.length; j++){
+        if(b.charAt(i-1) == a.charAt(j-1)){
+          matrix[i][j] = matrix[i-1][j-1];
+        } else {
+          matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, // substitution
+                                  Math.min(matrix[i][j-1] + 1, // insertion
+                                           matrix[i-1][j] + 1)); // deletion
+        }
+      }
+    }
+  
+    return matrix[b.length][a.length];
+  };
+
