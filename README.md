@@ -1,5 +1,5 @@
 # TourKOAL (Tournament Knowledge and Overlay Assistant for Livestreams) 
-[v1.2.1 - Check it out!](https://www.skeletom.net/pkmn/tournament-overlay/)
+[v1.3.0 - Check it out!](https://www.skeletom.net/pkmn/tournament-overlay/)
 
 ![TouKOAL Icon illustrated by bonbombs](./img/site/logo_notext1x.png)
 ## The Why

@@ -145,7 +145,8 @@ ol :nth-child(even of .rounded-corner-small:not([hidden])) {
 select,
 input[type="text"],
 input[type="range"],
-.sourceSelect {
+.sourceSelect,
+.standardInput {
     width: 12em;
     max-width: 100%;
 }
@@ -497,11 +498,6 @@ input.input-small {
     padding-top: 2.3em;
     width: 0px;
     position: absolute;
-}
-
-.pokePasteImport {
-    width: 12em;
-    max-width: 100%;
 }
 
 #playerImport {

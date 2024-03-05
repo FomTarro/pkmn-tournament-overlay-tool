@@ -72,19 +72,9 @@ function resetSelector(selector, sendChangeEvent = false){
  */
 function validate(input){
     // find the item on the list that matches regardless of case
-    const formatted = input.value.toLowerCase()
-    .replaceAll("-hisui", "-hisuian")
-    .replaceAll("-alola", "-alolan")
-    .replaceAll("-galar", "-galarian")
-    .replaceAll("-paldea", "-paldean");
-    const options = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')];
-    const valid = findWithHighestScore(options, formatted);
-    // const valid = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].find(
-    //     opt => {
-    //         const optFormatted = opt.innerText.toLowerCase().replaceAll('-', ' ');
-    //         const splitOpt = opt.innerText.toLowerCase().split(' ');
-    //         return optFormatted ===  formatted || (formatted.length >= 2 && optFormatted.startsWith(formatted))
-    //     }
+    const formatted = input.value;
+    const options = [...document.getElementById(input.getAttribute('list')).querySelectorAll('option')].map(opt => opt.innerText);
+    const valid = findNearestMatch(options, formatted);
     if(!valid && input.value){
         input.classList.add('typo');
     }else{
@@ -92,25 +82,28 @@ function validate(input){
     }
     // if we have a match, set it!
     if(valid){
-        input.value = valid.innerText;
+        input.value = valid;
     }
 }
 
 /**
- * 
- * @param {HTMLOptionElement[]} options 
- * @param {string} input 
- * @returns {string}
+ * Compares a given input to a list of options and determines the nearest match from the set.
+ * @param {string[]} options - List of potential options.
+ * @param {string} input - String to match in to options.
+ * @returns {string} - Closest match string. Undefined if there's nothing close.
  */
-function findWithHighestScore(options, input){
+function findNearestMatch(options, input){
     const splitInput = sanitizeString(input).split(' ');
     const matches = []
-    // console.log(options);
     for(const option of options){
-        const splitOpt = sanitizeString(option.innerText).split(' ');
+        const splitOpt = sanitizeString(option).split(' ');
+        // This is like baby's first n-gram,
+        // "score" is basically the number of overlapping words 
+        // in the input and option phrases.
+        // ex "Landorus-Therian" and "Landorus (Therian Forme)" will have a score of 2
         const score = splitInput.filter(inputWord => 
             splitOpt.filter(optionWord => {
-                return optionWord.startsWith(inputWord)
+                return inputWord.length > 0 && optionWord.startsWith(inputWord)
             }).length > 0).length;
         if(score > 0){
             matches.push({
@@ -124,7 +117,7 @@ function findWithHighestScore(options, input){
     // try our best to guess the word!
     if(!max.opt){
         const bestGuess = options.find(opt => {
-            const optFormatted = sanitizeString(opt.innerText)
+            const optFormatted = sanitizeString(opt)
             return input.length >= 2 && optFormatted.startsWith(sanitizeString(input))
         });
         return bestGuess;
@@ -298,5 +291,5 @@ function getEditDistance(a, b){
     }
   
     return matrix[b.length][a.length];
-  };
+}
 

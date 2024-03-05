@@ -223,22 +223,24 @@ function addPlayer(existingData) {
         });
     }
 
-    const importButton = row.querySelector(`.pokePasteImport`);
+    const importButton = row.querySelector(`#player_${playerData.uuid}_import_paste`);
     importButton.addEventListener('click', () => {
-        const text = window.prompt("Enter PokePaste text!")
+        const text = window.prompt("Enter PokéPaste-format text!")
+        if(text && text.length > 0){
         const mons = PokePaste.parse(text);
-        for(let i = 0; i < mons.length; i++){
-            const monInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}`)
-            monInput.value = mons[i].species ?? '';
-            const event = new Event('change')
-            const itemInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_item`);
-            itemInput.value = mons[i].item ?? '';
-            const teraInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_tera`);
-            teraInput.value = mons[i].tera ?? '';
+            for(let i = 0; i < mons.length; i++){
+                const monInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}`)
+                monInput.value = mons[i].species ?? '';
+                const event = new Event('change')
+                const itemInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_item`);
+                itemInput.value = mons[i].item ?? '';
+                const teraInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_tera`);
+                teraInput.value = mons[i].tera ?? '';
 
-            monInput.dispatchEvent(event);
-            itemInput.dispatchEvent(event);
-            teraInput.dispatchEvent(event);
+                monInput.dispatchEvent(event);
+                itemInput.dispatchEvent(event);
+                teraInput.dispatchEvent(event);
+            }
         }
     })
 

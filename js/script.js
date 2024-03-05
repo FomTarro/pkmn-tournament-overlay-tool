@@ -846,8 +846,25 @@ let standingsInterval = undefined;
 let pairingsInterval = undefined;
 let connectionInterval = window.setInterval(OBS.checkConnectionStatus, 1000);
 window.onload = async() => {
-    loadPokedex();
-    loadItemdex();
+    document.getElementById('pokemonOptions').innerHTML = ''
+    loadPokedex((species) => {
+        const opt = document.createElement('option');
+        opt.classList.add('monOption');
+        opt.id = species.name;
+        opt.innerHTML = species.name;
+        opt.setAttribute('dexNumber', species.number);
+        document.getElementById('pokemonOptions').appendChild(opt);
+    });
+    document.getElementById('itemOptions').innerHTML = ''
+    loadItemdex((item) => {
+        const opt = document.createElement('option');
+        opt.classList.add('itemOption');
+        opt.id = item.name;
+        opt.innerHTML = item.name;
+        opt.key = item.name.toLowerCase().replaceAll(' ', '_').replaceAll('\'', '');
+        opt.type = item.type
+        document.getElementById('itemOptions').appendChild(opt);
+    });
     createFromTemplates();
     attachEventListeners();
     loadGeneralSettings();

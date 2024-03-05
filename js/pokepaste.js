@@ -14,7 +14,7 @@ const PokePaste = {
      * @return {PasteMon[]} - Array of mons in the Paste
      */
     parse(text){
-        const lines = text.split('\r\n');
+        const lines = text.split('\n').map(str => str.trim());
         const mons = [{}];
         for(const line of lines){
             if(line.startsWith('-')){
@@ -28,6 +28,10 @@ const PokePaste = {
             }else if(line.length <= 0){
                 // new mon
                 mons.push({});
+            }else if(line.startsWith("EVs:")){
+            }else if(line.startsWith("IVs:")){
+            }else if(line.endsWith("Nature")){
+            }else if(line.startsWith("Level:")){
             }else{
                 // it's mon name and item
                 const split = line.split('@').map(item => item.trim());
@@ -37,6 +41,6 @@ const PokePaste = {
                 }
             }
         }
-        return mons;
+        return mons.filter(mon => mon.species);
     }
 }
