@@ -872,6 +872,10 @@ window.onload = async() => {
     loadPlayerList();
     connectToOBS();
 
+    // document.getElementById('changelog').addEventListener('click', () => {
+    //     window.alert(getChangeLog())
+    // })
+
     // Enable some sections if the browser supports their function
 
     if(window.showOpenFilePicker){
@@ -902,4 +906,60 @@ window.onload = async() => {
 const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.get('unown')){
     document.getElementsByTagName('body')[0].classList.add('unown');
+}
+
+function getChangeLog(){
+    const changes = [
+        {
+            date: "March 5th 2024",
+            version: "1.3.0",
+            changes: [
+                "Added support for importing teams from the PokePaste/Showdown style format.",
+                "Added the ability to choose different visual effects for Team Icons.",
+                "Added the Changelog."
+            ]
+        },
+        {
+            date: "January 15th, 2024",
+            version: "1.2.1",
+            changes: [
+                "Added support for displaying Tera type!",
+                "Added support for displaying up to 6 Pokémon per team!",
+                "Added support for autocomplete in team data entry.",
+                "Corrected the order of Porygon Z and Gallade icons."
+            ]
+        },
+        {
+            date: "December 30th 2024",
+            version: "1.1.2",
+            changes: [
+                "Added guard rails that prevent the user from being able to select the same mon multiple times in the battle drop-down.",
+                "Added guard rails that prevent the user from being able to select the same player for both sides of battle, or multiple times in pairing/standings.",
+                "Resolved and issue where the addPlayer function was being passed the JavaScript click event and storing that as player data, invalidating the record."
+            ]
+        },
+        {
+            date: "December 20th 2024",
+            version: "1.0.1",
+            changes: [
+                "Fixed rendering error with Team Icons when applying the fainted effect."
+            ]
+        },
+        {
+            date: "December 16th 2023",
+            version: "1.0.0",
+            changes: [
+                "Initial release!",
+            ]
+        }
+    ]
+    let str='';
+    for(let date of changes){
+        str += `${date.date} (version ${date.version})\n`
+        for(let change of date.changes){
+            str += `• ${change}\n`
+        }
+        str += '\n'
+    }
+    return str;
 }

@@ -26,6 +26,7 @@ The tool runs entirely in the browser as well, making it very portable and easy 
     * Player's Score
     * Which Pokémon they have revealed
     * The status of their Pokémon
+    * THe Tera Type of their Pokémon
     * The held items of their Pokémon
     * The status of their held items
 * Display and automatically update tournament metadata, such as:
@@ -49,6 +50,11 @@ This tool also supports a few integrations with the official Play! Pokémon Tour
 
 The files necessary for the above integrations can be found in your `TOM/data/reports` directory.
 
+### PokéPaste Integration
+As of version 1.3.0, this tool also supports the ability to import teams via a PokéPaste text format. This is the standard team list format that you will see from other tools such as Showdown, PokéPaste and PokéBin.
+
+Simply click the "Import Team" button beneath the player's name on their table row and paste in the text to populate their team records.
+
 ### Customization
 Under the hood, the Pokémon/Item displays are simple HTML pages with the required images already loaded. This setup provides a few benefits:
 
@@ -63,6 +69,7 @@ With regards to custom CSS, some selectors to be aware of are:
 * `.fainted`: The class applied to `#content` when the Pokémon faints and to `#item` when the item is consumed.
 * `.outline`: The class applied to `#mon`, `#item` and `#tera` when the "Outline" icon effect is selected.
 * `.shadow`: The class applied to `#mon`, `#item` and `#tera` when the "Drop Shadow" icon effect is selected.
+* `.shadow_outline` The class applied to `#mon`, `#item` and `#tera` when the "Outline + Drop Shadow" icon effect is selected.
 
 
 ## Credits and Acknowledgements

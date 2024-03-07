@@ -10,19 +10,16 @@ const PokePaste = {
 
     /**
      * Parses a PokePaste-styled text blob into a team.
-     * @param {string} text 
-     * @return {PasteMon[]} - Array of mons in the Paste
+     * @param {string} text - Paste-formatted text.
+     * @return {PasteMon[]} - Array of mons in the Paste.
      */
     parse(text){
         const lines = text.split('\n').map(str => str.trim());
         const mons = [{}];
         for(const line of lines){
-            if(line.startsWith('-')){
-                // it's a move, we can skip
-            }else if(line.startsWith("Ability")){
-                // it's an ability, we can skip
-            }else if(line.startsWith("Tera Type")){
-                // it's tera type
+            
+            if(line.startsWith("Tera Type")){
+                // tera type
                 const split = line.split(':').map(item => item.trim());
                 mons[mons.length-1].tera = split[1];
             }else if(line.length <= 0){
@@ -32,6 +29,8 @@ const PokePaste = {
             }else if(line.startsWith("IVs:")){
             }else if(line.endsWith("Nature")){
             }else if(line.startsWith("Level:")){
+            }else if(line.startsWith("Ability")){   
+            }else if(line.startsWith('-')){
             }else{
                 // it's mon name and item
                 const split = line.split('@').map(item => item.trim());

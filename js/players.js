@@ -121,7 +121,7 @@ function addPlayer(existingData) {
         const opt = document.createElement('option');
         // opt.id = `player_${playerData.uuid}_option`;
         opt.value = playerData.uuid;
-        opt.innerText = playerData.name;
+        opt.innerText = playerData.name ?? '???';
         opt.classList.add('notranslate');
         const optGroup = selector.querySelector('.optionContent');
         optGroup.insertBefore(opt, optGroup.firstChild);
@@ -136,7 +136,7 @@ function addPlayer(existingData) {
     nameInput.addEventListener('change', () => {
         playerData.name = nameInput.value;
         for (let opt of opts) {
-            opt.innerText = playerData.name;
+            opt.innerText = playerData.name ?? '???';
         }
     });
 

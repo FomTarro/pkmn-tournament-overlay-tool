@@ -11,12 +11,11 @@ function uuidv4() {
         });
 }
 
-/**
- * For each property of object A, if object B has a value for that property, apply it to Object A.
+/** * For each property of object A, if object B has a value for that property, apply it to Object A.
  * Returns a new instance/clone of A with the new values.
  * @param {object} a 
  * @param {object} b 
- * @returns {object} A new instance of A with all properties merged in.
+ * @returns {object} - A new instance of A with all properties merged in.
  */
 function merge(a, b){
     var c = {}
@@ -126,9 +125,49 @@ function findNearestMatch(options, input){
 }
 
 /**
- * 
- * @param {string} str 
- * @returns {string}
+ * Calculates the number of edits required to go from string A to string B.
+ * @param {string} a 
+ * @param {string} b 
+ * @returns {number} - The number of edits required.
+ */
+function getEditDistance(a, b){
+    if(a.length == 0) return b.length; 
+    if(b.length == 0) return a.length; 
+  
+    var matrix = [];
+  
+    // increment along the first column of each row
+    var i;
+    for(i = 0; i <= b.length; i++){
+      matrix[i] = [i];
+    }
+  
+    // increment each column in the first row
+    var j;
+    for(j = 0; j <= a.length; j++){
+      matrix[0][j] = j;
+    }
+  
+    // Fill in the rest of the matrix
+    for(i = 1; i <= b.length; i++){
+      for(j = 1; j <= a.length; j++){
+        if(b.charAt(i-1) == a.charAt(j-1)){
+          matrix[i][j] = matrix[i-1][j-1];
+        } else {
+          matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, // substitution
+                                  Math.min(matrix[i][j-1] + 1, // insertion
+                                           matrix[i-1][j] + 1)); // deletion
+        }
+      }
+    }
+  
+    return matrix[b.length][a.length];
+}
+
+/**
+ * Removes parenthesis, forces to lowercase, and replaces dashes with spaces.
+ * @param {string} str - The string to sanitize.
+ * @returns {string} - The sanitized string.
  */
 function sanitizeString(str){
     return str.toLowerCase().replaceAll('(', '').replaceAll(')', '').replaceAll('-', ' ')
@@ -257,39 +296,5 @@ function watchFile(fileHandle, onChange, interval = 2000){
         oldFile = file;
     }, interval);
     return timer;
-}
-
-function getEditDistance(a, b){
-    if(a.length == 0) return b.length; 
-    if(b.length == 0) return a.length; 
-  
-    var matrix = [];
-  
-    // increment along the first column of each row
-    var i;
-    for(i = 0; i <= b.length; i++){
-      matrix[i] = [i];
-    }
-  
-    // increment each column in the first row
-    var j;
-    for(j = 0; j <= a.length; j++){
-      matrix[0][j] = j;
-    }
-  
-    // Fill in the rest of the matrix
-    for(i = 1; i <= b.length; i++){
-      for(j = 1; j <= a.length; j++){
-        if(b.charAt(i-1) == a.charAt(j-1)){
-          matrix[i][j] = matrix[i-1][j-1];
-        } else {
-          matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, // substitution
-                                  Math.min(matrix[i][j-1] + 1, // insertion
-                                           matrix[i-1][j] + 1)); // deletion
-        }
-      }
-    }
-  
-    return matrix[b.length][a.length];
 }
 

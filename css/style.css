@@ -58,6 +58,12 @@ body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
+dialog {
+    z-index: 100;
+    top: 0;
+    position: sticky;
+}
+
 label {
     width: fit-content;
 }
@@ -184,6 +190,12 @@ input.input-small {
     z-index: 100;
     position: fixed;
     width: calc(100% - 2em);
+}
+
+.nav-content{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
 }
 
 .no-margins {
