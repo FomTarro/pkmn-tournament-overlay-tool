@@ -4334,10 +4334,10 @@ const ITEMS = [
         name: 'Heavy Duty Boots'
     },
     {
-        name: 'Icicle Plase'
+        name: 'Icicle Plate'
     },
     {
-        name: 'ICy Rock'
+        name: 'Icy Rock'
     },
     {
         name: 'Insect Plate'

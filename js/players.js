@@ -122,7 +122,7 @@ function addPlayer(existingData) {
         // opt.id = `player_${playerData.uuid}_option`;
         opt.value = playerData.uuid;
         opt.innerText = playerData.name ?? '???';
-        opt.classList.add('notranslate');
+        opt.classList.add('notranslate', 'playerOption');
         const optGroup = selector.querySelector('.optionContent');
         optGroup.insertBefore(opt, optGroup.firstChild);
         opts.push(opt);
@@ -346,6 +346,13 @@ async function importStandingsFromTOM(file){
             standingModules[i].dispatchEvent(event);
         }
     }
+    const playerOptions = document.querySelectorAll('.playerOption');
+    for(let player of standings.allStandings){
+        for(let opt of [...playerOptions].filter(o => o.value === findPlayerByName(player.name)?.uuid)){
+            opt.setAttribute("record", `(${player.record.wins}/${player.record.ties}/${player.record.losses})`);
+        }
+    }
+
 
 }
 

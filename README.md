@@ -2,6 +2,7 @@
 [v1.3.0 - Check it out!](https://www.skeletom.net/pkmn/tournament-overlay/)
 
 ![TouKOAL Icon illustrated by bonbombs](./img/site/logo_notext1x.png)
+
 ## The Why
 Are you a Pokémon Professor? Have you organized a local tournament? Have you tried streaming those locals like they do for Regionals? It's not easy, right? 
 
@@ -9,7 +10,7 @@ Back at the start of the 2024 season, I helped run the stream for a local Mid-Se
 
 This process was both very labor-intensive and very error-prone. I figured it must be possible to engineer a better workflow. What if you could accomplish the same results as the above, plus much more, all with a single click? Could we build in guard rails to drastically reduce the odds of displaying the wrong information?
 
-The answer, of course, was yes! Which is how we got here!
+The answer, of course, was yes! Which brings us to this tool...
 
 ## The What
 The goal of this tool is to easily compile player and team information such that it can be quickly displayed on the fly during tournament matches, 
@@ -18,17 +19,17 @@ helping you build a professional-quality overlay for your broadcast with as litt
 No longer will you need to scramble through hundreds of image files by hand as players reveal which of their Pokémon they brought to the game, 
 nor will you need to manually adjust OBS sources when items are consumed or Pokémon faint! You can even automatically track and update player pairings and standings to display on stream!
 
-The tool runs entirely in the browser as well, making it very portable and easy to run on venue stream setups without needing to download or install any additional software.
+The tool runs entirely in the browser as well, making it very portable and easy to run on venue stream setups without needing to download or install any additional software. No player information is sent or stored on a remote server, or anything of the sort.
 
 ### Features include the ability to:
 * Quickly and easily display battle information, such as:
     * Player's Name
     * Player's Score
     * Which Pokémon they have revealed
-    * The status of their Pokémon
-    * THe Tera Type of their Pokémon
+        * The status of their Pokémon
+    * The Tera Type of their Pokémon
     * The held items of their Pokémon
-    * The status of their held items
+        * The status of their held items
 * Display and automatically update tournament metadata, such as:
     * Player Pairings (up to 32 tables)
     * Player Standings (up to top 32)
@@ -55,8 +56,66 @@ As of version 1.3.0, this tool also supports the ability to import teams via a P
 
 Simply click the "Import Team" button beneath the player's name on their table row and paste in the text to populate their team records.
 
+For example, try using the following Paste (my beloved Regulation E Little Cup team):
+```
+Dirty Work (Glimmet) @ Eviolite  
+Ability: Toxic Debris  
+Level: 50  
+Tera Type: Grass  
+- Toxic  
+- Sludge Bomb  
+- Power Gem  
+- Protect  
+
+Demon's Eye (Charmander) (M) @ Choice Specs  
+Ability: Solar Power  
+Level: 50  
+Tera Type: Flying   
+- Heat Wave  
+- Overheat  
+- Dragon Pulse  
+- Tera Blast  
+
+C'mon C'mon (Murkrow) (F) @ Covert Cloak  
+Ability: Prankster  
+Level: 50  
+Tera Type: Ghost  
+- Dual Wingbeat  
+- Tailwind  
+- Sunny Day  
+- Haze  
+
+Landslide (Mudbray) (F) @ Choice Band  
+Ability: Inner Focus  
+Level: 50  
+Tera Type: Grass  
+- Earthquake  
+- Rock Slide  
+- Close Combat  
+- Iron Head  
+
+Aja (Misdreavus) (F) @ Assault Vest  
+Ability: Levitate  
+Level: 50  
+Tera Type: Electric  
+- Shadow Ball  
+- Draining Kiss  
+- Charge Beam  
+- Night Shade  
+
+Gaucho (Munchlax) @ Leftovers  
+Ability: Thick Fat  
+Level: 50  
+Tera Type: Fairy  
+- Stomping Tantrum  
+- Rock Slide  
+- Brick Break  
+- Protect  
+```
+
+
 ### Customization
-Under the hood, the Pokémon/Item displays are simple HTML pages with the required images already loaded. This setup provides a few benefits:
+Under the hood, the Pokémon/Item displays (Team Icons) are simple HTML pages with the required images already loaded. This setup provides a few benefits:
 
 1) It allows for a rich density of information (both species and item, as well as their conditions) in just a single source.
 2) It allows the user to further style the display using custom CSS in their OBS Browser source, if they desire.
@@ -67,9 +126,12 @@ With regards to custom CSS, some selectors to be aware of are:
 * `#item`: The image tag representing the held item.
 * `#tera`: The image tag representing the Tera type.
 * `.fainted`: The class applied to `#content` when the Pokémon faints and to `#item` when the item is consumed.
+
+The following selectors are used to style Team Icons:
 * `.outline`: The class applied to `#mon`, `#item` and `#tera` when the "Outline" icon effect is selected.
 * `.shadow`: The class applied to `#mon`, `#item` and `#tera` when the "Drop Shadow" icon effect is selected.
-* `.shadow_outline` The class applied to `#mon`, `#item` and `#tera` when the "Outline + Drop Shadow" icon effect is selected.
+* `.shadow_outline`: The class applied to `#mon`, `#item` and `#tera` when the "Outline + Drop Shadow" icon effect is selected.
+* `.custom`: The class applied to `#mon`, `#item` and `#tera` when the "Custom" icon effect is selected. This class provides no styling out-of-the-box; it is meant to be used in conjuction with custom CSS from OBS.
 
 
 ## Credits and Acknowledgements

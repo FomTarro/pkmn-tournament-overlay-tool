@@ -125,7 +125,7 @@
                         </div>
                         <div class="flex flex-col rounded-corner">
                             <div class="flex-center">
-                                <label class="bold" for="monCountSlider">Pokémon to Display</label>
+                                <label class="bold" for="monCountSlider">Players to Display</label>
                             </div>
                             <div class="font-small flex flex-center">
                                 <label for="monIconEffect">Icon effect: </label>
@@ -134,7 +134,12 @@
                                     <option value="shadow">Drop Shadow</option>
                                     <option value="outline">Outline</option>
                                     <option value="shadow_outline">Outline + Drop Shadow</option>
+                                    <option value="custom">Custom</option>
                                 </select>
+                            </div>
+                            <div class="font-small flex flex-center">
+                                <label for="battleRecordToggle">Include record with name? (ex. "Ash K. (1/0/2)")</label>
+                                <input id="battleRecordToggle" class="generalSetting recordToggle" type="checkbox" checked>
                             </div>
                             <div class="slider">
                                 <button class="minus square" type='button'>➖</button>
@@ -161,7 +166,7 @@
                                             <label for="player_1_select" class="bold">Player #1</label> <a href="#players" class="player_link font-small">(jump to table)</a>
                                         </div>
                                         <div class="nameModule">
-                                            <select class="playerSelect" id="player_1_select">
+                                            <select class="playerSelect" id="player_1_select" recordToggle="battleRecordToggle">
                                                 <optgroup label="Default">
                                                     <option>None</option>
                                                 </optgroup>
@@ -192,7 +197,7 @@
                                             <label for="player_2_select" class="bold">Player #2</label> <a href="#players" class="player_link font-small">(jump to table)</a>
                                         </div>
                                         <div class="nameModule">
-                                            <select class="playerSelect" id="player_2_select">
+                                            <select class="playerSelect" id="player_2_select" recordToggle="battleRecordToggle">
                                                 <optgroup label="Default">
                                                     <option>None</option>
                                                 </optgroup>
@@ -270,6 +275,10 @@
                         <div class="flex flex-col rounded-corner">
                             <div class="flex-center">
                                 <label class="bold" for="pairingsSlider">Pairings to Display</label>
+                            </div>
+                            <div class="font-small flex flex-center">
+                                <label for="pairingsRecordToggle">Include record with name? (ex. "Ash K. (1/0/2)")</label>
+                                <input id="pairingsRecordToggle" class="generalSetting recordToggle" type="checkbox" checked>
                             </div>
                             <div class="slider">
                                 <button class="minus square" type='button'>➖</button>
@@ -350,6 +359,10 @@
                             <div class="font-small flex flex-center">
                                 <label for="standingsOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
                                 <input id="standingsOrdinalToggle" class="generalSetting ordinalToggle" type="checkbox" checked>
+                            </div>
+                            <div class="font-small flex flex-center">
+                                <label for="standingsRecordToggle">Include record with name? (ex. "Ash K. (1/0/2)")</label>
+                                <input id="standingsRecordToggle" class="generalSetting recordToggle" type="checkbox" checked>
                             </div>
                             <div class="slider">
                                 <button class="minus square" type='button'>➖</button>
@@ -533,7 +546,7 @@
                     <li class="pairingsModule rounded-corner-small">
                         <div class="flex center flex-wrap flex-space-between">
                             <div class="nameModule">
-                                <select id="table_x_player1_name" class="playerSelect">
+                                <select id="table_x_player1_name" class="playerSelect" recordToggle="pairingsRecordToggle">
                                     <optgroup label="Default">
                                         <option value="None">None</option>
                                     </optgroup>
@@ -561,7 +574,7 @@
                 <template id="standings_template_item">
                     <li class="standingsModule rounded-corner-small">
                         <div class="nameModule flex flex-wrap flex-space-between center">
-                            <select id="pos_x_player_name" class="playerSelect">
+                            <select id="pos_x_player_name" class="playerSelect" ordinalToggle="standingsOrdinalToggle" recordToggle="standingsRecordToggle">
                                 <optgroup label="Default">
                                     <option value="None">None</option>
                                 </optgroup>

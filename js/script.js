@@ -48,8 +48,8 @@ function createFromTemplates(){
                 element.id = element.id.replace('_x', `_${i}`);
             }
         }
-        item.querySelector('select').setAttribute('standing', i+1);
-        item.querySelector('select').setAttribute('ordinalToggle', 'standingsOrdinalToggle');
+        const select = item.querySelector('select');
+        select.setAttribute('standing', i+1);
         standingsList.appendChild(item);
     }
 
@@ -166,11 +166,12 @@ function attachEventListeners(){
                 const url = new URL(relativeToAbsolutePath('./frame.html'));
                 url.searchParams.set('img', `poke_icon_${dexNumber}`)
                 url.searchParams.set('fainted', faintedToggle.checked);
+
                 if(itemOpt){
                     if(itemOpt.type === 'Berry'){
-                        url.searchParams.set('item', `berry_icon_${itemOpt.key}`);
+                        url.searchParams.set('item', `berry_icon_${itemOpt.getAttribute('key')}`);
                     }else{
-                        url.searchParams.set('item', `item_icon_${itemOpt.key}`);
+                        url.searchParams.set('item', `item_icon_${itemOpt.getAttribute('key')}`);
                     }
                     url.searchParams.set('used', itemToggle.checked);
                 }
@@ -246,21 +247,21 @@ function attachEventListeners(){
             }
             // If there's an associated OBS output, update it
             if(sourceSelector){
+                const selectedOption = playerSelector.options[playerSelector.options.selectedIndex];
+                const playerName = (selectedOption && (selectedOption.value !== selectedOption.innerText)) ? selectedOption.innerText : "???";
                 let prefix = '';
                 let suffix = '';
                 // If there's an associated Ordinal Toggle, check it
                 const ordinalToggle = playerSelector.getAttribute('ordinalToggle');
                 if(ordinalToggle && document.getElementById(ordinalToggle).checked){
-                    prefix = `${applyOrdinalSuffix(playerSelector.getAttribute('standing'))} `;
+                    prefix = `${applyOrdinalSuffix(playerSelector.getAttribute('standing'))}` ?? '';
                 }
                 // If there's an associated Score Module, check it
-                const scoreField = playerSelector.getAttribute('scoreField');
-                if(scoreField){
-                    suffix = `0/0/0`
+                const recordToggle = playerSelector.getAttribute('recordToggle');
+                if(recordToggle && document.getElementById(recordToggle).checked){
+                    suffix = selectedOption.getAttribute('record') ?? '';
                 }
-                const selectedOption = playerSelector.options[playerSelector.options.selectedIndex];
-                const playerName = (selectedOption && (selectedOption.value !== selectedOption.innerText)) ? selectedOption.innerText : "???";
-                OBS.setTextSourceText(sourceSelector.value, `${prefix}${playerName}${suffix}`);
+                OBS.setTextSourceText(sourceSelector.value, `${prefix} ${playerName} ${suffix}`.trim());
             }
         }
 
@@ -791,13 +792,16 @@ function loadGeneralSettings(){
     const defaultSettings = {
         abbreviateJuniors: false,
         abbreviateSeniors: false,
-        abbreviateSeniors: false,
+        abbreviateMasters: false,
+        pairingsIncludeRecord: false,
         pairingsSingleSplitter: '/',
         pairingsCount: 8,
         standingsIncludeOrdinal: true,
+        standingsIncludeRecord: false,
         standingsSingleIncludeOrdinal: true,
         standingsSingleSplitter: '/',
         standingsCount: 8,
+        battleIncludeRecord: false,
         monsPerTeamCount: 4,
         monIconEffect: 'shadow',
     };
@@ -809,14 +813,18 @@ function loadGeneralSettings(){
     document.getElementById('abbreviateMastersToggle').checked = settings.abbreviateMasters;
 
     document.getElementById('pairingsSingleSplitter').value = settings.pairingsSingleSplitter ?? '/';
+    document.getElementById('pairingsRecordToggle').checked = settings.pairingsIncludeRecord;
     document.getElementById('pairingsSlider').value = settings.pairingsCount ?? 8;
     document.getElementById('pairingsSlider').dispatchEvent(event);
 
     document.getElementById('standingsOrdinalToggle').checked = settings.standingsIncludeOrdinal;
+    document.getElementById('standingsRecordToggle').checked = settings.standingsIncludeRecord;
     document.getElementById('standingsSingleOrdinalToggle').checked = settings.standingsSingleIncludeOrdinal;
     document.getElementById('standingsSingleSplitter').value = settings.standingsSingleSplitter ?? '/';
     document.getElementById('standingsSlider').value = settings.standingsCount ?? 8;
     document.getElementById('standingsSlider').dispatchEvent(event);
+
+    document.getElementById('battleRecordToggle').checked = settings.battleIncludeRecord;
 
     document.getElementById('monCountSlider').value = settings.monsPerTeamCount ?? 4;
     document.getElementById('monCountSlider').dispatchEvent(event);
@@ -830,12 +838,15 @@ function saveGeneralSettings(){
         abbreviateJuniors: document.getElementById('abbreviateJuniorsToggle').checked,
         abbreviateSeniors: document.getElementById('abbreviateSeniorsToggle').checked,
         abbreviateMasters: document.getElementById('abbreviateMastersToggle').checked,
+        pairingsIncludeRecord: document.getElementById('pairingsRecordToggle').checked,
         pairingsSingleSplitter: document.getElementById('pairingsSingleSplitter').value,
         pairingsCount: document.getElementById('pairingsSlider').value,
         standingsIncludeOrdinal: document.getElementById('standingsOrdinalToggle').checked,
+        standingsIncludeRecord: document.getElementById('standingsRecordToggle').checked,
         standingsSingleIncludeOrdinal: document.getElementById('standingsSingleOrdinalToggle').checked,
         standingsSingleSplitter: document.getElementById('standingsSingleSplitter').value,
         standingsCount: document.getElementById('standingsSlider').value,
+        battleIncludeRecord: document.getElementById('battleRecordToggle').checked,
         monsPerTeamCount: document.getElementById('monCountSlider').value,
         monIconEffect: document.getElementById('monIconEffect').value,
     };
@@ -861,7 +872,7 @@ window.onload = async() => {
         opt.classList.add('itemOption');
         opt.id = item.name;
         opt.innerHTML = item.name;
-        opt.key = item.name.toLowerCase().replaceAll(' ', '_').replaceAll('\'', '');
+        opt.setAttribute('key', item.name.toLowerCase().replaceAll(' ', '_').replaceAll('\'', ''));
         opt.type = item.type
         document.getElementById('itemOptions').appendChild(opt);
     });
@@ -916,6 +927,7 @@ function getChangeLog(){
             changes: [
                 "Added support for importing teams from the PokePaste/Showdown style format.",
                 "Added the ability to choose different visual effects for Team Icons.",
+                "Added the ability to display player records with names.",
                 "Added the Changelog."
             ]
         },
