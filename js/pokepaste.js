@@ -14,29 +14,30 @@ const PokePaste = {
      * @return {PasteMon[]} - Array of mons in the Paste.
      */
     parse(text){
-        const lines = text.split('\n').map(str => str.trim());
-        const mons = [{}];
+        const lines = text.split(/[\r\n|\r|\n]|(   )/g).map(str => str?.trim());
+        const mons = [];
         for(const line of lines){
-            
-            if(line.startsWith("Tera Type")){
-                // tera type
-                const split = line.split(':').map(item => item.trim());
-                mons[mons.length-1].tera = split[1];
-            }else if(line.length <= 0){
-                // new mon
-                mons.push({});
-            }else if(line.startsWith("EVs:")){
-            }else if(line.startsWith("IVs:")){
-            }else if(line.endsWith("Nature")){
-            }else if(line.startsWith("Level:")){
-            }else if(line.startsWith("Ability")){   
-            }else if(line.startsWith('-')){
-            }else{
-                // it's mon name and item
-                const split = line.split('@').map(item => item.trim());
-                mons[mons.length-1].species = split[0].replace('(M)', '').replace('(F)', '').trim();
-                if(split.length > 1){
-                    mons[mons.length-1].item = split[1];
+            if (line) {
+                if (line.includes("Tera Type:")) {
+                    // tera type
+                    const split = line.split(':').map(item => item?.trim());
+                    // console.log(split[1])
+                    mons[mons.length - 1].tera = split[1];
+                } else if (line.length <= 0) {
+                } else if (line.startsWith("EVs:")) {
+                } else if (line.startsWith("IVs:")) {
+                } else if (line.endsWith("Nature")) {
+                } else if (line.startsWith("Level:")) {
+                } else if (line.startsWith("Ability")) {
+                } else if (line.startsWith('-')) {
+                } else {
+                    // it's mon name and item
+                    mons.push({});
+                    const split = line.split('@').map(item => item?.trim());
+                    mons[mons.length - 1].species = split[0].replace('(M)', '').replace('(F)', '').trim();
+                    if (split.length > 1) {
+                        mons[mons.length - 1].item = split[1];
+                    }
                 }
             }
         }

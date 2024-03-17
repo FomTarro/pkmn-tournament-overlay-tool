@@ -2584,7 +2584,7 @@ const SPECIES = [
         name: 'Foongus'
     },
     {
-        name: 'Amoongus'
+        name: 'Amoonguss'
     },
     {
         name: 'Frillish-M',

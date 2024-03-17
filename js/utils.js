@@ -20,7 +20,7 @@ function uuidv4() {
 function merge(a, b){
     var c = {}
     for(var prop in a){
-        if(b[prop]){
+        if(b && b[prop]){
             c[prop] = b[prop]
         }else{
             c[prop] = a[prop]
