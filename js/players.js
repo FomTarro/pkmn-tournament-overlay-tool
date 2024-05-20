@@ -121,8 +121,8 @@ function addPlayer(existingData) {
         const opt = document.createElement('option');
         // opt.id = `player_${playerData.uuid}_option`;
         opt.value = playerData.uuid;
-        opt.innerText = playerData.name;
-        opt.classList.add('notranslate');
+        opt.innerText = playerData.name ?? '???';
+        opt.classList.add('notranslate', 'playerOption');
         const optGroup = selector.querySelector('.optionContent');
         optGroup.insertBefore(opt, optGroup.firstChild);
         opts.push(opt);
@@ -136,7 +136,7 @@ function addPlayer(existingData) {
     nameInput.addEventListener('change', () => {
         playerData.name = nameInput.value;
         for (let opt of opts) {
-            opt.innerText = playerData.name;
+            opt.innerText = playerData.name ?? '???';
         }
     });
 
@@ -222,6 +222,28 @@ function addPlayer(existingData) {
             savePlayerList();
         });
     }
+
+    const importButton = row.querySelector(`#player_${playerData.uuid}_import_paste`);
+    importButton.addEventListener('click', () => {
+        const text = window.prompt("Enter PokéPaste-format text!")
+        if(text && text.length > 0){
+        const mons = PokePaste.parse(text);
+            for(let i = 0; i < mons.length; i++){
+                const monInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}`)
+                monInput.value = mons[i].species ?? '';
+                const event = new Event('change')
+                const itemInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_item`);
+                itemInput.value = mons[i].item ?? '';
+                const teraInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_tera`);
+                teraInput.value = mons[i].tera ?? '';
+
+                monInput.dispatchEvent(event);
+                itemInput.dispatchEvent(event);
+                teraInput.dispatchEvent(event);
+            }
+        }
+    })
+
     savePlayerList();
 }
 
@@ -324,6 +346,13 @@ async function importStandingsFromTOM(file){
             standingModules[i].dispatchEvent(event);
         }
     }
+    const playerOptions = document.querySelectorAll('.playerOption');
+    for(let player of standings.allStandings){
+        for(let opt of [...playerOptions].filter(o => o.value === findPlayerByName(player.name)?.uuid)){
+            opt.setAttribute("record", `(${player.record.wins}/${player.record.ties}/${player.record.losses})`);
+        }
+    }
+
 
 }
 

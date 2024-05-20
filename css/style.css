@@ -58,6 +58,12 @@ body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
+dialog {
+    z-index: 100;
+    top: 0;
+    position: sticky;
+}
+
 label {
     width: fit-content;
 }
@@ -145,7 +151,8 @@ ol :nth-child(even of .rounded-corner-small:not([hidden])) {
 select,
 input[type="text"],
 input[type="range"],
-.sourceSelect {
+.sourceSelect,
+.standardInput {
     width: 12em;
     max-width: 100%;
 }
@@ -185,12 +192,18 @@ input.input-small {
     width: calc(100% - 2em);
 }
 
+.nav-content{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
 .no-margins {
     margin: 0 !important;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .center {
@@ -207,6 +220,7 @@ input.input-small {
 }
 
 .flex {
+    position: relative;
     display: flex;
     gap: 0.35em;
 }
@@ -314,6 +328,17 @@ input.input-small {
     display: inline-block;
     content: '⚠️';
     animation: pulse 1s linear infinite;
+}
+
+.notAvailable{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    /* background-color: gainsboro; */
+    backdrop-filter: blur(2px);
+    top: 0;
+    bottom: 0;
+    z-index: 10;
 }
 
 .square {
@@ -486,8 +511,6 @@ input.input-small {
     width: 0px;
     position: absolute;
 }
-
-
 
 #playerImport {
     margin-right: 1em;

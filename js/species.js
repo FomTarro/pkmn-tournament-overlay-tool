@@ -1,19 +1,26 @@
 /**
- * A Pokemon data structure
- * @typedef {Object} Pokemon
- * @property {string} name - Species name
- * @property {Forme[]} formes - List of alternate Formes
+ * A Species data structure
+ * @typedef {Object} Species
+ * @property {string} name - Species name.
+ * @property {Forme[]} formes - List of alternate Formes.
  */
 
 /**
  * A Forme data structure
  * @typedef {Object} Forme
- * @property {string} name - Forme name
+ * @property {string} name - Forme name.
+ */
+
+/**
+ * A Pokemon data structure
+ * @typedef {Object} Pokemon
+ * @property {string} name - Species name.
+ * @property {string} number - The National Dex number.
  */
 
 /** 
 * @constant - List of all Pokemon.
-* @type {Pokemon[]}
+* @type {Species[]}
 */
 const SPECIES = [
     // Kanto
@@ -2577,7 +2584,7 @@ const SPECIES = [
         name: 'Foongus'
     },
     {
-        name: 'Amoongus'
+        name: 'Amoonguss'
     },
     {
         name: 'Frillish-M',
@@ -4127,27 +4134,32 @@ const SPECIES = [
     }
 ]
 
-function loadPokedex() {
+/**
+ * A callback invoked on a Pokemon
+ * @callback MonCallback
+ * @param {Pokemon} - The mon.
+ */
+
+/**
+ * Iterates over the entire Pokedex, including Formes, and invokes a callback on each.
+ * @param {MonCallback} callbackFn - A callback invoked on each species and forme in the dex.
+ *  
+ */
+function loadPokedex(callbackFn) {
     console.log("Loading Pokedex...");
-    document.getElementById("pokemonOptions").innerHTML = '';
-    /**
-     * @param {Pokemon} species 
-     */
-    const makeSpeciesOption = (species) => {
-        const opt = document.createElement("option");
-        opt.classList.add('monOption');
-        opt.id = species.name;
-        opt.innerHTML = species.name;
-        opt.setAttribute('dexNumber', species.number);
-        document.getElementById("pokemonOptions").appendChild(opt);
-    }
     for (let i = 0; i < SPECIES.length; i++) {
         const species = SPECIES[i];
-        makeSpeciesOption({ name: species.name, number: `${String(i + 1).padStart(4, '0')}_${String(0).padStart(3, '0')}` });
+        const mon = { name: species.name, number: `${String(i + 1).padStart(4, '0')}_${String(0).padStart(3, '0')}` };
+        if(callbackFn){
+            callbackFn(mon);
+        }
         if (species.formes) {
             for (let j = 0; j < species.formes.length; j++) {
                 const forme = species.formes[j];
-                makeSpeciesOption({ name: forme.name, number: `${String(i + 1).padStart(4, '0')}_${String(j + 1).padStart(3, '0')}` })
+                const monForme = { name: forme.name, number: `${String(i + 1).padStart(4, '0')}_${String(j + 1).padStart(3, '0')}` };
+                if(callbackFn){
+                    callbackFn(monForme)
+                }
             }
         }
     }
@@ -4156,8 +4168,8 @@ function loadPokedex() {
 /**
  * An Item data structure
  * @typedef {Object} Item
- * @property {string} name - Item name
- * @property {string} type - Item Type (Held, Berry, etc)
+ * @property {string} name - Item name.
+ * @property {string} type - Item Type (Held, Berry, etc).
  */
 
 /** 
@@ -4322,10 +4334,10 @@ const ITEMS = [
         name: 'Heavy Duty Boots'
     },
     {
-        name: 'Icicle Plase'
+        name: 'Icicle Plate'
     },
     {
-        name: 'ICy Rock'
+        name: 'Icy Rock'
     },
     {
         name: 'Insect Plate'
@@ -4764,23 +4776,23 @@ const ITEMS = [
     },
 ]
 
-function loadItemdex() {
+/**
+ * A callback invoked on an Item.
+ * @callback ItemCallback
+ * @param {Item} - the item.
+ */
+
+/**
+ * Iterates over the entire Itemdex and invokes a callback on each.
+ * @param {ItemCallback} callbackFn - A callback invoked on each item in the dex.
+ *  
+ */
+function loadItemdex(callbackFn) {
     console.log("Loading Itemdex...");
-    document.getElementById("itemOptions").innerHTML = '';
-    /**
-    * @param {Item} item
-    */
-    const makeItemOption = (item) => {
-        const opt = document.createElement("option");
-        opt.classList.add('itemOption');
-        opt.id = item.name;
-        opt.innerHTML = item.name;
-        opt.key = item.name.toLowerCase().replaceAll(' ', '_').replaceAll('\'', '');
-        opt.type = item.type
-        document.getElementById("itemOptions").appendChild(opt);
-    }
     for (let i = 0; i < ITEMS.length; i++) {
         const item = ITEMS[i];
-        makeItemOption(item);
+        if(callbackFn){
+            callbackFn(item);
+        }
     }
 }

@@ -48,8 +48,8 @@ function createFromTemplates(){
                 element.id = element.id.replace('_x', `_${i}`);
             }
         }
-        item.querySelector('select').setAttribute('standing', i+1);
-        item.querySelector('select').setAttribute('ordinalToggle', 'standingsOrdinalToggle');
+        const select = item.querySelector('select');
+        select.setAttribute('standing', i+1);
         standingsList.appendChild(item);
     }
 
@@ -133,6 +133,7 @@ function attachEventListeners(){
             const faintedToggle = monModule.querySelector(".faintedToggle");
             const itemToggle = monModule.querySelector(".itemToggle");
             const teraToggle = monModule.querySelector(".teraToggle");
+            const monIconEffect = document.getElementById('monIconEffect');
             const setItem = () => {
                 const item = monSelector.options[monSelector.selectedIndex].getAttribute('item');
                 itemSelector.value = item != undefined && item != null ? item : '';
@@ -165,17 +166,20 @@ function attachEventListeners(){
                 const url = new URL(relativeToAbsolutePath('./frame.html'));
                 url.searchParams.set('img', `poke_icon_${dexNumber}`)
                 url.searchParams.set('fainted', faintedToggle.checked);
+
                 if(itemOpt){
                     if(itemOpt.type === 'Berry'){
-                        url.searchParams.set('item', `berry_icon_${itemOpt.key}`);
+                        url.searchParams.set('item', `berry_icon_${itemOpt.getAttribute('key')}`);
                     }else{
-                        url.searchParams.set('item', `item_icon_${itemOpt.key}`);
+                        url.searchParams.set('item', `item_icon_${itemOpt.getAttribute('key')}`);
                     }
                     url.searchParams.set('used', itemToggle.checked);
                 }
                 if(teraType && teraToggle.checked){
                     url.searchParams.set('tera', teraType.toLowerCase());
                 }
+                const effect = monIconEffect.value;
+                url.searchParams.set('effect', effect);
                 OBS.setBrowserSourceURL(source, url.toString())
                 const icon = monModule.querySelector('.monIcon');
                 if(icon){
@@ -195,6 +199,7 @@ function attachEventListeners(){
             itemSelector.addEventListener('change', updateIcon);
             itemToggle.addEventListener('change', updateIcon);
             teraToggle.addEventListener('change', updateIcon);
+            monIconEffect.addEventListener('change', updateIcon)
         }
         // Hook up button to fill all icons
         const fillButton = playerModule.querySelector('.fillButton');
@@ -242,21 +247,21 @@ function attachEventListeners(){
             }
             // If there's an associated OBS output, update it
             if(sourceSelector){
+                const selectedOption = playerSelector.options[playerSelector.options.selectedIndex];
+                const playerName = (selectedOption && (selectedOption.value !== selectedOption.innerText)) ? selectedOption.innerText : "???";
                 let prefix = '';
                 let suffix = '';
                 // If there's an associated Ordinal Toggle, check it
                 const ordinalToggle = playerSelector.getAttribute('ordinalToggle');
                 if(ordinalToggle && document.getElementById(ordinalToggle).checked){
-                    prefix = `${applyOrdinalSuffix(playerSelector.getAttribute('standing'))} `;
+                    prefix = `${applyOrdinalSuffix(playerSelector.getAttribute('standing'))}` ?? '';
                 }
                 // If there's an associated Score Module, check it
-                const scoreField = playerSelector.getAttribute('scoreField');
-                if(scoreField){
-                    suffix = `0/0/0`
+                const recordToggle = playerSelector.getAttribute('recordToggle');
+                if(recordToggle && document.getElementById(recordToggle).checked){
+                    suffix = selectedOption.getAttribute('record') ?? '';
                 }
-                const selectedOption = playerSelector.options[playerSelector.options.selectedIndex];
-                const playerName = (selectedOption && (selectedOption.value !== selectedOption.innerText)) ? selectedOption.innerText : "???";
-                OBS.setTextSourceText(sourceSelector.value, `${prefix}${playerName}${suffix}`);
+                OBS.setTextSourceText(sourceSelector.value, `${prefix} ${playerName} ${suffix}`.trim());
             }
         }
 
@@ -787,14 +792,18 @@ function loadGeneralSettings(){
     const defaultSettings = {
         abbreviateJuniors: false,
         abbreviateSeniors: false,
-        abbreviateSeniors: false,
+        abbreviateMasters: false,
+        pairingsIncludeRecord: false,
         pairingsSingleSplitter: '/',
         pairingsCount: 8,
         standingsIncludeOrdinal: true,
+        standingsIncludeRecord: false,
         standingsSingleIncludeOrdinal: true,
         standingsSingleSplitter: '/',
         standingsCount: 8,
+        battleIncludeRecord: false,
         monsPerTeamCount: 4,
+        monIconEffect: 'shadow',
     };
     settings = merge(defaultSettings, settings);
 
@@ -804,17 +813,23 @@ function loadGeneralSettings(){
     document.getElementById('abbreviateMastersToggle').checked = settings.abbreviateMasters;
 
     document.getElementById('pairingsSingleSplitter').value = settings.pairingsSingleSplitter ?? '/';
+    document.getElementById('pairingsRecordToggle').checked = settings.pairingsIncludeRecord;
     document.getElementById('pairingsSlider').value = settings.pairingsCount ?? 8;
     document.getElementById('pairingsSlider').dispatchEvent(event);
 
     document.getElementById('standingsOrdinalToggle').checked = settings.standingsIncludeOrdinal;
+    document.getElementById('standingsRecordToggle').checked = settings.standingsIncludeRecord;
     document.getElementById('standingsSingleOrdinalToggle').checked = settings.standingsSingleIncludeOrdinal;
     document.getElementById('standingsSingleSplitter').value = settings.standingsSingleSplitter ?? '/';
     document.getElementById('standingsSlider').value = settings.standingsCount ?? 8;
     document.getElementById('standingsSlider').dispatchEvent(event);
 
+    document.getElementById('battleRecordToggle').checked = settings.battleIncludeRecord;
+
     document.getElementById('monCountSlider').value = settings.monsPerTeamCount ?? 4;
     document.getElementById('monCountSlider').dispatchEvent(event);
+
+    document.getElementById('monIconEffect').value = settings.monIconEffect;
 }
 
 function saveGeneralSettings(){
@@ -823,13 +838,17 @@ function saveGeneralSettings(){
         abbreviateJuniors: document.getElementById('abbreviateJuniorsToggle').checked,
         abbreviateSeniors: document.getElementById('abbreviateSeniorsToggle').checked,
         abbreviateMasters: document.getElementById('abbreviateMastersToggle').checked,
+        pairingsIncludeRecord: document.getElementById('pairingsRecordToggle').checked,
         pairingsSingleSplitter: document.getElementById('pairingsSingleSplitter').value,
         pairingsCount: document.getElementById('pairingsSlider').value,
         standingsIncludeOrdinal: document.getElementById('standingsOrdinalToggle').checked,
+        standingsIncludeRecord: document.getElementById('standingsRecordToggle').checked,
         standingsSingleIncludeOrdinal: document.getElementById('standingsSingleOrdinalToggle').checked,
         standingsSingleSplitter: document.getElementById('standingsSingleSplitter').value,
         standingsCount: document.getElementById('standingsSlider').value,
+        battleIncludeRecord: document.getElementById('battleRecordToggle').checked,
         monsPerTeamCount: document.getElementById('monCountSlider').value,
+        monIconEffect: document.getElementById('monIconEffect').value,
     };
     localStorage.setItem(GENERAL_SETTINGS_KEY, JSON.stringify(settings));
 }
@@ -838,14 +857,43 @@ let standingsInterval = undefined;
 let pairingsInterval = undefined;
 let connectionInterval = window.setInterval(OBS.checkConnectionStatus, 1000);
 window.onload = async() => {
-    loadPokedex();
-    loadItemdex();
+    document.getElementById('pokemonOptions').innerHTML = ''
+    loadPokedex((species) => {
+        const opt = document.createElement('option');
+        opt.classList.add('monOption');
+        opt.id = species.name;
+        opt.innerHTML = species.name;
+        opt.setAttribute('dexNumber', species.number);
+        document.getElementById('pokemonOptions').appendChild(opt);
+    });
+    document.getElementById('itemOptions').innerHTML = ''
+    loadItemdex((item) => {
+        const opt = document.createElement('option');
+        opt.classList.add('itemOption');
+        opt.id = item.name;
+        opt.innerHTML = item.name;
+        opt.setAttribute('key', item.name.toLowerCase().replaceAll(' ', '_').replaceAll('\'', ''));
+        opt.type = item.type
+        document.getElementById('itemOptions').appendChild(opt);
+    });
     createFromTemplates();
     attachEventListeners();
     loadGeneralSettings();
     loadSourceSettings();
     loadPlayerList();
     connectToOBS();
+
+    // document.getElementById('changelog').addEventListener('click', () => {
+    //     window.alert(getChangeLog())
+    // })
+
+    // Enable some sections if the browser supports their function
+
+    if(window.showOpenFilePicker){
+        for(let blocker of document.getElementsByClassName('notAvailable')){
+            blocker.classList.add('hidden');
+        }
+    }
 
     // Attatch the Save triggers AFTER loading so as not to execute a ton of I/O as we load in.
 
@@ -869,4 +917,61 @@ window.onload = async() => {
 const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.get('unown')){
     document.getElementsByTagName('body')[0].classList.add('unown');
+}
+
+function getChangeLog(){
+    const changes = [
+        {
+            date: "March 5th 2024",
+            version: "1.3.0",
+            changes: [
+                "Added support for importing teams from the PokePaste/Showdown style format.",
+                "Added the ability to choose different visual effects for Team Icons.",
+                "Added the ability to display player records with names.",
+                "Added the Changelog."
+            ]
+        },
+        {
+            date: "January 15th, 2024",
+            version: "1.2.1",
+            changes: [
+                "Added support for displaying Tera type!",
+                "Added support for displaying up to 6 Pokémon per team!",
+                "Added support for autocomplete in team data entry.",
+                "Corrected the order of Porygon Z and Gallade icons."
+            ]
+        },
+        {
+            date: "December 30th 2024",
+            version: "1.1.2",
+            changes: [
+                "Added guard rails that prevent the user from being able to select the same mon multiple times in the battle drop-down.",
+                "Added guard rails that prevent the user from being able to select the same player for both sides of battle, or multiple times in pairing/standings.",
+                "Resolved and issue where the addPlayer function was being passed the JavaScript click event and storing that as player data, invalidating the record."
+            ]
+        },
+        {
+            date: "December 20th 2024",
+            version: "1.0.1",
+            changes: [
+                "Fixed rendering error with Team Icons when applying the fainted effect."
+            ]
+        },
+        {
+            date: "December 16th 2023",
+            version: "1.0.0",
+            changes: [
+                "Initial release!",
+            ]
+        }
+    ]
+    let str='';
+    for(let date of changes){
+        str += `${date.date} (version ${date.version})\n`
+        for(let change of date.changes){
+            str += `• ${change}\n`
+        }
+        str += '\n'
+    }
+    return str;
 }

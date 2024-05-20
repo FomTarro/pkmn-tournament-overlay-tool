@@ -5,6 +5,32 @@
             body {
                 margin: 0;
             }
+            .outline {
+                filter: drop-shadow(1px 1px black) 
+                    drop-shadow(-1px -1px black)
+                    drop-shadow(1px -1px black)
+                    drop-shadow(-1px 1px black) 
+                    !important;
+            }
+            .shadow {
+                filter: drop-shadow(
+                    max(2px, 0.1em)
+                    max(2px, 0.1em)
+                    max(2px, 0.1em)
+                    rgba(0, 0, 0, 0.5)) !important;
+            }
+            .shadow_outline {
+                filter: drop-shadow(1px 1px black) 
+                    drop-shadow(-1px -1px black)
+                    drop-shadow(1px -1px black)
+                    drop-shadow(-1px 1px black) 
+                    drop-shadow(
+                    max(2px, 0.1em)
+                    max(2px, 0.1em)
+                    max(2px, 0.1em)
+                    rgba(0, 0, 0, 0.5)) 
+                    !important;
+            }
             #mon {
                 margin: auto;
                 width: auto;
@@ -15,27 +41,24 @@
                 height: 100%;
                 position: absolute;
                 z-index: 1;
-                filter: drop-shadow(1px 1px 1px black);
             }
             #item {
                 margin: auto;
                 width: auto;
-                bottom: 0;
-                right: 0;
+                bottom: max(2px, 0.1em);
+                right: max(2px, 0.1em);
                 height: 35%;
                 position: absolute;
                 z-index: 2;
-                filter: drop-shadow(1px 1px 1px black);
             }
             #tera {
                 margin: auto;
                 width: auto;
-                top: 0;
-                left: 0;
+                top: max(2px, 0.1em);
+                left: max(2px, 0.1em);
                 height: 35%;
                 position: absolute;
                 z-index: 3;
-                filter: drop-shadow(1px 1px 1px black);
             }
             .fainted {
                 opacity: 50%;
@@ -52,13 +75,13 @@
     <footer>
         <script>
             const urlParams = new URLSearchParams(window.location.search);
+            const effect = urlParams.get('effect')
             const mon = urlParams.get('img');
             if(mon){
                 const monIcon = document.getElementById("mon");
                 monIcon.src = `./img/pkmn/${mon}.png`
-                const fainted = urlParams.get('fainted');
-                if(fainted === 'true'){
-                    document.getElementById('content').classList.add('fainted')
+                if(effect){
+                    monIcon.classList.add(effect);
                 }
             }
             const item = urlParams.get('item');
@@ -69,11 +92,21 @@
                 if(used === 'true'){
                     itemIcon.classList.add('fainted')
                 }
+                if(effect){
+                    itemIcon.classList.add(effect);
+                }
             }
             const tera = urlParams.get('tera');
             if(tera){
                 const teraIcon = document.getElementById("tera");
                 teraIcon.src = `./img/misc/tera/${tera}.png`
+                if(effect){
+                    teraIcon.classList.add(effect);
+                }
+            }
+            const fainted = urlParams.get('fainted');
+            if(fainted === 'true'){
+                document.getElementById('content').classList.add('fainted')
             }
         </script>
     </footer>
