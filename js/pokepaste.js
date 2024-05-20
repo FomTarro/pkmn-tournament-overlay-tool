@@ -30,7 +30,8 @@ const PokePaste = {
                 } else if (line.startsWith("Level:")) {
                 } else if (line.startsWith("Ability")) {
                 } else if (line.startsWith('-')) {
-                } else {
+                } else if (line.startsWith('Shiny')){
+                }else {
                     // it's mon name and item
                     mons.push({});
                     const split = line.split('@').map(item => item?.trim());
