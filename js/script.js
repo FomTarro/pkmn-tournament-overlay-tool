@@ -283,7 +283,6 @@ function attachEventListeners(){
         });
     }
 
-
     // Hook up reset buttons
     const resetButtons = document.querySelectorAll('.resetButton');
     for(let resetButton of resetButtons){
@@ -678,6 +677,8 @@ function loadSourceSettings(){
         standingsScene: '',
         standingsSources: [],
         standingsSingleSource: '',
+        statisticsScene: '',
+        statisticsSources: [],
     };
     settings = merge(defaultSettings, settings);
 
@@ -731,6 +732,18 @@ function loadSourceSettings(){
         document.getElementById('pairingsSingleSource').value = settings.pairingsSingleSource;
     }
 
+    const statisticsScene = document.getElementById('statisticsSceneSelect');
+    statisticsScene.value = settings.statisticsScene ?? '';
+    if(settings.pairingsSources){
+        const statisticsSourceSelectors = document.getElementById('statisticsContent').querySelectorAll('.sourceSelect');
+        for(let i = 0; i < statisticsSourceSelectors.length; i++){
+            const source = settings.statisticsSources[i] ?? '';
+            statisticsSourceSelectors[i].value = source;
+            const event = new Event('change');
+            statisticsSourceSelectors[i].dispatchEvent(event);
+        }
+    }
+
     const sceneSelectors = document.getElementsByClassName('sceneSelect');
     for(let sceneSelector of sceneSelectors){
         const event = new Event('change');
@@ -751,6 +764,8 @@ function saveSourceSettings(){
         standingsScene: undefined,
         standingsSources: [],
         standingsSingleSource: undefined,
+        statisticsScene: undefined,
+        statisticsSources: [],
     };
 
     settings.obsAddress = document.getElementById('address').value;
@@ -782,6 +797,13 @@ function saveSourceSettings(){
     }
     settings.pairingsSingleSource = document.getElementById('pairingsSingleSource').value;
 
+    const statisticsScene = document.getElementById('statisticsSceneSelect').value;
+    settings.statisticsScene = statisticsScene;
+    const statisticsSources = document.getElementById('statisticsContent').querySelectorAll('.sourceSelect');
+    for(let source of statisticsSources){
+        settings.statisticsSources.push(source.value)
+    }
+
     localStorage.setItem(SOURCE_SETTINGS_KEY, JSON.stringify(settings));
 }
 
@@ -804,6 +826,7 @@ function loadGeneralSettings(){
         battleIncludeRecord: false,
         monsPerTeamCount: 4,
         monIconEffect: 'shadow',
+        usageCount: 8,
     };
     settings = merge(defaultSettings, settings);
 
@@ -830,6 +853,9 @@ function loadGeneralSettings(){
     document.getElementById('monCountSlider').dispatchEvent(event);
 
     document.getElementById('monIconEffect').value = settings.monIconEffect;
+
+    document.getElementById('usageSlider').value = settings.usageCount ?? 8;
+    document.getElementById('usageSlider').dispatchEvent(event);
 }
 
 function saveGeneralSettings(){
@@ -849,6 +875,7 @@ function saveGeneralSettings(){
         battleIncludeRecord: document.getElementById('battleRecordToggle').checked,
         monsPerTeamCount: document.getElementById('monCountSlider').value,
         monIconEffect: document.getElementById('monIconEffect').value,
+        usageCount: document.getElementById('usageSlider').value,
     };
     localStorage.setItem(GENERAL_SETTINGS_KEY, JSON.stringify(settings));
 }

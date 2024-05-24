@@ -61,6 +61,7 @@ function savePlayerList() {
         }
     }
     document.getElementById('playerTotal').innerText = PLAYER_LIST.length;
+    calculateUsageStatistics(PLAYER_LIST);
 }
 
 /**
@@ -231,12 +232,11 @@ function addPlayer(existingData) {
             for(let i = 0; i < mons.length; i++){
                 const monInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}`)
                 monInput.value = mons[i].species ?? '';
-                const event = new Event('change')
                 const itemInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_item`);
                 itemInput.value = mons[i].item ?? '';
                 const teraInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_tera`);
                 teraInput.value = mons[i].tera ?? '';
-
+                const event = new Event('change')
                 monInput.dispatchEvent(event);
                 itemInput.dispatchEvent(event);
                 teraInput.dispatchEvent(event);
@@ -289,6 +289,62 @@ function populatePlayerModule(element, uuid) {
         const event = new Event('change');
         monSelector.dispatchEvent(event);
     }
+}
+
+
+/**
+ * A meta data structure.
+ * @typedef {Object} TournamentMetadata
+ * @property {UsageStat[]} usageStats - Usage statistics of each mon in the tournament..
+ * @property {number} uniqueMons - Number of unique mons in the tournament.
+
+/**
+ * A usage statistic data structure.
+ * @typedef {Object} UsageStat
+ * @property {string} mon - Species of the mon.
+ * @property {string} dexNumber - Dex Number of the mon.
+ * @property {number} percentageOfTeams - Usage percentage of a given mon.
+ * @property {number} percentageOfAllMons - Usage percentage of a given mon.
+
+/**
+ * Calculates mon usage statistics for the given set of player teams.
+ * @param {Player[]} teams - The list of all teams in the event.
+ * @returns {TournamentMetadata} - An array of usage stats for all mons in the field.
+ */
+function calculateUsageStatistics(teams){
+    const allMons = []
+    for(const player of teams){
+        allMons.push(player.mon1, player.mon2, player.mon3, player.mon4, player.mon5, player.mon6);
+    }
+    const filteredMons = allMons.filter(mon => mon && mon.length > 0);
+    const totalMons = filteredMons.length;
+    const uniqueMons = [...new Set(filteredMons)];
+    const results = [];
+    for(const mon of uniqueMons){
+        const numMons = filteredMons.filter(m => m === mon).length;
+        results.push({
+            mon: mon,
+            dexNumber: [...document.getElementsByClassName('monOption')].find(el => el.innerHTML === mon).getAttribute('dexNumber'),
+            percentageOfTeams: ((numMons / teams.length) * 100),
+            percentageOfAllMons: ((numMons / totalMons) * 100)
+        });
+    }
+    const sorted = results.sort((a, b) => b.percentageOfTeams - a.percentageOfTeams)
+    return {
+        usageStats: sorted,
+        uniqueMons: uniqueMons.length
+    }
+}
+
+function populateUsageDisplay(){
+    const limit = document.getElementById('usageSlider').value;
+    const usage = calculateUsageStatistics(PLAYER_LIST).usageStats.slice(0, limit);
+    const url = new URL(relativeToAbsolutePath('./usage.html'));
+    for(const item of usage){
+        url.searchParams.set(`${item.dexNumber}`, `${item.percentageOfTeams}`);
+    }
+    const source = document.getElementById('usageModule').querySelector('.sourceSelect').value;
+    OBS.setBrowserSourceURL(source, url.toString())
 }
 
 /**

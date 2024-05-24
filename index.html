@@ -402,6 +402,44 @@
                         </div>
                     </div>
                 </div>
+            <!-- Standings -->
+            <div id="statistics" class="section">
+                <div class="rounded-corner">
+                    <h1 class="heading rounded-corner-small"><label for="minimizeStatistics">Statistics</label><button id="minimizeStatistics" class="minimizeButton" title="Expand/Collapse the Statistics Dashboard" minimize="statisticsContent" status="on"></button></h1>
+                </div>
+                <div id="statisticsContent">
+                    <div class="flex flex-col rounded-corner">
+                        <p>
+                            You can get dynamically-generated usage statistics about...
+                        </p>
+                        <div>
+                            <div class="bold important">IMPORTANT!</div>
+                            <div>The Pokémon Usage Statistics display is a Browser source, and you can style it with Custom CSS in OBS!</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col rounded-corner">
+                        <div>
+                            <label for="statisticsSceneSelect" class="bold">Statistics Overlay OBS Scene</label>
+                        </div>
+                        <input id="statisticsSceneSelect" class="sceneSelect sourceSetting" target="statistics" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
+                    </div>
+                    <div class="flex flex-col rounded-corner" id="usageModule">
+                        <div class="slider">
+                            <button class="minus square" type='button'>➖</button>
+                            <input id="usageSlider" class="generalSetting" type="range" step="1" min="1" max="32" value="8">
+                            <button class="plus square" type='button'>➕</button>
+                            <span class="font-small">
+                                <span>Top usage displayed: </span>
+                                <span id="usageCount">8</span>
+                            </span>
+                        </div>
+                        <div>
+                            <span id="usage">Mon Usage Statistics</span> → 
+                            <input id="usageSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="browserSourceOptions_statistics"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Table -->
                 <div id="players" class="section">
                     <div class="rounded-corner">
@@ -603,42 +641,42 @@
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
-                                <input id="player_x_mon_1" placeholder="Mon #1" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_1" class="mon_input" placeholder="Mon #1" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_1_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                                 <input id="player_x_mon_1_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
-                                <input id="player_x_mon_2" placeholder="Mon #2" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_2" class="mon_input" placeholder="Mon #2" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_2_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                                 <input id="player_x_mon_2_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
-                                <input id="player_x_mon_3" placeholder="Mon #3" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_3" class="mon_input" placeholder="Mon #3" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_3_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                                 <input id="player_x_mon_3_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
-                                <input id="player_x_mon_4" placeholder="Mon #4" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_4" class="mon_input" placeholder="Mon #4" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_4_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                                 <input id="player_x_mon_4_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
-                                <input id="player_x_mon_5" placeholder="Mon #5" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_5" class="mon_input" placeholder="Mon #5" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_5_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                                 <input id="player_x_mon_5_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
                             </div>
                         </td>
                         <td>
                             <div class='flex-col center rounded-corner-small'>
-                                <input id="player_x_mon_6" placeholder="Mon #6" type="text" list="pokemonOptions" required>
+                                <input id="player_x_mon_6" class="mon_input" placeholder="Mon #6" type="text" list="pokemonOptions" required>
                                 <input id="player_x_mon_6_tera" placeholder="Tera Type (optional)" type="text" list="typeOptions">
                                 <input id="player_x_mon_6_item" placeholder="Held Item (optional)" type="text" list="itemOptions">
                             </div>
@@ -662,6 +700,9 @@
                 </datalist>
                 <datalist id="textSourceOptions_pairings">
                     <!-- Text Sources in OBS for the Pairings Scene -->
+                </datalist>
+                <datalist id="browserSourceOptions_statistics">
+                    <!-- Browser Sources in OBS for Statistics Scene -->
                 </datalist>
                 <datalist id="pokemonOptions">
                     <!-- Every single Pokemon -->

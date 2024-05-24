@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0;
+            }
+            .outline {
+                filter: drop-shadow(1px 1px black) 
+                    drop-shadow(-1px -1px black)
+                    drop-shadow(1px -1px black)
+                    drop-shadow(-1px 1px black) 
+                    !important;
+            }
+            .shadow {
+                filter: drop-shadow(
+                    max(2px, 0.1em)
+                    max(2px, 0.1em)
+                    max(2px, 0.1em)
+                    rgba(0, 0, 0, 0.5)) !important;
+            }
+            .shadow_outline {
+                filter: drop-shadow(1px 1px black) 
+                    drop-shadow(-1px -1px black)
+                    drop-shadow(1px -1px black)
+                    drop-shadow(-1px 1px black) 
+                    drop-shadow(
+                    max(2px, 0.1em)
+                    max(2px, 0.1em)
+                    max(2px, 0.1em)
+                    rgba(0, 0, 0, 0.5)) 
+                    !important;
+            }
+            #grid {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-evenly;
+                gap: 0.5em;
+            }
+            .rank {
+                display: flex;
+                flex-direction: column;
+                align-content: center;
+                align-items: center;
+                justify-content: center;
+            }
+            .mon {
+                margin: auto;
+                width: auto;
+                height: 100%;
+                z-index: 1;
+            }
+
+            #pie {
+                width: 400px;
+                height: 400px;
+                border-radius: 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <!-- <div id="pie" class="shadow_outline"></div> -->
+            <div id="grid">
+
+            </div>
+        </div>
+        <template id="rank_template">
+            <div class="rank">
+                <div>
+                    <img class="mon shadow" src= './img/pkmn/poke_icon_1025_000.png'>
+                </div>
+                <div class="percentage">55%</div>
+            </div>
+        </template>
+    </body>
+    <footer>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const params = urlParams.entries();
+            const template = document.getElementById("rank_template");
+            for(const [param, value] of params){
+                const rank = template.content.cloneNode(true).querySelector(".rank");
+                const monIcon = rank.querySelector('.mon');
+                monIcon.src = `./img/pkmn/poke_icon_${param}.png`
+                const percentage = rank.querySelector('.percentage');
+                percentage.innerHTML = `${value}%`;
+                document.getElementById('grid').appendChild(rank);
+            }
+
+            // let gradients = [];
+            // let total = 0;
+            // const stringToColor = (str) => {
+            //     let hash = 0;
+            //     str.split('').forEach(char => {
+            //         hash = char.charCodeAt(0) + ((hash << 5) - hash)
+            //     });
+            //     let color = '#';
+            //     for(let i = 0; i < 3; i++){
+            //         const value = (hash >> (i * 8) & 0xff)
+            //         color += value.toString(16).padStart(2, '0');
+            //     }
+            //     return color;
+            // }
+            // for(const [param, value] of params){
+            //     const num = +value;
+            //     const color = stringToColor(param);
+            //     gradients.push(`${color} ${total}%, ${color} ${total+num}%`);
+            //     total = total + num;
+            // }
+            // gradients.push(`orange ${total}%, orange ${total + (100-total)}%`);
+            // const gradient = gradients.join(',');
+            // console.log(gradient);
+            // document.getElementById('pie').style.backgroundImage = `conic-gradient(${gradient})`
+        </script>
+    </footer>
+</html>
