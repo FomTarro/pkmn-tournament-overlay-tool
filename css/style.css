@@ -49,6 +49,11 @@ html {
     background-color: #f9f9f9;
 }
 
+iframe {
+    background-color: gainsboro;
+    border-radius: 5px;
+}
+
 body {
     margin-top: 0;
     height: calc(100% - 16px);

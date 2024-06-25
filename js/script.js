@@ -641,6 +641,18 @@ function attachEventListeners(){
         updateStandingsSingle();
     });
 
+    // Hook up Usage Statistics
+    document.getElementById('usageSlider').addEventListener('input', () => {
+        const val = document.getElementById('usageSlider').value
+        document.getElementById('usageCount').innerText = val;
+        populateUsageDisplay();
+    });
+
+    document.getElementById('usageIconEffect').addEventListener('change', () => {
+        populateUsageDisplay();
+    })
+
+
     // Hook up Minimize Buttons
     const minimize = document.getElementsByClassName('minimizeButton');
     for(let button of minimize){
@@ -653,12 +665,12 @@ function attachEventListeners(){
     }
 
     document.getElementById('connect').addEventListener('click', connectToOBS);
-    const sceneSelectors = document.getElementsByClassName('sceneSelect');
-    for(let sceneSelector of sceneSelectors){
-        sceneSelector.addEventListener('change', () => {
-            OBS.populateSourceOptionsFromScene(sceneSelector.value, sceneSelector.getAttribute('target'));
-        });
-    };
+    // const sceneSelectors = document.getElementsByClassName('sceneSelect');
+    // for(let sceneSelector of sceneSelectors){
+    //     sceneSelector.addEventListener('change', () => {
+    //         OBS.populateSourceOptionsFromScene(sceneSelector.value, sceneSelector.getAttribute('target'));
+    //     });
+    // };
 }
 
 const SOURCE_SETTINGS_KEY = "tournament_overlay_settings";
@@ -679,6 +691,7 @@ function loadSourceSettings(){
         standingsSingleSource: '',
         statisticsScene: '',
         statisticsSources: [],
+        usageSources: [],
     };
     settings = merge(defaultSettings, settings);
 
@@ -686,8 +699,8 @@ function loadSourceSettings(){
     document.getElementById('port').value = settings.obsPort;
     document.getElementById('password').value = settings.obsPassword;
 
-    const battleScene = document.getElementById('battleSceneSelect');
-    battleScene.value = settings.battleScene ? settings.battleScene : '';
+    // const battleScene = document.getElementById('battleSceneSelect');
+    // battleScene.value = settings.battleScene ? settings.battleScene : '';
     if(settings.battleSources){
         const playerModules = document.getElementsByClassName('playerModule');
         for(let i = 0; i < playerModules.length; i++){
@@ -702,8 +715,8 @@ function loadSourceSettings(){
         }
     }
 
-    const standingScene = document.getElementById('standingsSceneSelect');
-    standingScene.value = settings.standingsScene ?? '';
+    // const standingScene = document.getElementById('standingsSceneSelect');
+    // standingScene.value = settings.standingsScene ?? '';
     if(settings.standingsSources){
         const standingsSourceSelectors = document.getElementById('standingsList').querySelectorAll('.sourceSelect');
         for(let i = 0; i < standingsSourceSelectors.length; i++){
@@ -717,8 +730,8 @@ function loadSourceSettings(){
         document.getElementById('standingsSingleSource').value = settings.standingsSingleSource;
     }
 
-    const pairingsScene = document.getElementById('pairingsSceneSelect');
-    pairingsScene.value = settings.pairingsScene ?? '';
+    // const pairingsScene = document.getElementById('pairingsSceneSelect');
+    // pairingsScene.value = settings.pairingsScene ?? '';
     if(settings.pairingsSources){
         const pairingsSourceSelectors = document.getElementById('pairingsList').querySelectorAll('.sourceSelect');
         for(let i = 0; i < pairingsSourceSelectors.length; i++){
@@ -732,8 +745,8 @@ function loadSourceSettings(){
         document.getElementById('pairingsSingleSource').value = settings.pairingsSingleSource;
     }
 
-    const statisticsScene = document.getElementById('statisticsSceneSelect');
-    statisticsScene.value = settings.statisticsScene ?? '';
+    // const statisticsScene = document.getElementById('statisticsSceneSelect');
+    // statisticsScene.value = settings.statisticsScene ?? '';
     if(settings.pairingsSources){
         const statisticsSourceSelectors = document.getElementById('statisticsContent').querySelectorAll('.sourceSelect');
         for(let i = 0; i < statisticsSourceSelectors.length; i++){
@@ -772,7 +785,7 @@ function saveSourceSettings(){
     settings.obsPort = document.getElementById('port').value;
     settings.obsPassword = document.getElementById('password').value;
 
-    const scene = document.getElementById('battleSceneSelect').value;
+    const scene = document.getElementById('battleSceneSelect')?.value;
     settings.battleScene = scene;
     const playerModules = document.getElementsByClassName('playerModule');
     for(let playerModule of playerModules){
@@ -781,7 +794,7 @@ function saveSourceSettings(){
         settings.battleSources.push(sources);
     }
 
-    const standingsScene = document.getElementById('standingsSceneSelect').value;
+    const standingsScene = document.getElementById('standingsSceneSelect')?.value;
     settings.standingsScene = standingsScene;
     const standingsSources = document.getElementById('standingsList').querySelectorAll('.sourceSelect');
     for(let source of standingsSources){
@@ -789,7 +802,7 @@ function saveSourceSettings(){
     }
     settings.standingsSingleSource = document.getElementById('standingsSingleSource').value;
 
-    const pairingsScene = document.getElementById('pairingsSceneSelect').value;
+    const pairingsScene = document.getElementById('pairingsSceneSelect')?.value;
     settings.pairingsScene = pairingsScene;
     const pairingsSources = document.getElementById('pairingsList').querySelectorAll('.sourceSelect');
     for(let source of pairingsSources){
@@ -797,7 +810,7 @@ function saveSourceSettings(){
     }
     settings.pairingsSingleSource = document.getElementById('pairingsSingleSource').value;
 
-    const statisticsScene = document.getElementById('statisticsSceneSelect').value;
+    const statisticsScene = document.getElementById('statisticsSceneSelect')?.value;
     settings.statisticsScene = statisticsScene;
     const statisticsSources = document.getElementById('statisticsContent').querySelectorAll('.sourceSelect');
     for(let source of statisticsSources){
@@ -891,6 +904,12 @@ window.onload = async() => {
         opt.id = species.name;
         opt.innerHTML = species.name;
         opt.setAttribute('dexNumber', species.number);
+        if(species.restricted){
+            opt.setAttribute('restricted', species.restricted)
+        }
+        if(species.mythical){
+            opt.setAttribute('mythical', species.mythical);
+        }
         document.getElementById('pokemonOptions').appendChild(opt);
     });
     document.getElementById('itemOptions').innerHTML = ''

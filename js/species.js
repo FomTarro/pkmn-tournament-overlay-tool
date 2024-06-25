@@ -3,6 +3,8 @@
  * @typedef {Object} Species
  * @property {string} name - Species name.
  * @property {Forme[]} formes - List of alternate Formes.
+ * @property {boolean} restricted - Is this species a Restricted mon?
+ * @property {boolean} mythical - Is this species a Mythical mon?
  */
 
 /**
@@ -16,6 +18,8 @@
  * @typedef {Object} Pokemon
  * @property {string} name - Species name.
  * @property {string} number - The National Dex number.
+ * @property {boolean} restricted - Is this species a Restricted mon?
+ * @property {boolean} mythical - Is this species a Mythical mon?
  */
 
 /** 
@@ -896,6 +900,7 @@ const SPECIES = [
     {
         name: 'Mewtwo',
         natdex: 150,
+        restricted: true,
         formes: [
             {
                 name: 'Mega-Mewtwo X',
@@ -910,6 +915,7 @@ const SPECIES = [
     {
         name: 'Mew',
         natdex: 151,
+        mythical: true,
     },
     // Johto
     {
@@ -1254,13 +1260,16 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Lugia'
+        name: 'Lugia',
+        restricted: true,
     },
     {
-        name: 'Ho-oh'
+        name: 'Ho-Oh',
+        restricted: true,
     },
     {
-        name: 'Celebi'
+        name: 'Celebi',
+        mythical: true,
     },
     // Hoenn
     {
@@ -1771,6 +1780,7 @@ const SPECIES = [
     },
     {
         name: 'Kyogre',
+        restricted: true,
         formes: [
             {
                 name: 'Primal Kyogre'
@@ -1779,6 +1789,7 @@ const SPECIES = [
     },
     {
         name: 'Groudon',
+        restricted: true,
         formes: [
             {
                 name: 'Primal Groudon'
@@ -1787,6 +1798,7 @@ const SPECIES = [
     },
     {
         name: 'Rayquaza',
+        restricted: true,
         formes: [
             {
                 name: 'Mega-Rayquaza'
@@ -1794,10 +1806,12 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Jirachi'
+        name: 'Jirachi',
+        mythical: true,
     },
     {
         name: 'Deoxys',
+        mythical: true,
         formes: [
             {
                 name: 'Deoxys (Attack Forme)'
@@ -2169,6 +2183,7 @@ const SPECIES = [
     },
     {
         name: 'Dialga',
+        restricted: true,
         formes: [
             {
                 name: 'Dialga (Origin Forme)'
@@ -2177,6 +2192,7 @@ const SPECIES = [
     },
     {
         name: 'Palkia',
+        restricted: true,
         formes: [
             {
                 name: 'Palkia (Origin Forme)'
@@ -2191,6 +2207,7 @@ const SPECIES = [
     },
     {
         name: 'Giratina',
+        restricted: true,
         formes: [
             {
                 name: 'Giratina (Origin Forme)'
@@ -2201,16 +2218,20 @@ const SPECIES = [
         name: 'Cresselia'
     },
     {
-        name: 'Phione'
+        name: 'Phione',
+        mythical: true,
     },
     {
-        name: 'Manaphy'
+        name: 'Manaphy',
+        mythical: true,
     },
     {
-        name: 'Darkrai'
+        name: 'Darkrai',
+        mythical: true,
     },
     {
         name: 'Shaymin',
+        mythical: true,
         formes: [
             {
                 name: 'Shaymin (Sky Forme)'
@@ -2218,11 +2239,13 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Arceus'
+        name: 'Arceus',
+        mythical: true,
     },
     // Unova
     {
-        name: 'Victini'
+        name: 'Victini',
+        mythical: true,
     },
     {
         name: 'Snivy'
@@ -2770,10 +2793,12 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Reshiram'
+        name: 'Reshiram',
+        restricted: true,
     },
     {
-        name: 'Zekrom'
+        name: 'Zekrom',
+        restricted: true,
     },
     {
         name: 'Landorus (Incarnate Forme)',
@@ -2785,6 +2810,7 @@ const SPECIES = [
     },
     {
         name: 'Kyurem',
+        restricted: true,
         formes: [
             {
                 name: 'White Kyurem'
@@ -2796,6 +2822,7 @@ const SPECIES = [
     },
     {
         name: 'Keldeo',
+        mythical: true,
         formes: [
             {
                 name: 'Keldeo (Resolute)'
@@ -2804,6 +2831,7 @@ const SPECIES = [
     },
     {
         name: 'Meloetta (Aria Forme)',
+        mythical: true,
         formes: [
             {
                 name: 'Meloetta (Pirouette Forme)'
@@ -2811,7 +2839,8 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Genesect'
+        name: 'Genesect',
+        mythical: true,
     },
     // Kalos
     {
@@ -3033,13 +3062,16 @@ const SPECIES = [
         name: 'Noivern'
     },
     {
-        name: 'Xerneas'
+        name: 'Xerneas',
+        restricted: true,
     },
     {
-        name: 'Yveltal'
+        name: 'Yveltal',
+        restricted: true,
     },
     {
         name: 'Zygarde (50% Forme)',
+        restricted: true,
         formes: [
             {
                 name: 'Zygarde (10% Forme)'
@@ -3050,10 +3082,12 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Diancie'
+        name: 'Diancie',
+        mythical: true,
     },
     {
         name: 'Hoopa (Confined)',
+        mythical: true,
         formes: [
             {
                 name: 'Hoopa (Unbound)'
@@ -3061,7 +3095,8 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Volcanion'
+        name: 'Volcanion',
+        mythical: true,
     },
     // Alola
     {
@@ -3298,16 +3333,20 @@ const SPECIES = [
         name: 'Tapu Fini'
     },
     {
-        name: 'Cosmog'
+        name: 'Cosmog',
+        restricted: true,
     },
     {
-        name: 'Cosmoem'
+        name: 'Cosmoem',
+        restricted: true,
     },
     {
-        name: 'Solgaleo'
+        name: 'Solgaleo',
+        restricted: true,
     },
     {
-        name: 'Lunala'
+        name: 'Lunala',
+        restricted: true,
     },
     {
         name: 'Nihilego'
@@ -3332,6 +3371,7 @@ const SPECIES = [
     },
     {
         name: 'Necrozma',
+        restricted: true,
         formes: [
             {
                 name: 'Necrozma (Dusk Mane)'
@@ -3342,10 +3382,12 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Magearna'
+        name: 'Magearna',
+        mythical: true,
     },
     {
-        name: 'Marshadow'
+        name: 'Marshadow',
+        mythical: true,
     },
     {
         name: 'Poipole'
@@ -3360,13 +3402,16 @@ const SPECIES = [
         name: 'Blacephalon'
     },
     {
-        name: 'Zeraora'
+        name: 'Zeraora',
+        mythical: true,
     },
     {
-        name: 'Meltan'
+        name: 'Meltan',
+        mythical: true,
     },
     {
-        name: 'Melmetal'
+        name: 'Melmetal',
+        mythical: true,
     },
     // Galar
     {
@@ -3620,6 +3665,7 @@ const SPECIES = [
     },
     {
         name: 'Zacian',
+        restricted: true,
         formes: [
             {
                 name: 'Zacian (Crowned Sword)'
@@ -3628,6 +3674,7 @@ const SPECIES = [
     },
     {
         name: 'Zamazenta',
+        restricted: true,
         formes: [
             {
                 name: 'Zamazenta (Crowned Shield)'
@@ -3635,7 +3682,8 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Eternatus'
+        name: 'Eternatus',
+        restricted: true,
     },
     {
         name: 'Kubfu'
@@ -3649,7 +3697,8 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Zarude'
+        name: 'Zarude',
+        mythical: true,
     },
     {
         name: 'Regieleki'
@@ -3665,6 +3714,7 @@ const SPECIES = [
     },
     {
         name: 'Calyrex',
+        restricted: true,
         formes: [
             {
                 name: 'Calyrex (Ice Rider)'
@@ -4060,10 +4110,12 @@ const SPECIES = [
         name: 'Iron Valliant'
     },
     {
-        name: 'Koraidon'
+        name: 'Koraidon',
+        restricted: true,
     },
     {
-        name: 'Miraidon'
+        name: 'Miraidon',
+        restricted: true,
     },
     {
         name: 'Walking Wake'
@@ -4123,6 +4175,7 @@ const SPECIES = [
     },
     {
         name: 'Terapagos',
+        restricted: true,
         formes: [
             {
                 name: 'Terapagos (Terastal Forme)'
@@ -4130,7 +4183,8 @@ const SPECIES = [
         ]
     },
     {
-        name: 'Pecharunt'
+        name: 'Pecharunt',
+        mythical: true,
     }
 ]
 
@@ -4149,14 +4203,24 @@ function loadPokedex(callbackFn) {
     console.log("Loading Pokedex...");
     for (let i = 0; i < SPECIES.length; i++) {
         const species = SPECIES[i];
-        const mon = { name: species.name, number: `${String(i + 1).padStart(4, '0')}_${String(0).padStart(3, '0')}` };
+        const mon = { 
+            name: species.name, 
+            number: `${String(i + 1).padStart(4, '0')}_${String(0).padStart(3, '0')}`, 
+            restricted: species.restricted,
+            mythical: species.mythical
+        };
         if(callbackFn){
             callbackFn(mon);
         }
         if (species.formes) {
             for (let j = 0; j < species.formes.length; j++) {
                 const forme = species.formes[j];
-                const monForme = { name: forme.name, number: `${String(i + 1).padStart(4, '0')}_${String(j + 1).padStart(3, '0')}` };
+                const monForme = { 
+                    name: forme.name,
+                    number: `${String(i + 1).padStart(4, '0')}_${String(j + 1).padStart(3, '0')}`,
+                    restricted: species.restricted,
+                    mythical: species.mythical
+                };
                 if(callbackFn){
                     callbackFn(monForme)
                 }

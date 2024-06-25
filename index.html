@@ -22,6 +22,7 @@
                         <a href="#battle">Battle</a> - 
                         <a href="#pairings">Pairings</a> - 
                         <a href="#standings">Standings</a> - 
+                        <a href="#statistics">Statistics</a> - 
                         <a href="#players">Players and Teams</a> - 
                         <a href="#about">Contact</a> | 
                         <label for="connect" class="bold obsStatus">...</label>
@@ -67,8 +68,8 @@
                                         <li>For older OBS Versions, you can <a href="https://github.com/obsproject/obs-websocket/releases">download a plugin</a>.</li>
                                     </ul>
                                     <li><a href="#obs_settings">Connect to OBS</a>.
-                                    <li>Choose which <a href="#battle">OBS Scene</a> your Tournament Overlay is in.</li>
-                                    <li>Pick <a href="#battle">sources in that scene to output to</a> (Pokémon icons are Browser sources, everything else is a Text source).</li>
+                                    <!-- <li>Choose which <a href="#battle">OBS Scene</a> your Tournament Overlay is in.</li> -->
+                                    <li>Pick <a href="#battle">sources in your OBS scene to output to</a> (Pokémon icons are Browser sources, everything else is a Text source).</li>
                                     <li>Enter player data in the <a href="#players">table at the bottom of the page</a>, or import your tournament roster from a TOM file.</li>
                                     <li>You're all set! <a href="#battle">Pick your players from the dropdown</a> and easily display information about their team!</li>
                                     <ul>
@@ -117,12 +118,12 @@
                                 <div>The Pokémon icons are Browser sources, while all other pieces of data are Text sources in OBS!</div>
                             </div>
                         </div>
-                        <div id="obs_scene_selection" class="flex flex-col rounded-corner">
+                        <!-- <div id="obs_scene_selection" class="flex flex-col rounded-corner">
                             <div>
                                 <label for="battleSceneSelect" class="bold">Battle Overlay OBS Scene</label>
                             </div>
                             <input id="battleSceneSelect" class="sceneSelect sourceSetting" target="battle" placeholder="Select OBS source..." autoComplete="on" list="sceneOptions" type="text"/> 
-                        </div>
+                        </div> -->
                         <div class="flex flex-col rounded-corner">
                             <div class="flex-center">
                                 <label class="bold" for="monCountSlider">Players to Display</label>
@@ -159,7 +160,7 @@
                                         <div class="scoreDisplay">0</div>
                                         <button title="Subtract Score from Player #1" class="minus square" type='button'>➖</button>
                                         <button title="Add Score to Player #1" class="plus square" type='button'>➕</button>
-                                        → <input id="p1_score_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
+                                        → <input id="p1_score_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_all"/>
                                     </div>
                                     <div id="player_1_name">
                                         <div>
@@ -174,7 +175,7 @@
 
                                                 </optgroup>
                                             </select> → 
-                                            <input id="p1_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
+                                            <input id="p1_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_all"/>
                                         </div>
                                     </div>
                                     <!-- Mon Modules Go Here  -->
@@ -190,7 +191,7 @@
                                         <div class="scoreDisplay">0</div>
                                         <button title="Subtract Score from Player #2" class="minus square" type='button'>➖</button>
                                         <button title="Add Score to Player #2" class="plus square" type='button'>➕</button>
-                                        → <input id="p2_score_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
+                                        → <input id="p2_score_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_all"/>
                                     </div>
                                     <div id="player_2_name">
                                         <div>
@@ -205,7 +206,7 @@
 
                                                 </optgroup>
                                             </select> → 
-                                            <input id="p2_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_battle"/>
+                                            <input id="p2_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_all"/>
                                         </div>
                                     </div>
                                     <!-- Mon Modules Go Here -->
@@ -251,12 +252,12 @@
                                 In order for players to be displayed in the pairings, they must already be registered in the <a href='#players'>player table below</a>.
                             </div>
                         </div>
-                        <div class="flex flex-col rounded-corner">
+                        <!-- <div class="flex flex-col rounded-corner">
                             <div>
                                 <label for="pairingsSceneSelect" class="bold">Pairings Overlay OBS Scene</label>
                             </div>
                             <input id="pairingsSceneSelect" class="sceneSelect sourceSetting" target="pairings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
-                        </div>
+                        </div> -->
                         <div id="pairingsImportModule" class="flex flex-col rounded-corner">
                             <div class="notAvailable rounded-corner rounded-corner-small">
                                 <span class="important">Live file tracking is only availble in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility" target="_blank">some browsers</a>.</span>
@@ -293,7 +294,7 @@
                             </ol>
                         </div>
                         <div class="flex flex-col rounded-corner">
-                            <label for="pairingsSceneSelect" class="bold">Pairings as Single Line</label>
+                            <label for="pairingsSingle" class="bold">Pairings as Single Line</label>
                             <span class="font-small">(Optional, useful for a ticker/marquee element.)</span>
                             <div class="font-small flex flex-center">
                                 <label for="pairingsSingleSplitter">Divider:</label>
@@ -301,7 +302,7 @@
                             </div>
                             <div>
                                 <input id="pairingsSingle" readonly> → 
-                                <input id="pairingsSingleSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_pairings"/>
+                                <input id="pairingsSingleSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_all"/>
                             </div>
                         </div>
                         <div class="flex flex-col rounded-corner">
@@ -331,12 +332,12 @@
                                 In order for players to be displayed in the standings, they must already be registered in the <a href='#players'>player table below</a>.
                             </div>
                         </div>
-                        <div class="flex flex-col rounded-corner">
+                        <!-- <div class="flex flex-col rounded-corner">
                             <div>
                                 <label for="standingsSceneSelect" class="bold">Standings Overlay OBS Scene</label>
                             </div>
                             <input id="standingsSceneSelect" class="sceneSelect sourceSetting" target="standings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
-                        </div>
+                        </div> -->
                         <div id="standingsImportModule" class="flex flex-col rounded-corner">
                             <div class="notAvailable rounded-corner rounded-corner-small">
                                 <span class="important">Live file tracking is only availble in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility" target="_blank">some browsers</a>.</span>
@@ -377,7 +378,7 @@
                             </ol>
                         </div>
                         <div class="flex flex-col rounded-corner">
-                            <label for="standingsSceneSelect" class="bold">Standings as Single Line</label>
+                            <label for="standingsSingle" class="bold">Standings as Single Line</label>
                             <span class="font-small">(Optional, useful for a ticker/marquee element.)</span>
                             <div class="font-small flex flex-center">   
                                 <label for="standingsSingleOrdinalToggle">Include ordinal? (ex. 1st, 2nd...)</label>
@@ -389,7 +390,7 @@
                             </div>
                             <div>
                                 <input id="standingsSingle" readonly> → 
-                                <input id="standingsSingleSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_standings"/>
+                                <input id="standingsSingleSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_all"/>
                             </div>
                         </div>
                         <div class="flex flex-col rounded-corner">
@@ -410,33 +411,52 @@
                 <div id="statisticsContent">
                     <div class="flex flex-col rounded-corner">
                         <p>
-                            You can get dynamically-generated usage statistics about...
+                            You can get dynamically-generated usage statistics about the teams entered into the <a href="#players">Players and Teams table</a> below.
                         </p>
                         <div>
                             <div class="bold important">IMPORTANT!</div>
-                            <div>The Pokémon Usage Statistics display is a Browser source, and you can style it with Custom CSS in OBS!</div>
+                            <div>The Pokémon Usage Statistics display is a Browser source, and you can style it with <a href="https://github.com/FomTarro/pkmn-tournament-overlay-tool?tab=readme-ov-file#customization" target="_blank">Custom CSS</a> in OBS!</div>
                         </div>
                     </div>
-                    <div class="flex flex-col rounded-corner">
+                    <!-- <div class="flex flex-col rounded-corner">
                         <div>
                             <label for="statisticsSceneSelect" class="bold">Statistics Overlay OBS Scene</label>
                         </div>
                         <input id="statisticsSceneSelect" class="sceneSelect sourceSetting" target="statistics" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
-                    </div>
+                    </div> -->
                     <div class="flex flex-col rounded-corner" id="usageModule">
+                        <div class="flex-center">
+                            <label class="bold" for="usageSlider">Usage Statistics to Display</label>
+                        </div>
+                        <div class="font-small flex flex-center">
+                            <label for="usageIconEffect">Icon effect: </label>
+                            <select id="usageIconEffect" class="generalSetting">
+                                <option value="none">None</option>
+                                <option value="shadow">Drop Shadow</option>
+                                <option value="outline">Outline</option>
+                                <option value="shadow_outline">Outline + Drop Shadow</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
                         <div class="slider">
                             <button class="minus square" type='button'>➖</button>
                             <input id="usageSlider" class="generalSetting" type="range" step="1" min="1" max="32" value="8">
                             <button class="plus square" type='button'>➕</button>
                             <span class="font-small">
-                                <span>Top usage displayed: </span>
+                                <span>Top Mons displayed: </span>
                                 <span id="usageCount">8</span>
                             </span>
                         </div>
                         <div>
-                            <span id="usage">Mon Usage Statistics</span> → 
-                            <input id="usageSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="browserSourceOptions_statistics"/>
+                            <span id="nonRestrictedUsage" class="font-small">Non-Restricted Mon Usage Statistics</span> → 
+                            <input id="nonRestrictedUsageSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="browserSourceOptions_all"/>
                         </div>
+                        <iframe id="nonRestrictedUsageSourceFrame" scrolling="auto"></iframe>
+                        <div>
+                            <span id="restrictedUsage" class="font-small">Restricted Mon Usage Statistics</span> → 
+                            <input id="restrictedUsageSource" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="browserSourceOptions_all"/>
+                        </div>
+                        <iframe id="restrictedUsageSourceFrame" scrolling="auto"></iframe>
                     </div>
                 </div>
             </div>
@@ -562,7 +582,7 @@
                                             <option class="monOption notranslate">Mon6</option>
                                         </optgroup>
                                     </select> → 
-                                    <input id="mon_obs_output_x" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="browserSourceOptions_battle"/>
+                                    <input id="mon_obs_output_x" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="browserSourceOptions_all"/>
                                 </div>
                                 <div>
                                     <input id="mon_held_item_x" class="itemSelect" placeholder="Held Item..." type="text" list="itemOptions">
@@ -604,7 +624,7 @@
                                     </optgroup>
                                 </select> 
                             </div> → 
-                            <input id="table_x_pairing_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_pairings"/>
+                            <input id="table_x_pairing_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_all"/>
                         </div>
                     </li>
                 </template>
@@ -620,7 +640,7 @@
 
                                 </optgroup>
                             </select> → 
-                            <input id="pos_x_player_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_standings"/>
+                            <input id="pos_x_player_name_obs_output" class="sourceSelect sourceSetting" placeholder="Select OBS source..." autoComplete="on" list="textSourceOptions_all"/>
                         </div>
                     </li>
                 </template>
@@ -688,6 +708,12 @@
             <div hidden id="datalists">
                 <datalist id="sceneOptions">
                     <!-- Scenes in OBS -->
+                </datalist>
+                <datalist id="browserSourceOptions_all">
+                    <!-- Browser Sources in OBS -->
+                </datalist>
+                <datalist id="textSourceOptions_all">
+                    <!-- Text Sources in OBS -->
                 </datalist>
                 <datalist id="browserSourceOptions_battle">
                     <!-- Browser Sources in OBS -->

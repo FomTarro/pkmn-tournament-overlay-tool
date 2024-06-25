@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>
+            html{
+                /* overflow: hidden; */
+                background-color: red;
+                /* position: fixed;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh; */
+            }
             body {
                 margin: 0;
             }
@@ -31,82 +41,143 @@
                     rgba(0, 0, 0, 0.5)) 
                     !important;
             }
-            #mon {
-                margin: auto;
-                width: auto;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
+            .fill {
                 height: 100%;
-                position: absolute;
-                z-index: 1;
+                width: 100%;
+                position: relative;
+                display: flex;
             }
-            #item {
-                margin: auto;
+            .mon {
+                height: 100%;
+                width: auto;
+                position: relative;
+                z-index: 1;
+                object-fit: contain;
+                display: block;
+            }
+            .item {
                 width: auto;
                 bottom: max(2px, 0.1em);
                 right: max(2px, 0.1em);
                 height: 35%;
                 position: absolute;
                 z-index: 2;
+                display: block;
             }
-            #tera {
-                margin: auto;
+            .tera {
                 width: auto;
                 top: max(2px, 0.1em);
                 left: max(2px, 0.1em);
-                height: 35%;
+                height: 355;
                 position: absolute;
                 z-index: 3;
+                display: block;
             }
             .fainted {
                 opacity: 50%;
             }
+            .single{
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                justify-content: space-evenly;
+                .container {
+                    width: 100%;
+                }
+            }
+            .grid {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-evenly;
+                gap: 0.5em;
+                align-content: center;
+            }
+            .container {
+                display: flex;
+                flex-direction: column;
+                align-content: center;
+                align-items: center;
+                justify-content: flex-start;
+            }
+            .icon {
+                height: 100%;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+            }
         </style>
     </head>
-    <body>
-        <div id="content">
-            <img id="mon">
-            <img id="item">
-            <img id="tera">
+    <body class="fill">
+        <div id="content" class="fill">
         </div>
+        <template id="icon_template">
+            <div class="container">
+                <div class="icon">
+                    <img class="mon" id="mon">
+                    <img class="item" id="item">
+                    <img class="tera" id="tera">
+                </div>
+                <div class="subtitle">55%</div>
+            </div>
+        </template>
     </body>
     <footer>
         <script>
             const urlParams = new URLSearchParams(window.location.search);
-            const effect = urlParams.get('effect')
+            const template = document.getElementById("icon_template");
             const mon = urlParams.get('img');
             if(mon){
-                const monIcon = document.getElementById("mon");
+                document.getElementById('content').classList.add('single');
+                const display = template.content.cloneNode(true).querySelector(".container");
+                const monIcon = display.querySelector(".mon");
                 monIcon.src = `./img/pkmn/${mon}.png`
-                if(effect){
-                    monIcon.classList.add(effect);
+                const item = urlParams.get('item');
+                if(item){
+                    const itemIcon = display.querySelector(".item");
+                    itemIcon.src = `./img/items/${item}.png`
+                    const used = urlParams.get('used');
+                    if(used === 'true'){
+                        itemIcon.classList.add('fainted')
+                    }
+                }
+                const tera = urlParams.get('tera');
+                if(tera){
+                    const teraIcon = display.querySelector(".tera");
+                    teraIcon.src = `./img/misc/tera/${tera}.png`
+                }
+                const fainted = urlParams.get('fainted');
+                if(fainted === 'true'){
+                    display.classList.add('fainted')
+                }
+                const percentage = display.querySelector('.subtitle');
+                percentage.remove();
+                document.getElementById('content').appendChild(display);
+            } else {
+                const params = urlParams.entries();
+                document.getElementById('content').classList.add('grid');
+                // TODO: filter just the numbers
+                for(const [param, value] of params){
+                    if(param != "effect"){
+                        const display = template.content.cloneNode(true).querySelector(".container");
+                        const monIcon = display.querySelector('.mon');
+                        monIcon.src = `./img/pkmn/poke_icon_${param}.png`
+                        const percentage = display.querySelector('.subtitle');
+                        percentage.innerHTML = `${value}%`;
+                        document.getElementById('content').appendChild(display);
+                    }
                 }
             }
-            const item = urlParams.get('item');
-            if(item){
-                const itemIcon = document.getElementById("item");
-                itemIcon.src = `./img/items/${item}.png`
-                const used = urlParams.get('used');
-                if(used === 'true'){
-                    itemIcon.classList.add('fainted')
+
+            const effect = urlParams.get('effect')
+            if(effect){
+                const elems = document.querySelectorAll('.mon, .item, .tera');
+                for(let elem of elems){
+                    elem.classList.add(effect);
                 }
-                if(effect){
-                    itemIcon.classList.add(effect);
-                }
-            }
-            const tera = urlParams.get('tera');
-            if(tera){
-                const teraIcon = document.getElementById("tera");
-                teraIcon.src = `./img/misc/tera/${tera}.png`
-                if(effect){
-                    teraIcon.classList.add(effect);
-                }
-            }
-            const fainted = urlParams.get('fainted');
-            if(fainted === 'true'){
-                document.getElementById('content').classList.add('fainted')
             }
         </script>
     </footer>

@@ -38,7 +38,7 @@ function loadPlayerList() {
             addPlayer(player);
         }
     } else {
-        addPlayer()
+        addPlayer();
     }
     const selectors = document.querySelectorAll('.playerSelect');
     for (let selector of selectors) {
@@ -47,6 +47,7 @@ function loadPlayerList() {
         selector.dispatchEvent(event);
     }
     document.getElementById('playerTotal').innerText = PLAYER_LIST.length;
+    populateUsageDisplay();
 }
 
 function savePlayerList() {
@@ -61,7 +62,6 @@ function savePlayerList() {
         }
     }
     document.getElementById('playerTotal').innerText = PLAYER_LIST.length;
-    calculateUsageStatistics(PLAYER_LIST);
 }
 
 /**
@@ -157,6 +157,7 @@ function addPlayer(existingData) {
                 validateMon();
                 if (entry) {
                     entry[`mon${monIndex}`] = monInput.value;
+                    populateUsageDisplay();
                 }
             });
         }
@@ -309,14 +310,23 @@ function populatePlayerModule(element, uuid) {
 /**
  * Calculates mon usage statistics for the given set of player teams.
  * @param {Player[]} teams - The list of all teams in the event.
+ * @param {boolean} restricted - Should this list only include Restricted mons?
  * @returns {TournamentMetadata} - An array of usage stats for all mons in the field.
  */
-function calculateUsageStatistics(teams){
+function calculateUsageStatistics(teams, restricted){
+    const filterByRestricted = restricted ?? false;
     const allMons = []
     for(const player of teams){
         allMons.push(player.mon1, player.mon2, player.mon3, player.mon4, player.mon5, player.mon6);
     }
-    const filteredMons = allMons.filter(mon => mon && mon.length > 0);
+    const filteredMons = allMons.filter(mon => {
+        if(mon && mon.length > 0){
+            const monOpt = [...document.getElementsByClassName('monOption')].find(el => el.innerHTML === mon);
+            return monOpt && monOpt.hasAttribute('restricted') == filterByRestricted;
+        }else{
+            return false;
+        }
+    });
     const totalMons = filteredMons.length;
     const uniqueMons = [...new Set(filteredMons)];
     const results = [];
@@ -337,14 +347,23 @@ function calculateUsageStatistics(teams){
 }
 
 function populateUsageDisplay(){
-    const limit = document.getElementById('usageSlider').value;
-    const usage = calculateUsageStatistics(PLAYER_LIST).usageStats.slice(0, limit);
-    const url = new URL(relativeToAbsolutePath('./usage.html'));
-    for(const item of usage){
-        url.searchParams.set(`${item.dexNumber}`, `${item.percentageOfTeams}`);
+    const populate = (useRestricted, sourceName) => {
+        const limit = document.getElementById('usageSlider').value;
+        const allUsage = calculateUsageStatistics(PLAYER_LIST, useRestricted).usageStats.slice(0, limit);
+        const url = new URL(relativeToAbsolutePath('./frame.html'));
+        for(const item of allUsage){
+            url.searchParams.set(`${item.dexNumber}`, `${item.percentageOfTeams.toFixed(2)}`);
+        }
+        const usageIconEffect = document.getElementById('usageIconEffect');
+        const effect = usageIconEffect.value;
+        url.searchParams.set('effect', effect);
+        console.log(url);
+        const source = document.getElementById('usageModule').querySelector(`#${sourceName}`).value;
+        document.getElementById('usageModule').querySelector(`#${sourceName}Frame`).src = url;
+        OBS.setBrowserSourceURL(source, url.toString())
     }
-    const source = document.getElementById('usageModule').querySelector('.sourceSelect').value;
-    OBS.setBrowserSourceURL(source, url.toString())
+    populate(false, 'nonRestrictedUsageSource');
+    populate(true, 'restrictedUsageSource');
 }
 
 /**
