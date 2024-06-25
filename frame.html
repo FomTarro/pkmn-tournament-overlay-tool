@@ -3,15 +3,6 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>
-            html{
-                /* overflow: hidden; */
-                background-color: red;
-                /* position: fixed;
-                left: 0;
-                top: 0;
-                width: 100vw;
-                height: 100vh; */
-            }
             body {
                 margin: 0;
             }
@@ -68,7 +59,7 @@
                 width: auto;
                 top: max(2px, 0.1em);
                 left: max(2px, 0.1em);
-                height: 355;
+                height: 35%;
                 position: absolute;
                 z-index: 3;
                 display: block;
@@ -76,21 +67,12 @@
             .fainted {
                 opacity: 50%;
             }
-            .single{
-                width: 100vw;
-                height: 100vh;
-                display: flex;
-                justify-content: space-evenly;
-                .container {
-                    width: 100%;
-                }
-            }
             .grid {
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
-                justify-content: space-evenly;
-                gap: 0.5em;
+                justify-content: center;
+                gap: 5vw;
                 align-content: center;
             }
             .container {
@@ -100,6 +82,15 @@
                 align-items: center;
                 justify-content: flex-start;
             }
+            .single {
+                width: 100vw;
+                height: 100vh;
+            }
+            .ranking {
+                width: 12vw;
+                height: auto;
+                aspect-ratio: 1;
+            }
             .icon {
                 height: 100%;
                 width: 100%;
@@ -108,6 +99,9 @@
                 align-items: center;
                 justify-content: center;
                 position: relative;
+            }
+            .subtitle {
+                font-size: 3vw;
             }
         </style>
     </head>
@@ -131,8 +125,8 @@
             const template = document.getElementById("icon_template");
             const mon = urlParams.get('img');
             if(mon){
-                document.getElementById('content').classList.add('single');
                 const display = template.content.cloneNode(true).querySelector(".container");
+                display.classList.add('single');
                 const monIcon = display.querySelector(".mon");
                 monIcon.src = `./img/pkmn/${mon}.png`
                 const item = urlParams.get('item');
@@ -167,6 +161,7 @@
                         monIcon.src = `./img/pkmn/poke_icon_${param}.png`
                         const percentage = display.querySelector('.subtitle');
                         percentage.innerHTML = `${value}%`;
+                        display.classList.add('ranking')
                         document.getElementById('content').appendChild(display);
                     }
                 }
