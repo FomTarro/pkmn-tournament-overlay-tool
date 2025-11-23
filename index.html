@@ -70,17 +70,17 @@
                                     <li><a href="#obs_settings">Connect to OBS</a>.
                                     <!-- <li>Choose which <a href="#battle">OBS Scene</a> your Tournament Overlay is in.</li> -->
                                     <li>Pick <a href="#battle">sources in your OBS scene to output to</a> (Pokémon icons are Browser sources, almost everything else is a Text source).</li>
-                                    <li>Enter player data in the <a href="#players">table at the bottom of the page</a>, or import your tournament roster from a TOM file.</li>
+                                    <li>Enter player data in the <a href="#players">table at the bottom of the page</a><span class="tom-module">, or import your tournament roster from a TOM file</span>.</li>
                                     <li>You're all set! <a href="#battle">Pick your players from the dropdown</a> and easily display information about their team!</li>
                                     <ul>
-                                        <li>Optional: You can also display <a href="#pairings">pairings</a> and <a href="#standings">standings</a> in real-time, either by entering the data manually, or by tracking TOM files.</li>
+                                        <li class="tom-module">Optional: You can also display <a href="#pairings">pairings</a> and <a href="#standings">standings</a> in real-time, either by entering the data manually, or by tracking TOM files.</li>
                                     </ul>
                                 </ol>
                             </div>
                             <div id="privacy" class="rounded-corner">
                                 <div class="bold important">IMPORTANT!</div>
                                 <div>
-                                    Your privacy, and the privacy of your players, is extremely important! As such, this tool runs entirely within the user's browser. No data, be it manually entered or imported from TOM reports, is being collected or sent to a remote server.
+                                    Your privacy, and the privacy of your players, is extremely important! As such, this tool runs entirely within the user's browser. No data<span class="tom-module">, be it manually entered or imported from TOM reports,</span> is being collected or sent to a remote server.
                                 </div>
                                 <p></p>
                                 <div>
@@ -244,7 +244,7 @@
                     <div id="pairingsContent">
                         <div class="flex flex-col rounded-corner">
                             <p>
-                                You can either select a TOM <span class="code notranslate">...pairings.html</span> file to display a live set of player pairings that will be automatically updated any time you generate a Pairings Report in TOM, or you can update them by hand here.
+                                You can <span class="tom-module">either select a TOM <span class="code notranslate">...pairings.html</span> file to display a live set of player pairings that will be automatically updated any time you generate a Pairings Report in TOM, or you can</span> update pairings by hand here.
                             </p>
                         </div>
                         <div class="rounded-corner">
@@ -253,13 +253,7 @@
                                 In order for players to be displayed in the pairings, they must already be registered in the <a href='#players'>player table below</a>.
                             </div>
                         </div>
-                        <!-- <div class="flex flex-col rounded-corner">
-                            <div>
-                                <label for="pairingsSceneSelect" class="bold">Pairings Overlay OBS Scene</label>
-                            </div>
-                            <input id="pairingsSceneSelect" class="sceneSelect sourceSetting" target="pairings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
-                        </div> -->
-                        <div id="pairingsImportModule" class="flex flex-col rounded-corner">
+                        <div id="pairingsImportModule" class="tom-module flex-col rounded-corner">
                             <div class="notAvailable rounded-corner rounded-corner-small">
                                 <span class="important">Live file tracking is only availble in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility" target="_blank">some browsers</a>.</span>
                             </div>
@@ -310,7 +304,7 @@
                             <button class="resetPairingsButton">Reset Pairings Display
                                 <ul class="resetDescription font-small">
                                     <li>Resets all Pairings to 'None'</li>
-                                    <li>Does not stop tracking TOM file</li>
+                                    <li class="tom-module">Does not stop tracking TOM file</li>
                                 </ul>
                             </button>
                         </div>
@@ -324,7 +318,7 @@
                     <div id="standingsContent">
                         <div class="flex flex-col rounded-corner">
                             <p>
-                                You can either select a TOM <code class="code notranslate">...standings.html</code> file to display a live set of tournament standings that will be automatically updated any time you generate a Standings Report in TOM, or you can update them by hand here.
+                                You can <span class="tom-module">either select a TOM <code class="code notranslate">...standings.html</code> file to display a live set of tournament standings that will be automatically updated any time you generate a Standings Report in TOM, or you can</span> update standings by hand here.
                             </p>
                         </div>
                         <div class="rounded-corner">
@@ -333,13 +327,7 @@
                                 In order for players to be displayed in the standings, they must already be registered in the <a href='#players'>player table below</a>.
                             </div>
                         </div>
-                        <!-- <div class="flex flex-col rounded-corner">
-                            <div>
-                                <label for="standingsSceneSelect" class="bold">Standings Overlay OBS Scene</label>
-                            </div>
-                            <input id="standingsSceneSelect" class="sceneSelect sourceSetting" target="standings" placeholder="Select OBS scene..." autoComplete="on" list="sceneOptions" type="text"/>
-                        </div> -->
-                        <div id="standingsImportModule" class="flex flex-col rounded-corner">
+                        <div id="standingsImportModule" class="tom-module flex flex-col rounded-corner">
                             <div class="notAvailable rounded-corner rounded-corner-small">
                                 <span class="important">Live file tracking is only availble in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility" target="_blank">some browsers</a>.</span>
                             </div>
@@ -398,7 +386,7 @@
                             <button class="resetStandingsButton">Reset Standings Display
                                 <ul class="resetDescription font-small">
                                     <li>Resets all Standings to 'None'</li>
-                                    <li>Does not stop tracking TOM file</li>
+                                    <li class="tom-module">Does not stop tracking TOM file</li>
                                 </ul>
                             </button>
                         </div>
@@ -478,22 +466,24 @@
                     <div id="playersContent">
                         <div class="flex flex-col rounded-corner">
                             <p>
-                                You can either import a complete player list from a TOM <code class="code notranslate">...roster.html</code> file, or you can add player records by hand in the table below.
+                                You can <span class="tom-module">either import a complete player list from a TOM <code class="code notranslate">...roster.html</code> file, or you can</span> add player records by hand in the table below.
                             </p>
-                            <label for="playerImport" class="bold">Import from TOM</label>
-                            <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
-                            <div class="font-small flex flex-center">
-                                <span>Abbreviate names on import (ex. 'Ash Ketchum' → 'Ash K.') for... </span> 
-                                <label for="abbreviateJuniorsToggle">Juniors?</label>
-                                <input id="abbreviateJuniorsToggle" class="generalSetting" type="checkbox">
-                                <label for="abbreviateSeniorsToggle">Seniors?</label>
-                                <input id="abbreviateSeniorsToggle" class="generalSetting" type="checkbox">
-                                <label for="abbreviateMastersToggle">Masters?</label>
-                                <input id="abbreviateMastersToggle" class="generalSetting" type="checkbox">
-                            </div>
-                            <div>
-                                <input id='playerImport' class="playerImport" placeholder="Import Player Roster from TOM..." type="file" accept=".html" pattern=".*(roster\.html)">
-                                <span id="playerImportStatus" class="font-small bold"></span>
+                            <div class="tom-module flex-col rounded-corner">
+                                <label for="playerImport" class="bold">Import from TOM</label>
+                                <span class="font-small">(These will be in your <code class="code notranslate">TOM/data/reports</code> directory!)</span>
+                                <div class="font-small flex flex-center">
+                                    <span>Abbreviate names on import (ex. 'Ash Ketchum' → 'Ash K.') for... </span> 
+                                    <label for="abbreviateJuniorsToggle">Juniors?</label>
+                                    <input id="abbreviateJuniorsToggle" class="generalSetting" type="checkbox">
+                                    <label for="abbreviateSeniorsToggle">Seniors?</label>
+                                    <input id="abbreviateSeniorsToggle" class="generalSetting" type="checkbox">
+                                    <label for="abbreviateMastersToggle">Masters?</label>
+                                    <input id="abbreviateMastersToggle" class="generalSetting" type="checkbox">
+                                </div>
+                                <div>
+                                    <input id='playerImport' class="playerImport" placeholder="Import Player Roster from TOM..." type="file" accept=".html" pattern=".*(roster\.html)">
+                                    <span id="playerImportStatus" class="font-small bold"></span>
+                                </div>
                             </div>
                         </div>
                         <div class="flex flex-col rounded-corner">

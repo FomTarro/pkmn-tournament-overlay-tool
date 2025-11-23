@@ -302,7 +302,7 @@ function attachEventListeners(){
 
     const resetRoundButton = document.querySelector('.resetRoundButton');
     resetRoundButton.addEventListener('click', () => {
-        const description = [...resetRoundButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        const description = [...resetRoundButton.querySelectorAll('li')].filter(item => !item.classList.contains('hidden')).map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the round?\nThis action will do the following:\n${description}`)){
             const playerSelectors = document.getElementById('battle').querySelectorAll('.playerSelect');
             // Set both players to 'None'
@@ -328,7 +328,7 @@ function attachEventListeners(){
     // TODO: this should be "game", not "match"
     const resetMatchButton = document.querySelector('.resetMatchButton');
     resetMatchButton.addEventListener('click', () => {
-        const description = [...resetMatchButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        const description = [...resetMatchButton.querySelectorAll('li')].filter(item => !item.classList.contains('hidden')).map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the game?\nThis action will do the following:\n${description}`)){
             // Effectively 'click' both reset buttons
             const event = new Event('click');
@@ -340,7 +340,7 @@ function attachEventListeners(){
 
     const resetPairingsButton = document.querySelector('.resetPairingsButton');
     resetPairingsButton.addEventListener('click', () => {
-        const description = [...resetPairingsButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        const description = [...resetPairingsButton.querySelectorAll('li')].filter(item => !item.classList.contains('hidden')).map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the pairings display?\nThis action will do the following:\n${description}`)){
             // Effectively 'click' both reset buttons
             const pairingModules = pairingsList.querySelectorAll('.pairingsModule');
@@ -354,7 +354,7 @@ function attachEventListeners(){
 
     const resetStandingsButton = document.querySelector('.resetStandingsButton');
     resetStandingsButton.addEventListener('click', () => {
-        const description = [...resetStandingsButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        const description = [...resetStandingsButton.querySelectorAll('li')].filter(item => !item.classList.contains('hidden')).map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the standings display?\nThis action will do the following:\n${description}`)){
             const standingsList = document.getElementById('standingsList');
             for(let playerSelect of [...standingsList.querySelectorAll('.playerSelect')]){
@@ -991,6 +991,13 @@ window.onload = async() => {
 const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.get('unown')){
     document.getElementsByTagName('body')[0].classList.add('unown');
+}
+
+if(urlParams.get('import') === 'false'){
+    const tomModules = document.getElementsByClassName('tom-module');
+    for(let tomModule of tomModules){
+        tomModule.classList.add('hidden')
+    }
 }
 
 function getChangeLog(){

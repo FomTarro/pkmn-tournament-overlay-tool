@@ -216,6 +216,8 @@ function addPlayer(existingData) {
             PLAYER_LIST.splice(entry, 1);
             savePlayerList();
         }
+        // refresh usage graphic
+        populateUsageDisplay();
     });
     
     // Save the list when any input is modified
