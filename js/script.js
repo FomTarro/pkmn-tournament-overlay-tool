@@ -992,11 +992,11 @@ const urlParams = new URLSearchParams(window.location.search);
 if(urlParams.get('unown')){
     document.getElementsByTagName('body')[0].classList.add('unown');
 }
-
-if(urlParams.get('import') === 'false'){
+const disableImport = urlParams.get('import') === 'false';
+if(!disableImport){
     const tomModules = document.getElementsByClassName('tom-module');
     for(let tomModule of tomModules){
-        tomModule.classList.add('hidden')
+        tomModule.classList.remove('tom-module')
     }
 }
 

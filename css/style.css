@@ -211,6 +211,10 @@ input.input-small {
     display: none !important;
 }
 
+.tom-module {
+    display: none !important;
+}
+
 .center {
     align-items: center;
     justify-content: center;
