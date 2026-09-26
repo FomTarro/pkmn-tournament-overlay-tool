@@ -228,7 +228,8 @@ const OBS = {
 
 OBS.obs.on('Identified', () => {
     OBS.obs.identified = true;
-    OBS.populateScenesOptionsFromOBS();
+    OBS.getAllScenes().then(scenes => scenes.forEach(scene => OBS.populateSourceOptionsFromScene(scene, 'all')));
+    OBS.populateScenesOptionsFromOBS()
     const sceneSelectors = document.getElementsByClassName('sceneSelect');
     for(let sceneSelector of sceneSelectors){
         if(sceneSelector.value){
@@ -238,6 +239,7 @@ OBS.obs.on('Identified', () => {
 });
 
 OBS.obs.on('SceneItemRemoved', () => {
+    OBS.getAllScenes().then(scenes => scenes.forEach(scene => OBS.populateSourceOptionsFromScene(scene, 'all')));
     const sceneSelectors = document.getElementsByClassName('sceneSelect');
     for(let sceneSelector of sceneSelectors){
         if(sceneSelector.value){
@@ -247,6 +249,7 @@ OBS.obs.on('SceneItemRemoved', () => {
 });
 
 OBS.obs.on('SceneItemCreated', () => {
+    OBS.getAllScenes().then(scenes => scenes.forEach(scene => OBS.populateSourceOptionsFromScene(scene, 'all')));
     const sceneSelectors = document.getElementsByClassName('sceneSelect');
     for(let sceneSelector of sceneSelectors){
         if(sceneSelector.value){

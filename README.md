@@ -1,5 +1,5 @@
 # TourKOAL (Tournament Knowledge and Overlay Assistant for Livestreams) 
-[v1.3.2 - Check it out!](https://www.skeletom.net/pkmn/tournament-overlay/)
+[v1.4.2 - Check it out!](https://www.skeletom.net/pkmn/tournament-overlay/)
 
 ![TouKOAL Icon illustrated by bonbombs](./img/site/logo_notext1x.png)
 
@@ -115,23 +115,32 @@ Tera Type: Fairy
 
 
 ### Customization
-Under the hood, the Pokémon/Item displays (Team Icons) are simple HTML pages with the required images already loaded. This setup provides a few benefits:
+Under the hood, the Pokémon/Item displays (Pokémon Icons) are simple HTML pages with the required images already loaded. This setup provides a few benefits:
 
 1) It allows for a rich density of information (both species and item, as well as their conditions) in just a single source.
-2) It allows the user to further style the display using custom CSS in their OBS Browser source, if they desire.
+2) It allows the user to further style the display using Custom CSS in their OBS Browser source, if they desire.
 
-With regards to custom CSS, some selectors to be aware of are:
-* `#content`: The entire container.
-* `#mon`: The image tag representing the Pokémon species.
-* `#item`: The image tag representing the held item.
-* `#tera`: The image tag representing the Tera type.
-* `.fainted`: The class applied to `#content` when the Pokémon faints and to `#item` when the item is consumed.
+With regards to Custom CSS, some selectors to be aware of are:
 
-The following selectors are used to style Team Icons:
-* `.outline`: The class applied to `#mon`, `#item` and `#tera` when the "Outline" icon effect is selected.
-* `.shadow`: The class applied to `#mon`, `#item` and `#tera` when the "Drop Shadow" icon effect is selected.
-* `.shadow_outline`: The class applied to `#mon`, `#item` and `#tera` when the "Outline + Drop Shadow" icon effect is selected.
-* `.custom`: The class applied to `#mon`, `#item` and `#tera` when the "Custom" icon effect is selected. This class provides no styling out-of-the-box; it is meant to be used in conjuction with custom CSS from OBS.
+The following selectors are used to structure Pokémon Icons:
+* `#content`: The entire source.
+    * `.grid`: The class added to `#content` when displaying a list of Pokémon for Usage Statistics.
+* `.container`: The container wrapping around the Pokémon Icon.
+    * `.single`: The class added to `.container` when displaying an individual Pokémon Icon for Battle.
+    * `.ranking`: The class added to `.container` when displaying a list of Pokémon for Usage Statistics.
+
+The following selectors are used to render Pokémon Icons:
+* `.mon`: The image tag representing the Pokémon species.
+* `.item`: The image tag representing the held item.
+* `.tera`: The image tag representing the Tera type.
+* `.fainted`: The class added to `#content` when the Pokémon faints and to `.item` when the item is consumed.
+* `.subtitle`: The element containing the usage percentage when displaying a list of Pokémon for Usage Statistics.
+
+The following selectors are used to style Pokémon Icons:
+* `.outline`: The class added to `.mon`, `.item` and `.tera` when the "Outline" icon effect is selected.
+* `.shadow`: The class added to `.mon`, `.item` and `.tera` when the "Drop Shadow" icon effect is selected.
+* `.shadow_outline`: The class added to `.mon`, `.item` and `.tera` when the "Outline + Drop Shadow" icon effect is selected.
+* `.custom`: The class added to `.mon`, `.item` and `.tera` when the "Custom" icon effect is selected. This class provides no styling out-of-the-box; it is meant to be used in conjuction with custom CSS from OBS.
 
 
 ## Credits and Acknowledgements

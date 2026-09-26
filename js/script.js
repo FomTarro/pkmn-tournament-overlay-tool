@@ -283,7 +283,6 @@ function attachEventListeners(){
         });
     }
 
-
     // Hook up reset buttons
     const resetButtons = document.querySelectorAll('.resetButton');
     for(let resetButton of resetButtons){
@@ -303,7 +302,7 @@ function attachEventListeners(){
 
     const resetRoundButton = document.querySelector('.resetRoundButton');
     resetRoundButton.addEventListener('click', () => {
-        const description = [...resetRoundButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        const description = [...resetRoundButton.querySelectorAll('li')].filter(item => !item.classList.contains('hidden')).map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the round?\nThis action will do the following:\n${description}`)){
             const playerSelectors = document.getElementById('battle').querySelectorAll('.playerSelect');
             // Set both players to 'None'
@@ -329,7 +328,7 @@ function attachEventListeners(){
     // TODO: this should be "game", not "match"
     const resetMatchButton = document.querySelector('.resetMatchButton');
     resetMatchButton.addEventListener('click', () => {
-        const description = [...resetMatchButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        const description = [...resetMatchButton.querySelectorAll('li')].filter(item => !item.classList.contains('hidden')).map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the game?\nThis action will do the following:\n${description}`)){
             // Effectively 'click' both reset buttons
             const event = new Event('click');
@@ -341,7 +340,7 @@ function attachEventListeners(){
 
     const resetPairingsButton = document.querySelector('.resetPairingsButton');
     resetPairingsButton.addEventListener('click', () => {
-        const description = [...resetPairingsButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        const description = [...resetPairingsButton.querySelectorAll('li')].filter(item => !item.classList.contains('hidden')).map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the pairings display?\nThis action will do the following:\n${description}`)){
             // Effectively 'click' both reset buttons
             const pairingModules = pairingsList.querySelectorAll('.pairingsModule');
@@ -355,7 +354,7 @@ function attachEventListeners(){
 
     const resetStandingsButton = document.querySelector('.resetStandingsButton');
     resetStandingsButton.addEventListener('click', () => {
-        const description = [...resetStandingsButton.querySelectorAll('li')].map(item => `• ${item.innerText}`).join('\n');
+        const description = [...resetStandingsButton.querySelectorAll('li')].filter(item => !item.classList.contains('hidden')).map(item => `• ${item.innerText}`).join('\n');
         if(window.confirm(`Do you really want to reset the standings display?\nThis action will do the following:\n${description}`)){
             const standingsList = document.getElementById('standingsList');
             for(let playerSelect of [...standingsList.querySelectorAll('.playerSelect')]){
@@ -515,6 +514,12 @@ function attachEventListeners(){
             }
         }
         const playerSelectors = pairingsModule.querySelectorAll('.playerSelect')
+        document.getElementById('pairingsRecordToggle').addEventListener('change', () => {
+            for(let playerSelector of playerSelectors){
+                const event = new Event('change');
+                playerSelector.dispatchEvent(event);
+            }
+        });
         for(let playerSelector of playerSelectors){
             playerSelector.addEventListener('change', () => { 
                 updatePairingsPlayers();
@@ -642,6 +647,31 @@ function attachEventListeners(){
         updateStandingsSingle();
     });
 
+    document.getElementById('standingsRecordToggle').addEventListener('change', () => {
+        for(let playerSelector of standingsPlayerSelectors){
+            const event = new Event('change');
+            playerSelector.dispatchEvent(event);
+        }
+    });
+
+    // Hook up Usage Statistics
+    document.getElementById('usageSlider').addEventListener('input', () => {
+        const val = document.getElementById('usageSlider').value
+        document.getElementById('usageCount').innerText = val;
+        populateUsageDisplay();
+    });
+
+    document.getElementById('restrictedUsageSlider').addEventListener('input', () => {
+        const val = document.getElementById('restrictedUsageSlider').value
+        document.getElementById('restrictedUsageCount').innerText = val;
+        populateUsageDisplay();
+    });
+
+    document.getElementById('usageIconEffect').addEventListener('change', () => {
+        populateUsageDisplay();
+    })
+
+
     // Hook up Minimize Buttons
     const minimize = document.getElementsByClassName('minimizeButton');
     for(let button of minimize){
@@ -654,12 +684,12 @@ function attachEventListeners(){
     }
 
     document.getElementById('connect').addEventListener('click', connectToOBS);
-    const sceneSelectors = document.getElementsByClassName('sceneSelect');
-    for(let sceneSelector of sceneSelectors){
-        sceneSelector.addEventListener('change', () => {
-            OBS.populateSourceOptionsFromScene(sceneSelector.value, sceneSelector.getAttribute('target'));
-        });
-    };
+    // const sceneSelectors = document.getElementsByClassName('sceneSelect');
+    // for(let sceneSelector of sceneSelectors){
+    //     sceneSelector.addEventListener('change', () => {
+    //         OBS.populateSourceOptionsFromScene(sceneSelector.value, sceneSelector.getAttribute('target'));
+    //     });
+    // };
 }
 
 const SOURCE_SETTINGS_KEY = "tournament_overlay_settings";
@@ -678,6 +708,9 @@ function loadSourceSettings(){
         standingsScene: '',
         standingsSources: [],
         standingsSingleSource: '',
+        statisticsScene: '',
+        statisticsSources: [],
+        usageSources: [],
     };
     settings = merge(defaultSettings, settings);
 
@@ -685,8 +718,8 @@ function loadSourceSettings(){
     document.getElementById('port').value = settings.obsPort;
     document.getElementById('password').value = settings.obsPassword;
 
-    const battleScene = document.getElementById('battleSceneSelect');
-    battleScene.value = settings.battleScene ? settings.battleScene : '';
+    // const battleScene = document.getElementById('battleSceneSelect');
+    // battleScene.value = settings.battleScene ? settings.battleScene : '';
     if(settings.battleSources){
         const playerModules = document.getElementsByClassName('playerModule');
         for(let i = 0; i < playerModules.length; i++){
@@ -701,8 +734,8 @@ function loadSourceSettings(){
         }
     }
 
-    const standingScene = document.getElementById('standingsSceneSelect');
-    standingScene.value = settings.standingsScene ?? '';
+    // const standingScene = document.getElementById('standingsSceneSelect');
+    // standingScene.value = settings.standingsScene ?? '';
     if(settings.standingsSources){
         const standingsSourceSelectors = document.getElementById('standingsList').querySelectorAll('.sourceSelect');
         for(let i = 0; i < standingsSourceSelectors.length; i++){
@@ -716,8 +749,8 @@ function loadSourceSettings(){
         document.getElementById('standingsSingleSource').value = settings.standingsSingleSource;
     }
 
-    const pairingsScene = document.getElementById('pairingsSceneSelect');
-    pairingsScene.value = settings.pairingsScene ?? '';
+    // const pairingsScene = document.getElementById('pairingsSceneSelect');
+    // pairingsScene.value = settings.pairingsScene ?? '';
     if(settings.pairingsSources){
         const pairingsSourceSelectors = document.getElementById('pairingsList').querySelectorAll('.sourceSelect');
         for(let i = 0; i < pairingsSourceSelectors.length; i++){
@@ -729,6 +762,18 @@ function loadSourceSettings(){
     }
     if(settings.pairingsSingleSource){
         document.getElementById('pairingsSingleSource').value = settings.pairingsSingleSource;
+    }
+
+    // const statisticsScene = document.getElementById('statisticsSceneSelect');
+    // statisticsScene.value = settings.statisticsScene ?? '';
+    if(settings.pairingsSources){
+        const statisticsSourceSelectors = document.getElementById('statisticsContent').querySelectorAll('.sourceSelect');
+        for(let i = 0; i < statisticsSourceSelectors.length; i++){
+            const source = settings.statisticsSources[i] ?? '';
+            statisticsSourceSelectors[i].value = source;
+            const event = new Event('change');
+            statisticsSourceSelectors[i].dispatchEvent(event);
+        }
     }
 
     const sceneSelectors = document.getElementsByClassName('sceneSelect');
@@ -751,13 +796,15 @@ function saveSourceSettings(){
         standingsScene: undefined,
         standingsSources: [],
         standingsSingleSource: undefined,
+        statisticsScene: undefined,
+        statisticsSources: [],
     };
 
     settings.obsAddress = document.getElementById('address').value;
     settings.obsPort = document.getElementById('port').value;
     settings.obsPassword = document.getElementById('password').value;
 
-    const scene = document.getElementById('battleSceneSelect').value;
+    const scene = document.getElementById('battleSceneSelect')?.value;
     settings.battleScene = scene;
     const playerModules = document.getElementsByClassName('playerModule');
     for(let playerModule of playerModules){
@@ -766,7 +813,7 @@ function saveSourceSettings(){
         settings.battleSources.push(sources);
     }
 
-    const standingsScene = document.getElementById('standingsSceneSelect').value;
+    const standingsScene = document.getElementById('standingsSceneSelect')?.value;
     settings.standingsScene = standingsScene;
     const standingsSources = document.getElementById('standingsList').querySelectorAll('.sourceSelect');
     for(let source of standingsSources){
@@ -774,13 +821,20 @@ function saveSourceSettings(){
     }
     settings.standingsSingleSource = document.getElementById('standingsSingleSource').value;
 
-    const pairingsScene = document.getElementById('pairingsSceneSelect').value;
+    const pairingsScene = document.getElementById('pairingsSceneSelect')?.value;
     settings.pairingsScene = pairingsScene;
     const pairingsSources = document.getElementById('pairingsList').querySelectorAll('.sourceSelect');
     for(let source of pairingsSources){
         settings.pairingsSources.push(source.value)
     }
     settings.pairingsSingleSource = document.getElementById('pairingsSingleSource').value;
+
+    const statisticsScene = document.getElementById('statisticsSceneSelect')?.value;
+    settings.statisticsScene = statisticsScene;
+    const statisticsSources = document.getElementById('statisticsContent').querySelectorAll('.sourceSelect');
+    for(let source of statisticsSources){
+        settings.statisticsSources.push(source.value)
+    }
 
     localStorage.setItem(SOURCE_SETTINGS_KEY, JSON.stringify(settings));
 }
@@ -804,6 +858,9 @@ function loadGeneralSettings(){
         battleIncludeRecord: false,
         monsPerTeamCount: 4,
         monIconEffect: 'shadow',
+        usageCount: 8,
+        restrictedUsageCount: 4,
+        usageIconEffect: 'shadow',
     };
     settings = merge(defaultSettings, settings);
 
@@ -830,6 +887,14 @@ function loadGeneralSettings(){
     document.getElementById('monCountSlider').dispatchEvent(event);
 
     document.getElementById('monIconEffect').value = settings.monIconEffect;
+
+    document.getElementById('usageSlider').value = settings.usageCount ?? 8;
+    document.getElementById('restrictedUsageSlider').value = settings.restrictedUsageCount ?? 4;
+    
+    document.getElementById('usageSlider').dispatchEvent(event);
+    document.getElementById('restrictedUsageSlider').dispatchEvent(event);
+
+    document.getElementById('usageIconEffect').value = settings.usageIconEffect;
 }
 
 function saveGeneralSettings(){
@@ -849,6 +914,9 @@ function saveGeneralSettings(){
         battleIncludeRecord: document.getElementById('battleRecordToggle').checked,
         monsPerTeamCount: document.getElementById('monCountSlider').value,
         monIconEffect: document.getElementById('monIconEffect').value,
+        usageCount: document.getElementById('usageSlider').value,
+        restrictedUsageCount: document.getElementById('restrictedUsageSlider').value,
+        usageIconEffect: document.getElementById('usageIconEffect').value,
     };
     localStorage.setItem(GENERAL_SETTINGS_KEY, JSON.stringify(settings));
 }
@@ -864,6 +932,12 @@ window.onload = async() => {
         opt.id = species.name;
         opt.innerHTML = species.name;
         opt.setAttribute('dexNumber', species.number);
+        if(species.restricted){
+            opt.setAttribute('restricted', species.restricted)
+        }
+        if(species.mythical){
+            opt.setAttribute('mythical', species.mythical);
+        }
         document.getElementById('pokemonOptions').appendChild(opt);
     });
     document.getElementById('itemOptions').innerHTML = ''
@@ -919,8 +993,23 @@ if(urlParams.get('unown')){
     document.getElementsByTagName('body')[0].classList.add('unown');
 }
 
+const enableImports = urlParams.get('import');
+if(enableImports){
+    const tomModules = document.querySelectorAll('.tom-module');
+    for(let tomModule of tomModules){
+        tomModule.classList.remove('tom-module')
+    }
+}
+
 function getChangeLog(){
     const changes = [
+        {
+            date: "November 5th 2024",
+            version: "1.4.1",
+            changes: [
+                "Added Usage Statistic HTML sources for general and restricted categories."
+            ]
+        },
         {
             date: "March 5th 2024",
             version: "1.3.0",

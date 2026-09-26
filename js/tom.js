@@ -28,7 +28,7 @@ const TOM = {
                 const cells = row.querySelectorAll('td');
                 if(cells.length >= 2){
                     result.players.push({
-                        name: cells[1].innerText,
+                        name: cells[1].innerText?.replace("*", ""),
                         division: cells[2].innerText
                     });
                 }

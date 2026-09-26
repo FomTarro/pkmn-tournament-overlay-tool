@@ -38,7 +38,7 @@ function loadPlayerList() {
             addPlayer(player);
         }
     } else {
-        addPlayer()
+        addPlayer();
     }
     const selectors = document.querySelectorAll('.playerSelect');
     for (let selector of selectors) {
@@ -47,6 +47,8 @@ function loadPlayerList() {
         selector.dispatchEvent(event);
     }
     document.getElementById('playerTotal').innerText = PLAYER_LIST.length;
+    // TODO: can we dispatch a "rosterLoaded" event to trigger this?
+    populateUsageDisplay();
 }
 
 function savePlayerList() {
@@ -156,6 +158,7 @@ function addPlayer(existingData) {
                 validateMon();
                 if (entry) {
                     entry[`mon${monIndex}`] = monInput.value;
+                    populateUsageDisplay();
                 }
             });
         }
@@ -213,6 +216,8 @@ function addPlayer(existingData) {
             PLAYER_LIST.splice(entry, 1);
             savePlayerList();
         }
+        // refresh usage graphic
+        populateUsageDisplay();
     });
     
     // Save the list when any input is modified
@@ -231,12 +236,11 @@ function addPlayer(existingData) {
             for(let i = 0; i < mons.length; i++){
                 const monInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}`)
                 monInput.value = mons[i].species ?? '';
-                const event = new Event('change')
                 const itemInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_item`);
                 itemInput.value = mons[i].item ?? '';
                 const teraInput = row.querySelector(`#player_${playerData.uuid}_mon_${i+1}_tera`);
                 teraInput.value = mons[i].tera ?? '';
-
+                const event = new Event('change')
                 monInput.dispatchEvent(event);
                 itemInput.dispatchEvent(event);
                 teraInput.dispatchEvent(event);
@@ -349,7 +353,7 @@ async function importStandingsFromTOM(file){
     const playerOptions = document.querySelectorAll('.playerOption');
     for(let player of standings.allStandings){
         for(let opt of [...playerOptions].filter(o => o.value === findPlayerByName(player.name)?.uuid)){
-            opt.setAttribute("record", `(${player.record.wins}/${player.record.ties}/${player.record.losses})`);
+            opt.setAttribute("record", `(${player.record.wins}/${player.record.losses}/${player.record.ties})`);
         }
     }
 

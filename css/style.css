@@ -49,6 +49,11 @@ html {
     background-color: #f9f9f9;
 }
 
+iframe {
+    background-color: gainsboro;
+    border-radius: 5px;
+}
+
 body {
     margin-top: 0;
     height: calc(100% - 16px);
@@ -206,6 +211,10 @@ input.input-small {
     display: none !important;
 }
 
+.tom-module {
+    display: none !important;
+}
+
 .center {
     align-items: center;
     justify-content: center;
@@ -252,6 +261,19 @@ input.input-small {
 .flex-half-gap button {
     flex-grow: 1;
 }
+
+.resize-x {
+    resize: horizontal
+}
+
+.resize-y {
+    resize: vertical;
+}
+
+.resize-both {
+    resize: both;
+}
+
 
 .resetButton::before {
     display: inline-block;
@@ -442,6 +464,11 @@ input.input-small {
 .slider input {
     position: relative;
     top: 0.25em;
+}
+
+.usageFrame {
+    aspect-ratio: 4/2;
+    width: 50%;
 }
 
 .reset-col {

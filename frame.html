@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>
             body {
                 margin: 0;
             }
+            /* Effects */
             .outline {
                 filter: drop-shadow(1px 1px black) 
                     drop-shadow(-1px -1px black)
@@ -31,82 +33,140 @@
                     rgba(0, 0, 0, 0.5)) 
                     !important;
             }
-            #mon {
-                margin: auto;
-                width: auto;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
+            /* Images */
+            .mon {
                 height: 100%;
-                position: absolute;
+                width: auto;
+                position: relative;
                 z-index: 1;
+                display: block;
             }
-            #item {
-                margin: auto;
+            .item {
                 width: auto;
                 bottom: max(2px, 0.1em);
                 right: max(2px, 0.1em);
                 height: 35%;
                 position: absolute;
                 z-index: 2;
+                display: block;
             }
-            #tera {
-                margin: auto;
+            .tera {
                 width: auto;
                 top: max(2px, 0.1em);
                 left: max(2px, 0.1em);
                 height: 35%;
                 position: absolute;
                 z-index: 3;
+                display: block;
             }
             .fainted {
                 opacity: 50%;
+            }
+            .grid {
+                display: flex;
+                flex-wrap: wrap;
+                align-content: center;
+                align-items: center;
+                justify-content: center;
+                gap: 5vw;
+            }
+            .container {
+                display: flex;
+                flex-direction: column;
+                align-content: center;
+                align-items: center;
+                justify-content: flex-start;
+            }
+            .single {
+                width: 100vw;
+                height: 100vh;
+            }
+            .ranking {
+                width: 12vw;
+                height: auto;
+                aspect-ratio: 1;
+            }
+            .icon {
+                height: 100%;
+                width: 100%;
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+            }
+            .subtitle {
+                font-size: 3vw;
             }
         </style>
     </head>
     <body>
         <div id="content">
-            <img id="mon">
-            <img id="item">
-            <img id="tera">
         </div>
+        <template id="icon_template">
+            <div class="container">
+                <div class="icon">
+                    <img class="mon">
+                    <img class="item">
+                    <img class="tera">
+                </div>
+                <div class="subtitle">55%</div>
+            </div>
+        </template>
     </body>
     <footer>
         <script>
             const urlParams = new URLSearchParams(window.location.search);
-            const effect = urlParams.get('effect')
+            const template = document.getElementById("icon_template");
             const mon = urlParams.get('img');
             if(mon){
-                const monIcon = document.getElementById("mon");
+                const display = template.content.cloneNode(true).querySelector(".container");
+                display.classList.add('single');
+                const monIcon = display.querySelector(".mon");
                 monIcon.src = `./img/pkmn/${mon}.png`
-                if(effect){
-                    monIcon.classList.add(effect);
+                const item = urlParams.get('item');
+                if(item){
+                    const itemIcon = display.querySelector(".item");
+                    itemIcon.src = `./img/items/${item}.png`
+                    const used = urlParams.get('used');
+                    if(used === 'true'){
+                        itemIcon.classList.add('fainted')
+                    }
+                }
+                const tera = urlParams.get('tera');
+                if(tera){
+                    const teraIcon = display.querySelector(".tera");
+                    teraIcon.src = `./img/misc/tera/${tera}.png`
+                }
+                const fainted = urlParams.get('fainted');
+                if(fainted === 'true'){
+                    display.classList.add('fainted')
+                }
+                const percentage = display.querySelector('.subtitle');
+                percentage.remove();
+                document.getElementById('content').appendChild(display);
+            } else {
+                const params = urlParams.entries();
+                document.getElementById('content').classList.add('grid');
+                for(const [param, value] of params){
+                    // The mon stats are keyed on dex number
+                    if(!isNaN(param.replace("_", ""))){
+                        const display = template.content.cloneNode(true).querySelector(".container");
+                        const monIcon = display.querySelector('.mon');
+                        monIcon.src = `./img/pkmn/poke_icon_${param}.png`
+                        const percentage = display.querySelector('.subtitle');
+                        percentage.innerHTML = `${value}%`;
+                        display.classList.add('ranking')
+                        document.getElementById('content').appendChild(display);
+                    }
                 }
             }
-            const item = urlParams.get('item');
-            if(item){
-                const itemIcon = document.getElementById("item");
-                itemIcon.src = `./img/items/${item}.png`
-                const used = urlParams.get('used');
-                if(used === 'true'){
-                    itemIcon.classList.add('fainted')
+            const effect = urlParams.get('effect')
+            if(effect){
+                const elems = document.querySelectorAll('.mon, .item, .tera');
+                for(let elem of elems){
+                    elem.classList.add(effect);
                 }
-                if(effect){
-                    itemIcon.classList.add(effect);
-                }
-            }
-            const tera = urlParams.get('tera');
-            if(tera){
-                const teraIcon = document.getElementById("tera");
-                teraIcon.src = `./img/misc/tera/${tera}.png`
-                if(effect){
-                    teraIcon.classList.add(effect);
-                }
-            }
-            const fainted = urlParams.get('fainted');
-            if(fainted === 'true'){
-                document.getElementById('content').classList.add('fainted')
             }
         </script>
     </footer>
