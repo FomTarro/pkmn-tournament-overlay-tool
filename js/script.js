@@ -168,9 +168,10 @@ function attachEventListeners(){
                 url.searchParams.set('fainted', faintedToggle.checked);
 
                 if(itemOpt){
-                    if(itemOpt.type === 'Berry'){
+                    const type = itemOpt.getAttribute('type');
+                    if(type === 'Berry'){
                         url.searchParams.set('item', `berry_icon_${itemOpt.getAttribute('key')}`);
-                    }else if(itemOpt.type === 'Mega Stone'){
+                    }else if(type === 'Mega Stone'){
                         url.searchParams.set('item', `mega_stone_icon_${itemOpt.getAttribute('key')}`);
                         const forme = document.getElementById('pokemonOptions')
                         .querySelector(`#${itemToggle.checked ? itemOpt.getAttribute('mega') : itemOpt.getAttribute('base')}`);
@@ -178,7 +179,7 @@ function attachEventListeners(){
                             const newDexNumber = forme.getAttribute('dexNumber');
                             url.searchParams.set('img', `poke_icon_${newDexNumber}`);
                         }
-                    }else if(itemOpt.type === 'Z-Crystal'){
+                    }else if(type === 'Z-Crystal'){
                         url.searchParams.set('item', `z_crystal_icon_${itemOpt.getAttribute('key')}`);
                     }else{
                         url.searchParams.set('item', `item_icon_${itemOpt.getAttribute('key')}`);
@@ -198,10 +199,9 @@ function attachEventListeners(){
                     icon.title = description;
                 } 
             }
-            monSelector.addEventListener('change', setItem);
-            monSelector.addEventListener('change', updateIcon);
-            monSelector.addEventListener('change', () => 
-            {
+            monSelector.addEventListener('change', () => {
+                setItem();
+                updateIcon();
                 const elementList = [...monModules].map(item => item.querySelector('.monSelect'));
                 removeSelectedOptions(elementList);
             });
