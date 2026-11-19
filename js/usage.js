@@ -15,30 +15,37 @@
 /**
  * Calculates mon usage statistics for the given set of player teams.
  * @param {Player[]} teams - The list of all teams in the event.
- * @param {boolean} restricted - Should this list only include Restricted mons?
+ * @param {boolean} predicateFn - Should this list only include Restricted mons?
  * @returns {TournamentMetadata} - An array of usage stats for all mons in the field.
  */
-function calculateUsageStatistics(teams, restricted){
-    const filterByRestricted = restricted ?? false;
+function calculateUsageStatistics(teams, predicateFn){
     const allMons = []
     for(const player of teams){
-        allMons.push(player.mon1, player.mon2, player.mon3, player.mon4, player.mon5, player.mon6);
+        for(let i = 1; i <= 6; i++){
+            allMons.push({
+                name: player[`mon${i}`],
+                item: player[`item${i}`]
+            })
+        }
     }
     const filteredMons = allMons.filter(mon => {
-        if(mon && mon.length > 0){
+        if(mon.name && mon.name.length > 0){
             const monOpt = [...document.getElementById("pokemonOptions")
-                .getElementsByClassName('monOption')]
-                .find(el => el.innerHTML === mon && el.hasAttribute('dexNumber'));
-            return monOpt && monOpt.hasAttribute('restricted') == filterByRestricted;
+            .querySelectorAll('.monOption')]
+            .find(el => el.innerHTML === mon.name && el.hasAttribute('dexNumber'));
+            const itemOpt = [...document.getElementById('itemOptions')
+            .querySelectorAll('.itemOption')]
+            .find(el => el.innerHTML === mon.item)
+            return monOpt && predicateFn(mon, monOpt, itemOpt);
         }else{
             return false;
         }
     });
     const totalMons = filteredMons.length;
-    const uniqueMons = [...new Set(filteredMons)];
+    const uniqueMons = [...new Set(filteredMons.map(mon => mon.name))];
     const results = [];
     for(const mon of uniqueMons){
-        const numMons = filteredMons.filter(m => m === mon).length;
+        const numMons = filteredMons.filter(m => m.name === mon).length;
         results.push({
             mon: mon,
             dexNumber: [...document.getElementById("pokemonOptions")
@@ -60,8 +67,8 @@ function calculateUsageStatistics(teams, restricted){
  * Populates the Usage Statistic graphic
  */
 function populateUsageDisplay(){
-    const populate = (useRestricted, sourceName, frame, limit) => {
-        const allUsage = calculateUsageStatistics(PLAYER_LIST, useRestricted).usageStats.slice(0, limit);
+    const populate = (predicateFn, sourceName, frame, limit) => {
+        const allUsage = calculateUsageStatistics(PLAYER_LIST, predicateFn).usageStats.slice(0, limit);
         const url = new URL(relativeToAbsolutePath('./frame.html'));
         for(const item of allUsage){
             url.searchParams.set(`${item.dexNumber}`, `${item.percentageOfTeams.toFixed(2)}`);
@@ -73,7 +80,10 @@ function populateUsageDisplay(){
         document.getElementById('usageModule').querySelector(`#${frame}`).src = url;
         OBS.setBrowserSourceURL(source, url.toString())
     }
-    populate(false, 'nonRestrictedUsageSource', 'nonRestrictedUsageFrame', document.getElementById('usageSlider').value);
-    populate(true, 'restrictedUsageSource', 'restrictedUsageFrame', document.getElementById('restrictedUsageSlider').value);
-    // populate(true, 'megaUsageSource', 'megaUsageFrame', document.getElementById('megaUsageSlider').value);
+    populate((mon, monOpt, itemOpt) => monOpt && monOpt.hasAttribute('restricted') == false, 'nonRestrictedUsageSource', 'nonRestrictedUsageFrame', document.getElementById('usageSlider').value);
+    populate((mon, monOpt, itemOpt) => monOpt && monOpt.hasAttribute('restricted') == true, 'restrictedUsageSource', 'restrictedUsageFrame', document.getElementById('restrictedUsageSlider').value);
+    populate((mon, monOpt, itemOpt) => {
+        mon.name = itemOpt && itemOpt.hasAttribute('mega') ? itemOpt.getAttribute('mega') : mon.name;
+        return mon.name.includes('-Mega');
+    }, 'megaUsageSource', 'megaUsageFrame', document.getElementById('megaUsageSlider').value);
 }

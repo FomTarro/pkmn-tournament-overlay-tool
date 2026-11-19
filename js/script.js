@@ -172,8 +172,8 @@ function attachEventListeners(){
                         url.searchParams.set('item', `berry_icon_${itemOpt.getAttribute('key')}`);
                     }else if(itemOpt.type === 'Mega Stone'){
                         url.searchParams.set('item', `mega_stone_icon_${itemOpt.getAttribute('key')}`);
-                        const megaName = `${itemOpt.base}-Mega${itemOpt.mega ? '-' + itemOpt.mega : ''}`.trim();
-                        const forme = document.getElementById('pokemonOptions').querySelector(`#${itemToggle.checked ? megaName : itemOpt.base}`);
+                        const forme = document.getElementById('pokemonOptions')
+                        .querySelector(`#${itemToggle.checked ? itemOpt.getAttribute('mega') : itemOpt.getAttribute('base')}`);
                         if(forme){
                             const newDexNumber = forme.getAttribute('dexNumber');
                             url.searchParams.set('img', `poke_icon_${newDexNumber}`);
@@ -677,6 +677,12 @@ function attachEventListeners(){
         populateUsageDisplay();
     });
 
+    document.getElementById('megaUsageSlider').addEventListener('input', () => {
+        const val = document.getElementById('megaUsageSlider').value
+        document.getElementById('megaUsageCount').innerText = val;
+        populateUsageDisplay();
+    });
+
     document.getElementById('usageIconEffect').addEventListener('change', () => {
         populateUsageDisplay();
     })
@@ -870,6 +876,7 @@ function loadGeneralSettings(){
         monIconEffect: 'shadow',
         usageCount: 8,
         restrictedUsageCount: 4,
+        megaUsageCount: 8,
         usageIconEffect: 'shadow',
     };
     settings = merge(defaultSettings, settings);
@@ -900,9 +907,11 @@ function loadGeneralSettings(){
 
     document.getElementById('usageSlider').value = settings.usageCount ?? 8;
     document.getElementById('restrictedUsageSlider').value = settings.restrictedUsageCount ?? 4;
-    
+        document.getElementById('megaUsageSlider').value = settings.megaUsageCount ?? 8;
+
     document.getElementById('usageSlider').dispatchEvent(event);
     document.getElementById('restrictedUsageSlider').dispatchEvent(event);
+    document.getElementById('megaUsageSlider').dispatchEvent(event);
 
     document.getElementById('usageIconEffect').value = settings.usageIconEffect;
 }
@@ -926,6 +935,7 @@ function saveGeneralSettings(){
         monIconEffect: document.getElementById('monIconEffect').value,
         usageCount: document.getElementById('usageSlider').value,
         restrictedUsageCount: document.getElementById('restrictedUsageSlider').value,
+        megaUsageCount: document.getElementById('megaUsageSlider').value,
         usageIconEffect: document.getElementById('usageIconEffect').value,
     };
     localStorage.setItem(GENERAL_SETTINGS_KEY, JSON.stringify(settings));
@@ -957,12 +967,14 @@ window.onload = async() => {
         opt.id = item.name;
         opt.innerHTML = item.name;
         opt.setAttribute('key', item.name.toLowerCase().replaceAll(' ', '_').replaceAll('\'', ''));
-        opt.type = item.type
+        opt.setAttribute('type', item.type)
         if(item.mega){
-            opt.mega = item.mega
+            opt.setAttribute('mega', item.mega)
         }
-        if(item.base){
-            opt.base = item.base
+        if(item.type === 'Mega Stone'){
+            opt.setAttribute('base', item.base)
+            const megaName = `${item.base}-Mega${item.mega ? '-' + item.mega : ''}`;
+            opt.setAttribute('mega', megaName)
         }
         document.getElementById('itemOptions').appendChild(opt);
     });
@@ -972,10 +984,6 @@ window.onload = async() => {
     loadSourceSettings();
     loadPlayerList();
     connectToOBS();
-
-    // document.getElementById('changelog').addEventListener('click', () => {
-    //     window.alert(getChangeLog())
-    // })
 
     // Enable some sections if the browser supports their function
 
@@ -1015,68 +1023,4 @@ if(enableImports){
     for(let tomModule of tomModules){
         tomModule.classList.remove('tom-module')
     }
-}
-
-function getChangeLog(){
-    const changes = [
-        {
-            date: "November 5th 2024",
-            version: "1.4.1",
-            changes: [
-                "Added Usage Statistic HTML sources for general and restricted categories."
-            ]
-        },
-        {
-            date: "March 5th 2024",
-            version: "1.3.0",
-            changes: [
-                "Added support for importing teams from the PokePaste/Showdown style format.",
-                "Added the ability to choose different visual effects for Team Icons.",
-                "Added the ability to display player records with names.",
-                "Added the Changelog."
-            ]
-        },
-        {
-            date: "January 15th, 2024",
-            version: "1.2.1",
-            changes: [
-                "Added support for displaying Tera type!",
-                "Added support for displaying up to 6 Pokémon per team!",
-                "Added support for autocomplete in team data entry.",
-                "Corrected the order of Porygon Z and Gallade icons."
-            ]
-        },
-        {
-            date: "December 30th 2024",
-            version: "1.1.2",
-            changes: [
-                "Added guard rails that prevent the user from being able to select the same mon multiple times in the battle drop-down.",
-                "Added guard rails that prevent the user from being able to select the same player for both sides of battle, or multiple times in pairing/standings.",
-                "Resolved and issue where the addPlayer function was being passed the JavaScript click event and storing that as player data, invalidating the record."
-            ]
-        },
-        {
-            date: "December 20th 2024",
-            version: "1.0.1",
-            changes: [
-                "Fixed rendering error with Team Icons when applying the fainted effect."
-            ]
-        },
-        {
-            date: "December 16th 2023",
-            version: "1.0.0",
-            changes: [
-                "Initial release!",
-            ]
-        }
-    ]
-    let str='';
-    for(let date of changes){
-        str += `${date.date} (version ${date.version})\n`
-        for(let change of date.changes){
-            str += `• ${change}\n`
-        }
-        str += '\n'
-    }
-    return str;
 }
