@@ -170,6 +170,16 @@ function attachEventListeners(){
                 if(itemOpt){
                     if(itemOpt.type === 'Berry'){
                         url.searchParams.set('item', `berry_icon_${itemOpt.getAttribute('key')}`);
+                    }else if(itemOpt.type === 'Mega Stone'){
+                        url.searchParams.set('item', `mega_stone_icon_${itemOpt.getAttribute('key')}`);
+                        const megaName = `${itemOpt.base}-Mega${itemOpt.mega ? '-' + itemOpt.mega : ''}`.trim();
+                        const forme = document.getElementById('pokemonOptions').querySelector(`#${itemToggle.checked ? megaName : itemOpt.base}`);
+                        if(forme){
+                            const newDexNumber = forme.getAttribute('dexNumber');
+                            url.searchParams.set('img', `poke_icon_${newDexNumber}`);
+                        }
+                    }else if(itemOpt.type === 'Z-Crystal'){
+                        url.searchParams.set('item', `z_crystal_icon_${itemOpt.getAttribute('key')}`);
                     }else{
                         url.searchParams.set('item', `item_icon_${itemOpt.getAttribute('key')}`);
                     }
@@ -948,6 +958,12 @@ window.onload = async() => {
         opt.innerHTML = item.name;
         opt.setAttribute('key', item.name.toLowerCase().replaceAll(' ', '_').replaceAll('\'', ''));
         opt.type = item.type
+        if(item.mega){
+            opt.mega = item.mega
+        }
+        if(item.base){
+            opt.base = item.base
+        }
         document.getElementById('itemOptions').appendChild(opt);
     });
     createFromTemplates();

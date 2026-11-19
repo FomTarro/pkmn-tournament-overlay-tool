@@ -75,4 +75,5 @@ function populateUsageDisplay(){
     }
     populate(false, 'nonRestrictedUsageSource', 'nonRestrictedUsageFrame', document.getElementById('usageSlider').value);
     populate(true, 'restrictedUsageSource', 'restrictedUsageFrame', document.getElementById('restrictedUsageSlider').value);
+    // populate(true, 'megaUsageSource', 'megaUsageFrame', document.getElementById('megaUsageSlider').value);
 }
